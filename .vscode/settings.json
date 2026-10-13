@@ -1,0 +1,5 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/26C-",
+    "cmake.options.statusBarVisibility": "visible",
+    "cmake.buildDirectory": "${workspaceFolder}\\builds\\${buildKit}\\${buildType}"
+}

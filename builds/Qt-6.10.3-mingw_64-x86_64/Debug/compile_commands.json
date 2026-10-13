@@ -1,0 +1,56 @@
+[
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\final_autogen\\mocs_compilation.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\builds\\Qt-6.10.3-mingw_64-x86_64\\Debug\\final_autogen\\mocs_compilation.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\builds\\Qt-6.10.3-mingw_64-x86_64\\Debug\\final_autogen\\mocs_compilation.cpp",
+  "output": "CMakeFiles\\final.dir\\final_autogen\\mocs_compilation.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\main.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\main.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\main.cpp",
+  "output": "CMakeFiles\\final.dir\\main.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\mainwindow.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\mainwindow.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\mainwindow.cpp",
+  "output": "CMakeFiles\\final.dir\\mainwindow.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\gamewidget.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\gamewidget.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\gamewidget.cpp",
+  "output": "CMakeFiles\\final.dir\\gamewidget.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\startmenuwidget.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\startmenuwidget.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\startmenuwidget.cpp",
+  "output": "CMakeFiles\\final.dir\\startmenuwidget.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\enemy.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\enemy.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\enemy.cpp",
+  "output": "CMakeFiles\\final.dir\\enemy.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\tower.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\tower.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\tower.cpp",
+  "output": "CMakeFiles\\final.dir\\tower.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\bullet.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\26C-\\bullet.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\26C-\\bullet.cpp",
+  "output": "CMakeFiles\\final.dir\\bullet.cpp.obj"
+},
+{
+  "directory": "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug",
+  "command": "c:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_NEEDS_QMAIN -DQT_NETWORK_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64 -I\"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/include\" -isystem C:/Qt/6.10.3/mingw_64/include/QtCore -isystem C:/Qt/6.10.3/mingw_64/include -isystem C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.3/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.3/mingw_64/include/QtGui -isystem C:/Qt/6.10.3/mingw_64/include/QtMultimedia -isystem C:/Qt/6.10.3/mingw_64/include/QtNetwork -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -g -std=gnu++17 -o CMakeFiles\\final.dir\\final_autogen\\EWIEGA46WW\\qrc_resources.cpp.obj -c \"D:\\VS Project\\data_structrue_project\\builds\\Qt-6.10.3-mingw_64-x86_64\\Debug\\final_autogen\\EWIEGA46WW\\qrc_resources.cpp\"",
+  "file": "D:\\VS Project\\data_structrue_project\\builds\\Qt-6.10.3-mingw_64-x86_64\\Debug\\final_autogen\\EWIEGA46WW\\qrc_resources.cpp",
+  "output": "CMakeFiles\\final.dir\\final_autogen\\EWIEGA46WW\\qrc_resources.cpp.obj"
+}
+]

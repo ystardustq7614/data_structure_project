@@ -1,0 +1,9 @@
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/final.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/edit_cache.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/rebuild_cache.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/list_install_components.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/install.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/install/local.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/install/strip.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/final_autogen_timestamp_deps.dir
+D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/final_autogen.dir
