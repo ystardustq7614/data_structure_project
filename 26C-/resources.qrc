@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/game_map.jpg</file>
+        <file>images/help_bg.png</file>
+        <file>images/menu_bg.jpg</file>
+        <file>images/enemy_boss.png</file>
+        <file>images/enemy_bug.png</file>
+        <file>images/enemy_mutant.png</file>
+        <file>images/enemy_virus.png</file>
+        <file>images/enemy.ddl.gif</file>
+        <file>images/win.png</file>
+        <file>images/lose.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>images/enemy.ddl.gif</file>
+    </qresource>
+    <qresource prefix="/audio">
+        <file>music/battle.mp3</file>
+        <file>music/final_wave.mp3</file>
+        <file>music/menu.mp3</file>
+        <file>music/final_wave.wav</file>
+    </qresource>
+</RCC>
