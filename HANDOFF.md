@@ -4,7 +4,7 @@
 
 接收者：Antigravity 中的 Gemini 3.8 Flash。
 
-> **当前协作状态**：用户已授权推送代码并用于多人协作。源码旧远端对当前账号返回 403，本轮采用有写权限的根仓库 `ystardustq7614/data_structure_project` 统一管理报告、源码与资源：`26C-` 已由 gitlink 改为普通追踪目录，共纳入 31 个产品文件，保留本地旧 `.git` 历史。协作提交、推送与拉取均在根仓库进行，具体说明及取用命令见第 17 节。既有源码内容未再修改，16 个产品源码/配置文件哈希与报告核对时一致；原 README/PDF 删除及本机编译生成物保留。报告见第 16 节，产品回归待办仍为第 12.3 节，历史完整构建证据见第 14 节。
+> **当前协作状态**：代码已通过 `d4611c0` 推送到根仓库 `ystardustq7614/data_structure_project` 的 `main`，并通过一次远端普通克隆检查：31 个产品文件与工作区哈希一致、图片和音频齐全、无需子模块。旧源码远端返回 403 后，本轮将 `26C-` 改为根仓库普通追踪目录，保留本地旧 `.git` 历史。协作提交、推送与拉取均在根仓库进行，取用命令和证据见第 17 节。既有产品内容没有新改动，README/PDF 的本地删除及本机编译生成物保留。报告已推送，真实实现回归与完整 GUI 验收仍待补齐；历史完整构建证据见第 14 节。
 
 ## 1. 目标与协作分工
 
@@ -147,6 +147,7 @@ Codex 依据实际 diff 反馈文件位置、触发条件和修正要求；Gemin
   4. 第 14 节的 Qt 6.10.3 匹配 kit 配置、12 步完整编译链接及桌面启动已经完成；本轮没有重新构建或运行应用。两份归档测试仍未关联真实产品实现。
 - 报告状态：报告及协作文档已经通过提交 `164ea90` 推送到根仓库，正文可直接取用；没有重建完整报告或恢复已删除 PDF。
 - 代码协作：用户授权推送代码后，旧源码远端预检查返回 403；当前改为由根仓库直接追踪 `26C-` 的 31 个文件，覆盖源码、Qt 构建声明、图片和音频。`AGENTS.md` 已同步协作入口，后续修改和推送从根目录进行。
+- 推送结果：代码提交 `d4611c0` 已普通推送到根远端 `main`，新的普通克隆取得相同提交；31 个产品文件逐一哈希匹配，资源引用齐全，不依赖子模块。此验证不替代构建或 GUI 回归。
 - 产品后续待办：Gemini 按第 12.3 节关联真实 Enemy 与菜单配置，并补齐生命周期、Boss 两种离场、强化/变异、失败提示、菜单边缘和音频等完整回归，再交 Codex 审查。
 - 验证限制：本轮是文档和源码静态核对，没有新的产品测试、构建或 GUI 验收。三张 Mermaid 图未执行图形渲染，节点/边结构检查不等于渲染效果验收。
 - 下一接收者：报告由用户查看和取用；产品下一实施者仍为 Gemini，审查者为 Codex。
@@ -729,5 +730,37 @@ git switch -c feature/my-change
 以上是协作者操作示例，分支名按各自任务替换。构建源目录仍为 `26C-`，继续使用 Qt 6 Widgets/Multimedia 与 C++17，VS Code 的相对源目录配置不变。提交和推送均在项目根目录执行，不再进入 `26C-` 对旧远端推送。
 
 已有工作副本在同步前先检查并保存各自修改。若曾手动嵌套克隆过旧源码仓库，使用新目录克隆统一仓库并迁移个人改动，可避免把旧内层 Git 当作新的协作入口。下一产品实施者仍按当前分工执行，真实实现测试及完整 GUI 回归待办见第 12.3 节。
+
+### 17.5 实际推送与全新克隆检查结果
+
+代码提交为 `d4611c01936ba8c2cf5fb9e665a16d724f0ceff9`，普通 push 的输出为 `164ea90..d4611c0`，退出 0；没有写入原代码远端。随后从项目远端进行全新普通克隆，以下命令在工作区根目录执行，退出 0：
+
+```powershell
+$codeCloneDirectory = Join-Path $env:TEMP ('tower-defense-collaboration-' + [Guid]::NewGuid().ToString('N'))
+git -c credential.interactive=false -c credential.guiPrompt=false clone --depth 1 --single-branch --branch main --quiet https://github.com/ystardustq7614/data_structure_project.git $codeCloneDirectory
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$codeCloneFiles = @(git -C $codeCloneDirectory ls-files -- '26C-/*')
+if ($codeCloneFiles.Count -ne 31) { throw 'Cloned source file count mismatch' }
+if (Test-Path -LiteralPath (Join-Path $codeCloneDirectory '26C-/.git')) { throw 'Unexpected nested Git metadata in clone' }
+$codeCloneModes = @(git -C $codeCloneDirectory ls-files --stage -- '26C-/*')
+if (@($codeCloneModes | Where-Object { $_ -notmatch '^100644 ' }).Count -gt 0) { throw 'Unexpected gitlink or file mode' }
+foreach ($codeCloneRelativePath in $codeCloneFiles) {
+    $codeCloneActualHash = (Get-FileHash -LiteralPath (Join-Path $codeCloneDirectory $codeCloneRelativePath) -Algorithm SHA256).Hash
+    $codeCloneExpectedHash = (Get-FileHash -LiteralPath (Join-Path $PWD $codeCloneRelativePath) -Algorithm SHA256).Hash
+    if ($codeCloneActualHash -ne $codeCloneExpectedHash) { throw ('Clone content mismatch: ' + $codeCloneRelativePath) }
+}
+[xml]$codeCloneResources = Get-Content -LiteralPath (Join-Path $codeCloneDirectory '26C-/resources.qrc') -Raw
+foreach ($codeCloneResource in $codeCloneResources.SelectNodes('//file')) {
+    if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $codeCloneDirectory '26C-') $codeCloneResource.InnerText))) { throw ('Missing cloned resource: ' + $codeCloneResource.InnerText) }
+}
+git -C $codeCloneDirectory rev-parse HEAD
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+'FRESH CLONE CHECK PASS: 31 files match workspace; resource files present; no submodule required'
+$codeCloneDirectory
+```
+
+关键输出为 `FRESH CLONE CHECK PASS: 31 files match workspace; resource files present; no submodule required`，克隆 HEAD 与代码提交一致。验证副本位于 `C:\Users\ZiggyS\AppData\Local\Temp\tower-defense-collaboration-de3ee2eda9f549fdaa1c6f7950e562b0`，没有覆盖工作区文件。
+
+暂存差异检查退出 0；31 个文件均为 `100644`，不存在代码 gitlink，全部资源条目对应的文件均已纳入源码快照。代码和资源内容未变化，因此没有因验证记录更新重复运行完整构建或克隆。
 
 
