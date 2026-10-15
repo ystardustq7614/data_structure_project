@@ -1,4 +1,7 @@
 <RCC>
+    <qresource prefix="/config">
+        <file>attack_waves.json</file>
+    </qresource>
     <qresource prefix="/images">
         <file>images/game_map.jpg</file>
         <file>images/help_bg.png</file>

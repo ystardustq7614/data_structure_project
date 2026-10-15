@@ -1,47 +1,47 @@
 # 执行交接：塔防项目问题修复
 
-更新时间：2026-10-14（Asia/Shanghai）
+更新时间：2026-10-15（Asia/Shanghai）
 
-接收者：Antigravity 中的 Gemini 3.8 Flash。
+当前实施者：Codex contributor。
 
-> **当前协作状态**：代码已通过 `d4611c0` 推送到根仓库 `ystardustq7614/data_structure_project` 的 `main`，并通过一次远端普通克隆检查：31 个产品文件与工作区哈希一致、图片和音频齐全、无需子模块。旧源码远端返回 403 后，本轮将 `26C-` 改为根仓库普通追踪目录，保留本地旧 `.git` 历史。协作提交、推送与拉取均在根仓库进行，取用命令和证据见第 17 节。既有产品内容没有新改动，README/PDF 的本地删除及本机编译生成物保留。报告已推送，真实实现回归与完整 GUI 验收仍待补齐；历史完整构建证据见第 14 节。
+> **当前协作状态**：根仓库当前位于 `feature-ui-pause-placement-events`，由 `main` 的 `e6a5350` 创建；本轮交付包含此前保留的产品修复和测试。按用户新要求，Codex 已完成按钮按下/悬停反馈、局内暂停/继续/退出、底部建塔越界修复与预览，以及最小堆波次/增援调度、外部节奏配置和事件预览。三个连接产品实现的 Qt 6 CTest 通过，完整产品重新编译并独立离屏启动；默认 90 次出怪与改造前产品真实轨迹完全一致。计划双审、改动与证据见第 20 节；用户已说明本轮无需人工验收。
 
 ## 1. 目标与协作分工
 
-用户希望 Gemini 执行代码修改，Codex 审查和核对验证证据。当前已完成初始检查、两轮修复与复审、实际构建和启动、并行准备及报告第四五章补写；原 P1/P2/P3 已修正，产品待办仍为真实实现测试关联与完整 GUI 回归。最新用户明确要求推送代码用于多人协作，本轮将源码纳入根仓库并同步协作入口，没有新增产品实现或 GUI 验收。稳定规则见 `AGENTS.md`，用户可以继续指定新的分工。
+用户于 2026-10-14 明确要求 Codex 作为 contributor 开发；本轮产品修复、测试和交接由 Codex 负责。远端最新源码与此前修复部分重叠，当前未提交改动见第 18 节。稳定规则见 `AGENTS.md`。
 
-- **Gemini**：读取当前源码，实施下面列出的修复，完成相关验证，回传实际 diff、验证结果和剩余问题。
-- **Codex**：审查 Gemini 的实际修改，检查问题是否解决、是否引入回归，并核对验证证据。需要修正的产品代码由 Gemini 继续修改。
+- **Codex（当前）**：实施用户指定的开发和验收，维护测试与交接记录。
+- **Gemini（历史默认）**：先前的分工和审查记录保留在历史章节，不决定当前文件归属。
 - 每轮交接先检查工作树。双方避免同时编辑同一文件；发现其他执行者正在修改目标文件时，先协调文件归属。
-- 用户已先后授权推送报告和产品代码，用于多人协作；当前目标为根仓库 `origin/main`。本轮将源码与资源直接纳入该仓库并同步协作文档；保留已有删除项、旧仓库历史和本机构建生成物，不执行部署或强制推送。
+- 用户已先后授权推送报告和产品代码，用于多人协作；当前工作分支为根仓库 `feature-ui-pause-placement-events`。产品源码与资源现由根仓库直接追踪；本轮交付包含产品实施、测试和文档，构建产物留在本地。
 
 ## 2. 工作区与当前状态
 
 | 项目 | 当前信息 |
 | --- | --- |
-| 工作区根目录 | `D:\VS Project\data_structrue_project` |
-| 产品源码 | `D:\VS Project\data_structrue_project\26C-`，由根仓库直接追踪 |
-| 协作 Git 仓库 | 工作区根目录，`main` 跟踪 `origin/main`，远端为 `ystardustq7614/data_structure_project`；代码纳入前 HEAD 为 `164ea90` |
-| Git 分支 | 检查时为 `main`，跟踪 `origin/main`；执行前重新核对 |
+| 工作区根目录 | D:\data_structure_project |
+| 产品源码 | D:\data_structure_project\26C-，由根仓库直接追踪 |
+| 协作 Git 仓库 | 工作区根目录，`main` 已同步到 `e6a5350`；远端 `ystardustq7614/data_structure_project` |
+| Git 分支 | 当前为 `feature-ui-pause-placement-events`，从 `main` 的 `e6a5350` 创建 |
 | 项目 | “顶流争夺保卫战”，CMake target 为 `final`，声明版本 `0.1` |
 | 技术栈 | C++17、Qt Widgets、Qt Multimedia、CMake |
 | 游戏概况 | 固定 1200×800，30 ms 游戏计时器，6 波共 90 个敌人，3 种塔；支持升级、出售、结算和重试 |
-| 当前产品内容 | 此前七个源码/构建配置文件的修复已包含在本次代码快照；保留 README/PDF 的本地删除状态，未恢复文件 |
-| 协作与验证文件 | 根仓库统一追踪产品源码、报告、根文档、`tests/`、`.vscode/`；旧内层 `.git` 仅保留历史，本机新增构建生成物未纳入本轮提交 |
-| 构建目录 | 保留既有 `Debug/` 和 2026-10-13 新增的 `Codex-Debug-20261013/`；后者含 `final.exe`、本地运行依赖和证据。本轮未创建构建目录；当前 Debug 生成物状态见第 15.2 节 |
+| 当前产品内容 | 远端此前修复已纳入基线；本轮额外修改与验证见第 18 节 |
+| 协作与验证文件 | 根仓库统一追踪产品源码、报告、根文档、`tests/`、`.vscode/`；`26C-/.git` 为本地旧仓库历史 |
+| 构建目录 | 当前开发验证使用 `builds/Codex-Feature-Product-20261015/`、`builds/Codex-Feature-20261015/`；改造前轨迹探针在 `builds/LegacyTrace-20261015/`。第 19 节的 Qt6 安装验收目录和失败的 QtTest 隔离构建仍作为历史生成物保留 |
 
-截图提供的目标环境是 Windows 11、Qt 6.10.2、Desktop Qt 6.10.2 MinGW 64-bit、Qt Creator、CMake/Ninja，属于历史参考资料。2026-10-13 已从实际安装、版本命令和现有缓存确认本机匹配 kit 为 Qt 6.10.3 MinGW 64-bit；详细路径、版本和证据见第 13.3 节。此前 PATH 未找到 CMake/Ninja 是历史观察；当前两者已可解析。默认 `qmake` 仍来自 Anaconda Qt 5，默认 `g++` 仍来自 MSYS2，不能代替本次匹配 kit。
+截图中的 Qt 6.10.2 和旧工作区的 Qt 6.10.3 属于历史参考。当前机器实际使用 MSYS2 MinGW64 Qt 6.11.2、g++ 16.2.0、CMake 4.3.1 和 Ninja 1.13.0；配置命令显式指定 `C:/msys64/mingw64` 前缀与编译器，避免误用 Conda Qt 5。
 
-第 13 节的并行准备没有执行完整产品编译。之后用户明确要求构建和查看实际效果，Codex 已在新的隔离目录使用匹配工具完成配置、全部 12 个构建步骤和链接，并启动桌面窗口；详见第 14 节。已经观察到菜单及游戏画面，完整交互回归仍未完成。
+第 14 节记录旧机器的历史构建，第 19 节记录本机 Qt6 安装时的 12/12 构建与 2/2 CTest。本轮新增功能后的 13/13 产品构建、3/3 CTest 和离屏截图见第 20 节。
 
 ## 3. 已有资料与使用方式
 
-- [原问题报告](<D:/VS Project/data_structrue_project/ISSUE_VERIFICATION_REPORT.md>)：针对初始代码描述了 5 项问题和 1 项交互风险。该报告尚未修订，包含下面列出的错误和过强表述，原行号不能直接作为当前源码定位。
-- [变更记录](<D:/VS Project/data_structrue_project/CHANGELOG.md>)：记录实际变更与两轮审查进展；执行者的历史验证声明需结合第 10、12 节复核结果阅读。
-- [工作原则](<D:/VS Project/data_structrue_project/AGENTS.md>)：规定默认分工、范围保护、产品约束、证据要求和交接流程。
+- [原问题报告](<D:/data_structure_project/ISSUE_VERIFICATION_REPORT.md>)：针对初始代码描述了 5 项问题和 1 项交互风险。该报告尚未修订，原行号不能直接作为当前源码定位。
+- [变更记录](<D:/data_structure_project/CHANGELOG.md>)：记录实际变更与验证进展。
+- [工作原则](<D:/data_structure_project/AGENTS.md>)：规定范围保护、产品约束、证据要求和交接流程。
 - 当前交接文档补充原报告的勘误和执行要求。原报告中的修复片段是建议，未经编译或运行验证，不能直接作为已验证补丁使用。
 
-第 4、5 节保留初始勘误和任务基线，第 9–16 节保留实施、复审、构建、准备及报告记录。当前协作以顶部摘要、第 8 节和第 17 节为准；历史内外层 Git 状态不再作为当前协作方式。报告正文见根目录 `项目报告补充_第四五章.md`，产品测试关联与 GUI 回归仍按第 12.3 节处理，已完成构建的证据见第 14 节。
+第 4、5 节保留初始勘误和任务基线，第 9–19 节保留实施、复审、构建、准备及报告记录。当前协作以顶部摘要和第 20 节为准；历史内外层 Git 状态不再作为当前协作方式。报告正文见根目录 `项目报告补充_第四五章.md`，本轮测试、构建与运行证据见第 20 节。
 
 ## 4. 原报告勘误
 
@@ -763,4 +763,106 @@ $codeCloneDirectory
 
 暂存差异检查退出 0；31 个文件均为 `100644`，不存在代码 gitlink，全部资源条目对应的文件均已纳入源码快照。代码和资源内容未变化，因此没有因验证记录更新重复运行完整构建或克隆。
 
+## 18. Codex contributor 接手与当前状态（2026-10-14）
 
+### 18.1 工作树恢复与范围
+
+- 用户明确要求 Codex 作为 contributor 开发。本轮接手既有交接中明确的修复和验证任务；第 13 节是旧工作区的历史记录。
+- 当前工作区为 `D:\data_structure_project`。开始时 `26C-` 为空，外层 Git 只记录指向 `a3ceceefbbd9dafd93d042718009fdd0d7bd4f48` 的 gitlink，缺少 `.gitmodules`。通过 GitHub 提交搜索定位 `yinwenjie521yeah-crypto/26C-`，下载该提交归档，在临时目录核对树对象 `6028545028c2fc224a7b766aa1baeb59ccf0e5da` 和签名提交对象哈希，恢复为原提交的浅仓库；没有创建新提交。直接 `git clone` 因 TLS 握手失败。旧工作区的未提交产品改动未随 gitlink 保存，本轮按交接要求重新实施，不能称为原样找回。
+- 内层本轮修改：`CMakeLists.txt`、`mainwindow.cpp`、`gamewidget.h/.cpp`、`enemy.h/.cpp`、`startmenuwidget.cpp`。`README.md` 与报告 PDF 保持旧交接所记的删除状态。外层本轮修改：`tests/test_menu_geometry.py`、新增 `tests/test_enemy_product.cpp` 和 `tests/CMakeLists.txt`、`HANDOFF.md`、`CHANGELOG.md`。`.vscode/settings.json`、`AGENTS.md`、原问题报告及历史模型测试未改。
+- 未提交、推送、发布或部署。同步前外层 Git 只显示 gitlink 内部改动；同步后产品文件由根仓库直接追踪，从根目录查看完整差异。
+
+### 18.2 实施内容与规则
+
+- `restartGame(bool startTimer)` 区分返回菜单的重置停表、菜单复用时重置启动、结算重试直接启动。销毁与重置时先删除持有 `Enemy*` 的子弹，再删除敌人。
+- Qt 6 构建声明纳入 15 个目标源文件，qrc 单次声明，使用 `Qt6::Widgets/Multimedia`、AUTOMOC/AUTOUIC/AUTORCC 和 `qt_finalize_executable`。
+- 敌人保存基础生命上限和护甲，晚期强化与光环按标志重算。Virus 变异仍设置基础最大生命 160、基础护甲 12、当前生命 +120（不超过新上限），奖励、速度与其他平衡参数未改。光环施加和撤销按新旧上限作整数四舍五入比例映射；0 生命保持死亡，存活敌人至少 1 生命。Boss 出场时依原规则给场上所有存活敌人（包括 Boss 自身）施加光环；Boss 死亡和到达终点均撤销场上存活非 Boss 敌人的光环，后续生成物由 `m_bossAuraActive` 决定。
+- 六个失败分支改用已有非模态 `showStatusMessage`，保留经济校验与提前返回；菜单三个按钮采用第 12.1 节复核过的矩形。外层 VS Code 相对路径配置已经正确，未重复改写。
+- `tests/test_enemy_product.cpp` 直接包含产品 `enemy.h` 并编译产品 `enemy.cpp`，覆盖无伤害往返、低血回归、光环中受伤、死亡保护和变异组合；`tests/CMakeLists.txt` 提供独立 Qt 6/CTest 入口。菜单脚本改为从当前 `startmenuwidget.cpp` 读取矩形。旧 `tests/test_enemy_aura.cpp` 仍是历史独立模型，不能当作产品测试。
+
+### 18.3 实际验证与限制
+
+- 工作目录 `D:\data_structure_project`。`python -B tests\test_menu_geometry.py` 退出 0，15 个坐标检查通过；这不等于 Qt 点击和悬停 GUI 验收。
+- 临时语法检查使用 `C:\msys64\mingw64\bin\g++.exe` 16.2.0 和 `D:\anaconda3\Library\include\qt` 的 Qt 5.15.2 头文件。PATH 先加入 `C:\msys64\mingw64\bin`，再运行 `g++ -std=c++17 -fsyntax-only -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -I D:/anaconda3/Library/include/qt -I D:/anaconda3/Library/include/qt/QtCore -I D:/anaconda3/Library/include/qt/QtGui -I D:/anaconda3/Library/include/qt/QtWidgets 26C-/enemy.cpp tests/test_enemy_product.cpp`，退出 0。只证明这两个文件在 Qt 5 头文件下通过语法检查，不替代 Qt 6 编译、链接或运行。
+- 读取当前 `CMakeLists.txt` 与 `resources.qrc` 逐项核对：15 个 CMake 源文件和 15 个 qrc 条目均存在；其中 GIF 在两个资源前缀下列出，实际资源文件共 14 个。`git -C 26C- diff --check` 退出 0。
+- 当前 `cmake --version` 为 4.3.1，`ninja --version` 为 `1.13.0.git.kitware.jobserver-pipe-1`，`g++ --version` 为 16.2.0，`qmake -query QT_VERSION` 为 5.15.2。旧交接中的 `C:\Qt\6.10.3` kit 当前不存在；Conda 的 Qt6 CMake 目录缺少 `Qt6Config.cmake`，已检查的 MSYS2 MinGW 目录也没有该文件。
+- 在隔离目录 `C:\Users\entropy\AppData\Local\Temp\tower-defense-qt6-check-c969f2b72cd641adbb7d64e350263213` 执行 `cmake -S D:\data_structure_project\26C- -B <该目录> -G Ninja -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe -DCMAKE_PREFIX_PATH=D:/anaconda3/Library`；退出 1，停在 `find_package(Qt6)`，报缺少 `Qt6Config.cmake`/`qt6-config.cmake`。因此完整产品编译、连接真实实现的 CTest 运行和 GUI 验收均未完成。旧构建缓存不能当作当前验收结果。
+
+### 18.4 下一执行者与验收
+
+- 下一执行者：Codex contributor（用户另行指定功能或执行者时以新指令为准）。取得匹配的 Qt 6 Widgets/Multimedia 开发 kit 后，在新构建目录配置、编译 `26C-`，再配置 `tests/` 并运行 `ctest`；执行首次开始、返回菜单等待后再次开始、结算重试、Boss 击杀及到终点、失败提示、菜单点击和悬停、图片和音频加载的 GUI 验收。
+- 当前修复已写入源码，但 Qt 6 运行验收仍待完成。若取得旧工作区未提交源码，应先对照本轮 diff，避免覆盖本轮及用户其他改动。
+
+### 18.5 新上传源码同步
+
+- 用户要求拉取新上传的源码。远端根仓库 `main` 当前为 `e6a5350`，包含 `164ea90` 报告、`d4611c0` 产品源码和 `e6a5350` 克隆验证记录；当前工作区已重建对应 Git 对象并核对每个提交及树 SHA。
+- 保留本轮未提交的产品修复及关联产品测试。`AGENTS.md` 更新为远端根仓库协作规则，报告补充文件已进入工作树。本地两份协作文档在远端历史上追加本轮实施记录。
+- 远端曾于另一台机器完成 Qt 6.10.3 构建和桌面启动（第 14 节）；当前机器缺少匹配 Qt 6 kit，本轮修改仍未完成 Qt 6 构建、CTest 与 GUI 回归。
+- 后续在根目录检查、提交和推送；当前用户仅要求拉取，未执行提交或推送。
+- 同步后 `git log -4` 顺序为 `e6a5350`、`d4611c0`、`164ea90`、`29b5761`；`git ls-files --stage -- 26C-/enemy.cpp` 为普通文件 mode `100644`。`git fsck --connectivity-only --no-reflogs` 退出 0，只报告临时重建产生的 dangling tree，不影响提交历史连通性。
+- 根目录 `python -B tests\test_menu_geometry.py` 退出 0，15 个源码坐标检查通过；`g++` 16.2.0 使用 Conda Qt 5.15.2 头文件对 `26C-/enemy.cpp` 和 `tests/test_enemy_product.cpp` 的 `-fsyntax-only` 检查退出 0；根目录 `git diff --check` 退出 0。这些检查不代替 Qt 6 产品编译和运行。
+
+## 19. 当前机器 Qt 6 安装与验收（2026-10-15）
+
+### 19.1 环境与改动范围
+
+- 用户要求安装 Qt 6 开发包并验收。按 [MSYS2 官方更新流程](https://www.msys2.org/docs/ci/)完成两次 `pacman --noconfirm -Syu`，再安装 `mingw-w64-x86_64-qt6-base` 6.11.2-2、`mingw-w64-x86_64-qt6-multimedia` 6.11.2-1 及依赖。当前 `qmake6 -query QT_VERSION` 为 6.11.2，g++ 为 16.2.0，CMake 为 4.3.1，Ninja 为 `1.13.0.git.kitware.jobserver-pipe-1`。
+- 更新时发现一个未被包管理的旧 GCC 15 `gcov-dump.exe`，SHA256 `585D9EEE...07C8AC`，已备份到系统临时目录后只对该路径使用 `pacman --overwrite`；Qt 安装时同样备份未归属的 `libgfortran.a`（SHA256 `A07913DC...BED849`）后只覆盖该路径。其余文件由正常包事务处理；两次最终事务均退出 0。
+- 本轮未修改产品源码或平衡参数。外层新增 `tests/test_gui_product.cpp`，扩充 `tests/CMakeLists.txt` 的真实产品 GUI 集成目标；本节及 `CHANGELOG.md` 记录实际结果。先前产品修复、Enemy 测试和菜单脚本仍为未提交工作树修改。
+
+### 19.2 可复核命令与结果
+
+以下命令均在 `D:\data_structure_project` 执行；命令前将 `C:\msys64\mingw64\bin`、`C:\msys64\usr\bin` 放到 PATH 前部。
+
+```powershell
+cmake -S D:\data_structure_project\26C- -B D:\data_structure_project\builds\Codex-Qt6-20261014 -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/msys64/mingw64 -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe
+cmake --build D:\data_structure_project\builds\Codex-Qt6-20261014 --parallel 4
+cmake -S D:\data_structure_project\tests -B D:\data_structure_project\builds\Codex-Qt6-GUI-2-20261015 -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/msys64/mingw64 -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe
+cmake --build D:\data_structure_project\builds\Codex-Qt6-GUI-2-20261015 --parallel 4
+ctest --test-dir D:\data_structure_project\builds\Codex-Qt6-GUI-2-20261015 --output-on-failure
+```
+
+- 产品配置退出 0，`[12/12] Linking CXX executable final.exe`；测试配置和编译退出 0，`[17/17] Linking CXX executable test_gui_product.exe`。CTest 退出 0，`enemy_product` 与 `gui_product` 共 2/2 通过，耗时 2.67 秒。
+- GUI 测试直接编译 `mainwindow.cpp`、`gamewidget.cpp`、菜单、敌人、塔、子弹与 `resources.qrc`，使用 Qt 原生事件驱动真实部件。已检查初始仅有菜单、按钮和空白悬停、帮助页及 Esc 返回、首次开始和计时器、无塔失败后的结果返回菜单及停表、实例复用重开、结算重试。测试同步调用实际 `updateGame` slot 加速到失败结果，因此不代表按真实时间完整游玩。
+- GUI 测试确认关键 qrc 图像和音频资源存在、菜单和地图图片可解码；`menu.png`、`game.png` 保存在通过验收的构建目录，人工查看显示菜单及游戏地图正常绘制。单独以 `QT_QPA_PLATFORM=offscreen` 启动产品 `final.exe`，运行 3 秒仍存活，随后主动结束；启动检查退出 0。
+- 首次 GUI 目标尝试使用 `Qt6::Test`，编译在 MSYS2 GCC 16.2.0 的 `std::thread::native_handle_type` 比较处失败；失败构建隔离在 `builds/Codex-Qt6-GUI-20261015/`。改用 Qt 原生键鼠事件后，在新的 `builds/Codex-Qt6-GUI-2-20261015/` 完成上述验收，未修改产品代码来绕过工具链错误。
+
+### 19.3 验收边界与下一执行者
+
+- 当前结果确认 Qt 6 全量编译、资源链接、Enemy 回归和离屏 GUI 关键生命周期流程。离屏测试不能证明真实桌面输入、实际音频听感和完整玩法。Boss 击杀/到终点两个光环撤销分支、所有塔操作失败分支及图像边缘点击仍未完成运行验收；源码静态检查和单元回归不代替这些场景。
+- 下一执行者：Codex contributor（如用户另行指定则以新指令为准）。需要时在真实桌面上执行剩余交互与音频验收，发现问题再针对性修复；审查者应从根仓库检查本轮新增测试及已有未提交产品 diff。未提交、推送或发布。
+
+## 20. Contributor 交互与最小堆调度开发（2026-10-15）
+
+### 20.1 范围、勘察与计划审查
+
+- 用户明确表示本轮不需要人工验收，并提出按钮反馈、局内暂停与退出、建塔位置问题，以及最小堆调度出怪/增援、可配置节奏和事件预览。用户要求先派数个 5.6 Terra 子 agent 勘察；当前可用型号没有 Terra，故实际使用三个 5.6 Sol 子 agent 只读勘察 UI/暂停、放置、事件调度。之后 Codex 编写 `IMPLEMENTATION_PLAN.md`，再由两个 5.6 Sol 高推理子 agent 独立审查逻辑与交互，按意见修订计划，然后实施。
+- 勘察确认旧 `snapToGrid` 可将点击 `y=780..799` 吸附到 `y=810` 并扣金币建塔。旧状态机的 `m_spawnCounter` 在爆发期间继续累加，第 5 波尾部残余的 `m_burstRemaining` 还会传到第 6 波。改造前先在 `builds/LegacyTrace-20261015/` 编译直接连接当时产品 `gamewidget.cpp` 的探针，逐 tick 运行并保存 `tests/fixtures/legacy_spawn_trace.txt`。真实默认轨迹第 6 波首怪相对切波 `+9`、末怪 `+243`；这是新调度的兼容基线，不能用独立算法模拟替代。
+
+### 20.2 实际源码与文档改动
+
+- 产品：新增 `26C-/attackscheduler.h/.cpp` 的稳定最小堆 `(dueTick, sequence)`，堆中统一放生成、增援、切波事件；新增资源内置 `attack_waves.json`，外部只读节奏覆盖文件为可执行文件旁的 `attack_rhythm.json`，提供 `attack_rhythm.example.json`。外部覆盖仅允许节奏字段，整份校验成功后原子生效；无效时非模态提示并整份回退，内置资源失败则阻止空调度运行。`resources.qrc` 与产品 CMake 已纳入新资源和源码，构建目录及安装输出附带示例。
+- 产品：`gamewidget.h/.cpp` 将旧多计数器出怪状态机替换为调度器，保持默认 6 波 90 只、Boss 在最终波第 8 个、原相对 tick 轨迹、清场 `<=6` 与第 20 次检查切波、第 4 波强化、最终波音乐信号和 Boss 光环。最终波 Boss 后原有 18 只敌人标记为增援，仍计入生成总数与胜利判定。预览按钮显示堆顶最多三个事件及倒计时，清场等待时显示条件。
+- 产品：菜单、说明页返回及胜负结算按钮增加悬停/按下绘制，按下只记录状态，同一按钮释放才执行，拖出取消。局内 HUD 增加预览、暂停/继续、退出；暂停停游戏计时器和对战 BGM，冻结游戏事件及建塔等操作，退出复用原返回菜单重置链。`mainwindow.cpp` 接收暂停信号控制 BGM。
+- 产品：建塔候选统一由 `evaluateBuild` 判定，60px 网格底行限制到 `y=750`，按当前塔半径检查画面/HUD、道路、占用与金币；鼠标绿色/红色预览与点击共享判定。`tower.h/.cpp` 提供塔型初始半径查询，不改价格、伤害、速度或数量。
+- 外层：新增 `ATTACK_RHYTHM.md` 的配置/操作说明、`IMPLEMENTATION_PLAN.md` 的审查后计划、产品轨迹 fixture、`tests/test_attack_scheduler.cpp`，扩充 `tests/test_gui_product.cpp` 与 `tests/CMakeLists.txt`。此前未提交的 Enemy 修复、菜单几何测试和文档继续保留；未修改 `AGENTS.md`、`.vscode/settings.json` 或原问题报告。
+
+### 20.3 验证证据与边界
+
+- 工作目录 `D:\data_structure_project`；PATH 前置 `C:\msys64\mingw64\bin` 与 `C:\msys64\usr\bin`。工具链实际为 Qt 6.11.2、MSYS2 g++ 16.2.0、CMake 4.3.1、Ninja `1.13.0.git.kitware.jobserver-pipe-1`。
+
+```powershell
+cmake -S 26C- -B builds/Codex-Feature-Product-20261015 -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/msys64/mingw64 -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe
+cmake --build builds/Codex-Feature-Product-20261015 --parallel 4
+cmake -S tests -B builds/Codex-Feature-20261015 -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/msys64/mingw64 -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe
+cmake --build builds/Codex-Feature-20261015 --parallel 4
+ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure
+```
+
+- 产品新目录配置和 13/13 完整编译链接成功；测试构建成功。CTest `attack_scheduler`、`enemy_product`、`gui_product` 共 3/3 通过。调度测试将 90 条事件、类型、波切换 tick 与改造前产品探针输出逐行对比，并覆盖清场门槛、`C+19` 切波、Boss 第 72 个、18 个增援、外部节奏覆盖/非法整份回退、缺失内置资源等。GUI 测试连接真实产品源码，覆盖按下反馈及拖出取消、帮助页、暂停/继续/退出、停表和复用重开、合法/道路/占用/金币不足建塔、底部 `y=799→750`、事件面板点击截获、胜负两种结果页及重试/返回。
+- `QT_QPA_PLATFORM=offscreen` 单独启动新 `final.exe`，3 秒后仍存活，主动结束，检查退出 0。测试生成菜单按下、道路/有效/金币不足建塔预览、事件面板、暂停、胜/败按钮按下截图于 `builds/Codex-Feature-20261015/`，已人工查看绘制布局。`git diff --check` 退出 0；Git 仅提示当前 LF 下次触碰可能转换为 CRLF。
+- 用户本轮已取消人工验收要求。离屏自动测试不证明真实桌面鼠标手感或音频听感；该范围没有宣称通过。临时构建与探针目录不作为源码交付。
+
+### 20.4 下一执行者
+
+- 下一执行者：Codex contributor 负责处理用户后续反馈；协作审查者可从根仓库检查本轮产品、测试、配置及文档的实际 diff。当前四项开发已落地，若提出新的交互手感或外部节奏数值，优先修改 `attack_rhythm.json` 并按 `ATTACK_RHYTHM.md` 复核。不覆盖之前修复。

@@ -16,11 +16,9 @@ void Enemy::setupByType(const QString&type)
     if(type=="bug"){
         m_hp=40;
         m_maxHp=40;
-        m_baseMaxHp = 40;
         m_speed=2.4;
         m_reward=10;
         m_armor = 0;
-        m_baseArmor = 0;
         m_iconSize=65;
         // 尝试加载敌人图标
         // 无图标 draw 函数会自动画红色圆形代替
@@ -34,12 +32,10 @@ void Enemy::setupByType(const QString&type)
         m_displayName = "DDL";          // 快速怪
         m_hp = 28;                      // 血量较低
         m_maxHp = 28;
-        m_baseMaxHp = 28;
         m_speed = 3.6;                  // 速度快
         m_reward = 15;
         m_iconSize = 65;
         m_armor = 0;
-        m_baseArmor = 0;
         m_color = QColor(240, 150, 50); // 橙色
 
         m_icon = QPixmap(":/images/images/enemy.ddl.gif")
@@ -50,11 +46,9 @@ void Enemy::setupByType(const QString&type)
     }
     else if (type == "virus") {
         m_armor = 8;
-        m_baseArmor = 8;
         m_displayName = "Virus";        // 厚血怪
         m_hp =130;                      // 血量高
         m_maxHp = 130;
-        m_baseMaxHp = 130;
         m_speed = 2.0;                  // 速度慢
         m_reward = 25;
         m_iconSize = 65;
@@ -70,13 +64,11 @@ void Enemy::setupByType(const QString&type)
         m_displayName = "Boss";         // 最终 Boss
         m_hp = 550;                     // 超高血量
         m_maxHp = 550;
-        m_baseMaxHp = 550;
         m_speed = 1.35;                  // 慢速推进
         m_reward = 100;
         m_iconSize = 75;
         m_color = QColor(70, 70, 70);   // 深灰色
         m_armor = 18;
-        m_baseArmor = 18;
         m_icon = QPixmap(":/images/images/enemy_boss.png")
                      .scaled(m_iconSize,
                              m_iconSize,
@@ -88,14 +80,13 @@ void Enemy::setupByType(const QString&type)
         m_displayName = "Bug";
         m_hp = 30;
         m_maxHp = 30;
-        m_baseMaxHp = 30;
         m_speed = 2.2;
         m_reward = 10;
         m_iconSize =65;
-        m_armor = 0;
-        m_baseArmor = 0;
         m_color = QColor(220, 70, 70);
     }
+    m_baseMaxHp = m_maxHp;
+    m_baseArmor = m_armor;
     m_baseSpeed = m_speed;
 }
 void Enemy::update(){
@@ -274,14 +265,11 @@ void Enemy::mutateVirus()
     m_type = "mutant";
     m_displayName = "Mutant";
 
-    // 变异后基础属性提高
+    // 基础属性改变后，保留已有的晚期强化和Boss光环。
     m_baseMaxHp = 160;
     m_baseArmor = 12;
-
-    // 重新根据强化标志计算最新上限和护甲
     m_maxHp = calculateMaxHp();
     m_armor = calculateArmor();
-
     // 当前血量增加，但不超过最大血量
     m_hp += 120;
     if (m_hp > m_maxHp) {
@@ -296,7 +284,7 @@ void Enemy::mutateVirus()
     m_reward = 60;
 
     // 体型变大
-    m_iconSize = 65;
+    m_iconSize =65;
 
     // 没有图片时显示更深的紫色
     m_color = QColor(80, 40, 150);
@@ -308,7 +296,6 @@ void Enemy::mutateVirus()
                          Qt::KeepAspectRatio,
                          Qt::SmoothTransformation);
 }
-
 void Enemy::applyLateGameEnhance()
 {
     if (m_lateGameEnhanced) {
@@ -318,16 +305,12 @@ void Enemy::applyLateGameEnhance()
     m_lateGameEnhanced = true;
 
     // 第4波后强化：血量提升30%，护甲+3
-    int oldMaxHp = m_maxHp;
     m_maxHp = calculateMaxHp();
-    m_armor = calculateArmor();
-
-    if (oldMaxHp > 0) {
-        m_hp = static_cast<int>(m_hp * 1.3);
-        if (m_hp > m_maxHp) {
-            m_hp = m_maxHp;
-        }
+    m_hp = static_cast<int>(m_hp * 1.3);
+    if (m_hp > m_maxHp) {
+        m_hp = m_maxHp;
     }
+    m_armor = calculateArmor();
 
     // 颜色变深，没图片时也能看出强化
     m_color = m_color.darker(130);
@@ -366,12 +349,9 @@ void Enemy::applyBossAura()
         return;
     }
 
+    const int oldMaxHp = m_maxHp;
     m_bossAuraApplied = true;
-
-    // Boss光环：血量提升50%
-    int oldMaxHp = m_maxHp;
     m_maxHp = calculateMaxHp();
-
     if (oldMaxHp > 0 && m_hp > 0) {
         m_hp = static_cast<int>((static_cast<long long>(m_hp) * m_maxHp + oldMaxHp / 2) / oldMaxHp);
         if (m_hp > m_maxHp) {
@@ -386,46 +366,35 @@ void Enemy::removeBossAura()
         return;
     }
 
+    const int oldMaxHp = m_maxHp;
     m_bossAuraApplied = false;
-
-    int oldMaxHp = m_maxHp;
     m_maxHp = calculateMaxHp();
-
-    if (isDead() || m_hp <= 0) {
-        m_hp = 0;
-        return;
-    }
-
-    if (oldMaxHp > 0) {
+    if (oldMaxHp > 0 && m_hp > 0) {
         m_hp = static_cast<int>((static_cast<long long>(m_hp) * m_maxHp + oldMaxHp / 2) / oldMaxHp);
+        if (m_hp < 1) {
+            m_hp = 1;
+        }
         if (m_hp > m_maxHp) {
             m_hp = m_maxHp;
-        }
-        if (m_hp <= 0) {
-            m_hp = 1;
         }
     }
 }
 
 int Enemy::calculateMaxHp() const
 {
-    int hp = m_baseMaxHp;
+    int maxHp = m_baseMaxHp;
     if (m_lateGameEnhanced) {
-        hp = static_cast<int>(hp * 1.3);
+        maxHp = static_cast<int>(maxHp * 1.3);
     }
     if (m_bossAuraApplied) {
-        hp = static_cast<int>(hp * 1.5);
+        maxHp = static_cast<int>(maxHp * 1.5);
     }
-    return hp;
+    return maxHp;
 }
 
 int Enemy::calculateArmor() const
 {
-    int arm = m_baseArmor;
-    if (m_lateGameEnhanced) {
-        arm += 3;
-    }
-    return arm;
+    return m_baseArmor + (m_lateGameEnhanced ? 3 : 0);
 }
 
 bool Enemy::isBoss() const
@@ -436,4 +405,14 @@ bool Enemy::isBoss() const
 int Enemy::armor() const
 {
     return m_armor;
+}
+
+int Enemy::hp() const
+{
+    return m_hp;
+}
+
+int Enemy::maxHp() const
+{
+    return m_maxHp;
 }

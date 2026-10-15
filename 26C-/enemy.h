@@ -27,17 +27,18 @@ public:
     int reward()const ;                 // 击败敌人奖励金币
     void applyLateGameEnhance();   // 第4波后敌人强化
     void applyBossAura();          // Boss光环：血量提升50%
-    void removeBossAura();         // 撤销Boss光环
+    void removeBossAura();         // Boss离场时撤销光环
     bool isBoss() const;           // 判断是否Boss
     int armor() const;             // 返回护甲值
+    int hp() const;                // 当前生命
+    int maxHp() const;             // 当前生命上限
 private:
     QVector<QPointF> m_path;// 敌人移动路径
     QPointF m_pos;// 敌人当前坐标
     int m_targetIndex=1;// 当前正在前往的路径点编号
     int m_hp=30;
     int m_maxHp=30;
-    int m_baseMaxHp=30;              // 基础最大血量（未受强化状态影响）
-    int m_baseArmor=0;               // 基础护甲（未受强化状态影响）
+    int m_baseMaxHp=30;
     double m_speed=1.5;
     double m_baseSpeed = 1.5;        // 原始速度，用来冲刺结束后恢复
 
@@ -57,9 +58,10 @@ private:
     void setupByType(const QString& type);
     void updateSpecialAbility();     // 更新敌人的特殊能力，比如 DDL 冲刺
     void mutateVirus();             // Virus 变异成小 Boss
-    int calculateMaxHp() const;      // 根据基础血量与强化状态计算当前最大血量
-    int calculateArmor() const;      // 根据基础护甲与强化状态计算当前护甲
+    int calculateMaxHp() const;
+    int calculateArmor() const;
     int m_armor = 0;                   // 护甲值，减少受到的伤害
+    int m_baseArmor = 0;
     bool m_lateGameEnhanced = false;   // 是否已经获得第4波强化
     bool m_bossAuraApplied = false;    // 是否已经获得Boss光环
 };

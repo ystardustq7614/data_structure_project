@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "waves": [
+    {
+      "spawnIntervalFrames": 14, "burstSize": 1, "burstGapFrames": 9,
+      "openingDelayFrames": 23, "openingBurstSize": 1,
+      "nextWaveDelayFrames": 20, "clearThreshold": 6,
+      "groups": [{"type": "bug", "count": 8}]
+    },
+    {
+      "spawnIntervalFrames": 12, "burstSize": 1, "burstGapFrames": 9,
+      "openingDelayFrames": 21, "openingBurstSize": 1,
+      "nextWaveDelayFrames": 20, "clearThreshold": 6,
+      "groups": [{"type": "bug", "count": 8}, {"type": "ddl", "count": 6}]
+    },
+    {
+      "spawnIntervalFrames": 10, "burstSize": 2, "burstGapFrames": 9,
+      "openingDelayFrames": 19, "openingBurstSize": 2,
+      "nextWaveDelayFrames": 20, "clearThreshold": 6,
+      "groups": [{"type": "bug", "count": 8}, {"type": "ddl", "count": 10}]
+    },
+    {
+      "spawnIntervalFrames": 8, "burstSize": 2, "burstGapFrames": 9,
+      "openingDelayFrames": 17, "openingBurstSize": 2,
+      "nextWaveDelayFrames": 20, "clearThreshold": 6,
+      "groups": [{"type": "bug", "count": 6}, {"type": "virus", "count": 4}]
+    },
+    {
+      "spawnIntervalFrames": 8, "burstSize": 3, "burstGapFrames": 9,
+      "openingDelayFrames": 17, "openingBurstSize": 3,
+      "nextWaveDelayFrames": 20, "clearThreshold": 6,
+      "groups": [{"type": "ddl", "count": 10}, {"type": "virus", "count": 4}]
+    },
+    {
+      "spawnIntervalFrames": 8, "burstSize": 3, "burstGapFrames": 9,
+      "openingDelayFrames": 9, "openingBurstSize": 1,
+      "nextWaveDelayFrames": 20, "clearThreshold": 6,
+      "groups": [
+        {"type": "ddl", "count": 4}, {"type": "virus", "count": 3},
+        {"type": "boss", "count": 1},
+        {"type": "virus", "count": 2, "kind": "reinforcement"},
+        {"type": "ddl", "count": 16, "kind": "reinforcement"}
+      ]
+    }
+  ]
+}

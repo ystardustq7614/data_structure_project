@@ -1,22 +1,23 @@
-import sys
-from PIL import Image
-import numpy as np
+from pathlib import Path
+import re
 
-# Load menu background image
-img_path = '26C-/images/menu_bg.jpg'
-try:
-    img = Image.open(img_path)
-    arr = np.array(img)
-    print(f"[OK] Successfully loaded {img_path}, dimensions: {img.size}")
-except Exception as e:
-    print(f"[FAIL] Could not load {img_path}: {e}")
-    sys.exit(1)
+source_path = Path(__file__).resolve().parents[1] / "26C-" / "startmenuwidget.cpp"
+source = source_path.read_text(encoding="utf-8")
 
-# Calibrated QRect bounding boxes from startmenuwidget.cpp
-# QRect(x, y, w, h)
-START_RECT = (218, 345, 303, 83) # X[218, 520], Y[345, 427]
-HELP_RECT  = (239, 446, 261, 63) # X[239, 499], Y[446, 508]
-EXIT_RECT  = (239, 526, 261, 63) # X[239, 499], Y[526, 588]
+
+def source_rect(field):
+    match = re.search(
+        rf"\b{field}\s*=\s*QRect\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)",
+        source,
+    )
+    if not match:
+        raise AssertionError(f"Could not read {field} from {source_path}")
+    return tuple(map(int, match.groups()))
+
+
+START_RECT = source_rect("m_startButtonRect")
+HELP_RECT = source_rect("m_helpButtonRect")
+EXIT_RECT = source_rect("m_exitButtonRect")
 
 def in_rect(x, y, r):
     rx, ry, rw, rh = r
@@ -52,8 +53,6 @@ all_passed = True
 print("\n=== Running Menu Button Hitbox & Geometry Tests ===")
 for x, y, exp_hit, exp_btn, desc in test_cases:
     s, h, e, any_hit = check_hit(x, y)
-    rgb = arr[y, x].tolist()
-
     matched_btn = "start" if s else ("help" if h else ("exit" if e else None))
     is_correct = (any_hit == exp_hit) and (matched_btn == exp_btn)
 
@@ -61,7 +60,7 @@ for x, y, exp_hit, exp_btn, desc in test_cases:
     if not is_correct:
         all_passed = False
 
-    print(f"{status} ({x:3d}, {y:3d}) RGB={rgb}: {desc} -> hit={any_hit} button={matched_btn}")
+    print(f"{status} ({x:3d}, {y:3d}): {desc} -> hit={any_hit} button={matched_btn}")
 
 assert all_passed, "Some menu geometry tests failed!"
-print("\nALL MENU GEOMETRY TESTS PASSED PERFECTLY!")
+print("\nPASS: Menu source rectangle coordinate checks")

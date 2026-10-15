@@ -6,22 +6,31 @@
 #include <QColor>            // QColor 用来设置颜色
 #include <QTimer>
 #include <QtMath>
+#include <cmath>
 // GameWidget 构造函数
 // 当 GameWidget 被创建时，会自动执行这里
 GameWidget::GameWidget(QWidget *parent)
     : QWidget(parent)       { // 调用 QWidget 的构造函数，因为 GameWidget 继承 QWidget
     setFixedSize(1200, 800);  // 设置游戏窗口大小
+    setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     m_gameMapBackground = QPixmap(":/images/images/game_map.jpg");
     m_winImage = QPixmap(":/images/images/win.png");
     m_loseImage = QPixmap(":/images/images/lose.png");
     initPaths();              // 初始化敌人移动路径
-    initSpawnQueue();        // 初始化这一关的出怪顺序
+    m_state = m_scheduler.reset(QString(), &m_configurationWarning,
+                                &m_configurationError)
+                  ? GameState::Running : GameState::Stopped;
     m_timer = new QTimer(this);  // 创建定时器，this 表示这个定时器属于 GameWidget
     // connect 是 Qt 的信号槽机制
     // 意思是：每当 m_timer 触发 timeout 信号，就调用 updateGame 函数
     connect(m_timer, &QTimer::timeout, this, &GameWidget::updateGame);
-    m_timer->start(30);      // 每 30 毫秒触发一次，相当于游戏每 30ms 更新一帧
+    if (m_state == GameState::Running) {
+        m_timer->start(30);      // 每 30 毫秒触发一次
+    }
+    if (!m_configurationWarning.isEmpty()) {
+        showStatusMessage(m_configurationWarning, 180);
+    }
 }
 
 
@@ -29,12 +38,12 @@ GameWidget::GameWidget(QWidget *parent)
 // 当 GameWidget 被销毁时，会执行这里
 GameWidget::~GameWidget()
 {
+    qDeleteAll(m_bullets);
+    m_bullets.clear();
     qDeleteAll(m_enemies);   // 删除 m_enemies 里所有 new 出来的 Enemy 对象
     m_enemies.clear();       // 清空敌人数组
     qDeleteAll(m_towers);      // 删除所有防御塔
     m_towers.clear();
-    qDeleteAll(m_bullets);
-    m_bullets.clear();
 }
 
 
@@ -68,93 +77,8 @@ void GameWidget::initPaths()
     m_paths.append(path1);
     m_paths.append(path2);
 }
-// 初始化这一关的出怪队列
-void GameWidget::initSpawnQueue()
-{
-    m_waves.clear();          // 清空原来的波次
-    m_totalEnemies = 0;       // 总敌人数清零
-
-    // 第 1 波：普通 Bug
-    QVector<QString> wave1;
-    for (int i = 0; i <8; ++i) {
-        wave1.append("bug");
-    }
-
-    // 第 2 波：加入快速 DDL
-    QVector<QString> wave2;
-    for (int i = 0; i < 8; ++i) {
-        wave2.append("bug");
-    }
-    for (int i = 0; i <6; ++i) {
-        wave2.append("ddl");
-    }
-
-    QVector<QString> wave3;
-    for (int i = 0; i < 8; ++i) {
-        wave3.append("bug");
-    }
-    for (int i = 0; i <10; ++i) {
-        wave3.append("ddl");
-    }
-
-    // 第 4 波：加入厚血怪
-    QVector<QString> wave4;
-    for (int i = 0; i < 6; ++i) {
-        wave4.append("bug");
-    }
-    for (int i = 0; i <4; ++i) {
-        wave4.append("virus");
-    }
-
-    // 第 5 波：混合进攻
-    QVector<QString> wave5;
-
-    for (int i = 0; i < 10; ++i) {
-        wave5.append("ddl");
-    }
-    for (int i = 0; i <4; ++i) {
-        wave5.append("virus");
-    }
-
-    // 第 6 波：最终 Boss 波
-    QVector<QString> wave6;
-    for (int i = 0; i <4; ++i) {
-        wave6.append("ddl");
-    }
-    for (int i = 0; i <3; ++i) {
-        wave6.append("virus");
-    }
-    wave6.append("boss");
-
-    for (int i = 0; i < 2; ++i) {
-        wave6.append("virus");
-    }
-    for (int i = 0; i < 8; ++i) {
-        wave6.append("ddl");
-    }
-    for (int i = 0; i < 8; ++i) {
-        wave6.append("ddl");
-    }
-
-
-    m_waves.append(wave1);
-    m_waves.append(wave2);
-    m_waves.append(wave3);
-    m_waves.append(wave4);
-    m_waves.append(wave5);
-    m_waves.append(wave6);
-
-    for (const QVector<QString>& wave : m_waves) {
-        m_totalEnemies += wave.size();
-    }
-
-    m_currentWaveIndex = 0;
-    m_spawnIndexInWave = 0;
-    m_spawnedCount = 0;
-    m_wave = 1;
-}
 // 生成敌人
-void GameWidget::spawnEnemy(const QString& type)
+void GameWidget::spawnEnemy(const QString& type, int waveIndex)
 {
     // 如果没有路径，就不生成敌人，避免程序崩溃
     if (m_paths.isEmpty()) {
@@ -167,7 +91,7 @@ void GameWidget::spawnEnemy(const QString& type)
     Enemy* enemy = new Enemy(type, selectedPath);
 
     // 第4波开始，新生成敌人获得强化
-    if (m_currentWaveIndex >= 3) {
+    if (waveIndex >= 3) {
         enemy->applyLateGameEnhance();
     }
 
@@ -193,98 +117,31 @@ void GameWidget::spawnEnemy(const QString& type)
 // 这个函数会被 QTimer 每 30ms 调用一次
 void GameWidget::updateGame()
 {   // 如果游戏已经结束，就不再更新
-    if (m_gameFinished) {
+    if (m_state != GameState::Running) {
         return;
     }
-    // 多波出怪逻辑
-    if (m_currentWaveIndex < m_waves.size()) {
-        QVector<QString>& currentWave = m_waves[m_currentWaveIndex];
-
-        // 当前波还没出完
-        if (m_spawnIndexInWave < currentWave.size()) {
-            m_spawnCounter++;
-            int currentInterval = m_spawnInterval - m_currentWaveIndex * 2;
-            if (currentInterval < 8) {
-                currentInterval = 8;
+    // 所有出怪、增援与切波事件由稳定最小堆按逻辑 tick 执行。
+    // 传入的是敌人移动和清理之前的数量，保持旧版清场门槛的观察相位。
+    const QVector<AttackScheduler::Event> events = m_scheduler.advance(m_enemies.size());
+    if (!m_scheduler.isReady()) {
+        m_state = GameState::Stopped;
+        m_timer->stop();
+        showStatusMessage("进攻计时超出可用范围，请退出并重新开始。", 600);
+        return;
+    }
+    for (const AttackScheduler::Event& event : events) {
+        if (event.kind == AttackScheduler::Kind::WaveStart) {
+            if (event.waveIndex == 3) {
+                showStatusMessage("警报：第4波开始，敌人获得护甲强化！", 150);
             }
-            // 如果当前没有正在进行的小队爆发，就按间隔触发一组小队
-            if (m_burstRemaining <= 0) {
-                if (m_spawnCounter >= currentInterval) {
-                    int spawnCountThisTime = 1;
-
-                    if (m_currentWaveIndex == 0) {
-                        spawnCountThisTime = 1;   // 第 1 波每组 1 个
-                    }
-                    else if (m_currentWaveIndex == 1) {
-                        spawnCountThisTime = 1;   // 第 2 波每组 1 个
-                    }
-                    else if (m_currentWaveIndex == 2) {
-                        spawnCountThisTime = 2;   // 第 3 波每组 2 个
-                    }
-                    else if (m_currentWaveIndex == 3) {
-                        spawnCountThisTime = 2;   // 第 4 波每组 2 个
-                    }
-                    else if (m_currentWaveIndex == 4) {
-                        spawnCountThisTime = 3;   // 第 5 波每组 3 个
-                    }
-                    else if (m_currentWaveIndex >= 5) {
-                        spawnCountThisTime = 3;   // 第 6 波每组 3 个
-                    }
-
-                    m_burstRemaining = spawnCountThisTime;
-                    m_burstGapCounter = 0;
-                    m_spawnCounter = 0;
-                }
+            if (event.waveIndex == 5) {
+                showStatusMessage("最终波开始！Boss 即将出现！", 150);
+                emit finalWaveStarted();
             }
-            // 如果正在进行小队爆发，就每隔几帧出一个，避免粘在一起
-            else {
-                m_burstGapCounter++;
-
-                if (m_burstGapCounter >= m_burstGap) {
-                    if (m_spawnIndexInWave < currentWave.size()) {
-                        QString enemyType = currentWave[m_spawnIndexInWave];
-
-                        spawnEnemy(enemyType);
-
-                        m_spawnIndexInWave++;
-                        m_spawnedCount++;
-                        m_burstRemaining--;
-                    }
-                    else {
-                        m_burstRemaining = 0;
-                    }
-
-                    m_burstGapCounter = 0;
-                }
-
-            }}
-
-        // 当前波已经出完，准备进入下一波
-        else {
-            if (m_enemies.size() <= 6) {
-            // 如果不是最后一波，就等待一小段时间后进入下一波
-            if (m_currentWaveIndex < m_waves.size() - 1) {
-                m_waveWaitCounter++;
-
-                if (m_waveWaitCounter >= m_waveWaitTime) {
-                    m_currentWaveIndex++;       // 进入下一波
-                    m_wave = m_currentWaveIndex + 1;
-
-                    m_spawnIndexInWave = 0;     // 新一波从第 0 个敌人开始
-                    m_spawnCounter = 0;
-                    m_waveWaitCounter = 0;
-                    if (m_currentWaveIndex == 3) {
-                        showStatusMessage("警报：第4波开始，敌人获得护甲强化！", 150);
-                    }
-                    if (m_currentWaveIndex == 5) {
-                        showStatusMessage("最终波开始！Boss 即将出现！", 150);
-                        emit finalWaveStarted();
-                    }
-                }
-            }
+        } else {
+            spawnEnemy(event.enemyType, event.waveIndex);
         }
     }
-}
 
     // 更新敌人移动
     for (Enemy* enemy : m_enemies) {
@@ -333,7 +190,7 @@ void GameWidget::updateGame()
                 showStatusMessage("Boss已被击败，强化光环消失！", 120);
             }
 
-            removeBulletsTargeting(enemy);
+            removeBulletsTargeting(enemy);  // 删除所有瞄准这个敌人的子弹
             delete enemy;
             m_enemies.removeAt(i);
             continue;
@@ -381,12 +238,19 @@ void GameWidget::paintEvent(QPaintEvent *event)
         bullet->draw(painter);
     }
 
-    // 状态栏最后画，保证在最上层
-    drawHud(painter);
-    drawStatusMessage(painter);
     if (m_gameFinished) {
         drawGameResultScreen(painter);
+        return;
     }
+
+    drawBuildPreview(painter);
+    if (m_state == GameState::Paused) {
+        drawPauseOverlay(painter);
+    }
+    // 控件位于暂停遮罩之上，暂停时仍可继续或退出。
+    drawHud(painter);
+    drawEventPreview(painter);
+    drawStatusMessage(painter);
 
 }
 
@@ -535,18 +399,32 @@ void GameWidget::drawHud(QPainter& painter)
 
     painter.setPen(QColor(255, 250, 220));
 
-    QString info = QString("金币：%1    生命：%2    波次：%3/%4    敌人：%5/%6    当前塔：%7    操作：1普通塔  2速射塔  3重炮塔  U升级  X出售")
+    QString info = QString("金币：%1   生命：%2   波次：%3/6   敌人：%4/%5   当前塔：%6   1/2/3选塔 U升级 X出售")
                        .arg(m_gold)
                        .arg(m_life)
-                       .arg(m_wave)
-                       .arg(m_waves.size())
-                       .arg(m_spawnedCount)
-                       .arg(m_totalEnemies)
+                       .arg(m_scheduler.currentWaveIndex() + 1)
+                       .arg(m_scheduler.spawnedCount())
+                       .arg(m_scheduler.totalEnemies())
                        .arg(Tower::nameForType(m_selectedTowerType));
 
-    painter.drawText(QRectF(40, 12, width() - 80, 48),
+    painter.drawText(QRectF(40, 12, 810, 48),
                      Qt::AlignVCenter | Qt::AlignLeft,
                      info);
+    for (Control control : {Control::Preview, Control::Pause, Control::Exit}) {
+        const QRect button = controlRect(control);
+        painter.setPen(QPen(QColor(210, 230, 160, 170), 1));
+        painter.setBrush(QColor(27, 52, 31, 225));
+        painter.drawRoundedRect(button, 11, 11);
+        drawButtonFeedback(painter, button, m_hoveredControl == control,
+                           m_pressedControl == control,
+                           control == Control::Pause && m_state == GameState::Paused);
+        painter.setPen(Qt::white);
+        painter.drawText(button, Qt::AlignCenter,
+                         control == Control::Preview ? "预览"
+                         : control == Control::Pause
+                               ? (m_state == GameState::Paused ? "继续" : "暂停")
+                               : "退出");
+    }
 }
 // 把鼠标点击位置吸附到网格中心
 QPointF GameWidget::snapToGrid(const QPointF& pos) const
@@ -554,8 +432,10 @@ QPointF GameWidget::snapToGrid(const QPointF& pos) const
     int gridSize = 60;     // 网格大小
 
     // 算出当前点击位置属于第几个格子
-    int gridX = static_cast<int>(pos.x()) / gridSize;
-    int gridY = static_cast<int>(pos.y()) / gridSize;
+    int gridX = qBound(0, static_cast<int>(pos.x()) / gridSize,
+                       width() / gridSize - 1);
+    int gridY = qBound(1, static_cast<int>(pos.y()) / gridSize,
+                       height() / gridSize - 1);
 
     // 返回这个格子的中心点
     return QPointF(gridX * gridSize + gridSize / 2,
@@ -607,40 +487,45 @@ static double distanceToSegment(const QPointF& p,
 }
 
 
-// 判断某个位置能不能建塔
-bool GameWidget::canBuildTowerAt(const QPointF& pos) const
+// 预览与实际建造共用这条判定路径。
+GameWidget::BuildEvaluation GameWidget::evaluateBuild(const QPointF& rawPosition) const
 {
-    // 不能建在顶部状态栏
-    if (pos.y() < 80) {
-        return false;
+    BuildEvaluation result;
+    if (m_state != GameState::Running || !std::isfinite(rawPosition.x())
+        || !std::isfinite(rawPosition.y()) || rawPosition.x() < 0
+        || rawPosition.x() >= width() || rawPosition.y() < 60
+        || rawPosition.y() >= height()
+        || controlAt(rawPosition.toPoint()) != Control::None
+        || (m_previewVisible && previewPanelRect().contains(rawPosition.toPoint()))) {
+        return result;
     }
-
-    // 不能建在道路附近
-    // 道路主体宽度大约 34，外边框 42
-    // 这里用 45 做安全距离
-    // 不能建在任何一条道路附近
-        for (const QVector<QPointF>& path : m_paths) {
+    result.center = snapToGrid(rawPosition);
+    const int radius = Tower::radiusForType(m_selectedTowerType);
+    if (result.center.x() - radius < 0 || result.center.x() + radius >= width()
+        || result.center.y() - radius < 60
+        || result.center.y() + radius >= height()) {
+        return result;
+    }
+    for (const QVector<QPointF>& path : m_paths) {
         for (int i = 0; i < path.size() - 1; ++i) {
-            double d = distanceToSegment(pos, path[i], path[i + 1]);
-
-            if (d < 45) {
-                return false;
+            if (distanceToSegment(result.center, path[i], path[i + 1]) < 45) {
+                result.problem = BuildProblem::Road;
+                return result;
             }
         }
     }
-
-    // 不能和已有防御塔太近
     for (Tower* tower : m_towers) {
-        double dx = pos.x() - tower->position().x();
-        double dy = pos.y() - tower->position().y();
+        double dx = result.center.x() - tower->position().x();
+        double dy = result.center.y() - tower->position().y();
         double distance = qSqrt(dx * dx + dy * dy);
-
         if (distance < 42) {
-            return false;
+            result.problem = BuildProblem::Occupied;
+            return result;
         }
     }
-
-    return true;
+    result.problem = m_gold < Tower::costForType(m_selectedTowerType)
+                         ? BuildProblem::InsufficientGold : BuildProblem::None;
+    return result;
 }
 
 
@@ -649,27 +534,20 @@ bool GameWidget::canBuildTowerAt(const QPointF& pos) const
 void GameWidget::mousePressEvent(QMouseEvent *event)
 {
     setFocus();
-
     if (event->button() != Qt::LeftButton) {
         return;
     }
-
     QPointF clickPos = event->position();
-
-    // 游戏结束后，只处理结果界面的两个按钮
-    if (m_gameFinished) {
-        QPoint clickPoint = clickPos.toPoint();
-
-        if (resultRetryRect().contains(clickPoint)) {
-            restartGame();
-            return;
-        }
-
-        if (resultMenuRect().contains(clickPoint)) {
-            emit backToMenuRequested();
-            return;
-        }
-
+    m_mousePosition = clickPos;
+    m_hasMousePosition = true;
+    m_hoveredControl = controlAt(clickPos.toPoint());
+    if (m_hoveredControl != Control::None) {
+        m_pressedControl = m_hoveredControl;
+        update();
+        return;
+    }
+    if (m_state != GameState::Running || clickPos.y() < 60
+        || (m_previewVisible && previewPanelRect().contains(clickPos.toPoint()))) {
         return;
     }
     // 如果点击的是已有防御塔，就选中它，不建新塔
@@ -687,34 +565,77 @@ void GameWidget::mousePressEvent(QMouseEvent *event)
 
     // 如果点的不是塔，就取消当前选中
     clearSelectedTower();
-    // 把点击位置吸附到网格中心
-    QPointF buildPos = snapToGrid(clickPos);
-
-    int towerCost = Tower::costForType(m_selectedTowerType);
-
-    // 金币不足，不能建塔
-    if (m_gold < towerCost) {
+    const BuildEvaluation build = evaluateBuild(clickPos);
+    if (build.problem == BuildProblem::InsufficientGold) {
         showStatusMessage("金币不足，无法建造防御塔！", 60);
         return;
     }
-
-    // 位置不合法，不能建塔
-    if (!canBuildTowerAt(buildPos)) {
+    if (!build.valid()) {
         showStatusMessage("这里不能建造防御塔！", 60);
         return;
     }
-
-    // 创建防御塔
-    Tower* tower = new Tower(buildPos, m_selectedTowerType);
-
-    // 加入防御塔数组
+    Tower* tower = new Tower(build.center, m_selectedTowerType);
     m_towers.append(tower);
-
-    // 扣金币
-    m_gold -= towerCost;
-
-    // 刷新画面
+    m_gold -= Tower::costForType(m_selectedTowerType);
     update();
+}
+
+void GameWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton) return;
+    const Control released = controlAt(event->position().toPoint());
+    const Control pressed = m_pressedControl;
+    m_pressedControl = Control::None;
+    m_hoveredControl = released;
+    update();
+    if (released != pressed || released == Control::None) return;
+
+    switch (released) {
+    case Control::Preview:
+        if (m_state != GameState::Finished) m_previewVisible = !m_previewVisible;
+        update();
+        return;
+    case Control::Pause:
+        setPaused(m_state == GameState::Running);
+        return;
+    case Control::Exit:
+    case Control::Menu:
+        emit backToMenuRequested();
+        return;
+    case Control::Retry:
+        restartGame();
+        return;
+    case Control::None:
+        return;
+    }
+}
+
+void GameWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    m_mousePosition = event->position();
+    m_hasMousePosition = true;
+    m_hoveredControl = controlAt(m_mousePosition.toPoint());
+    if (m_pressedControl != Control::None && m_pressedControl != m_hoveredControl) {
+        m_pressedControl = Control::None;
+    }
+    setCursor(m_hoveredControl == Control::None ? Qt::ArrowCursor : Qt::PointingHandCursor);
+    update();
+}
+
+void GameWidget::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+    resetInteraction();
+    update();
+}
+
+void GameWidget::focusOutEvent(QFocusEvent *event)
+{
+    m_pressedControl = Control::None;
+    m_hoveredControl = Control::None;
+    m_hasMousePosition = false;
+    update();
+    QWidget::focusOutEvent(event);
 }
 void GameWidget::checkGameResult()
 {
@@ -726,6 +647,7 @@ void GameWidget::checkGameResult()
     if (m_life <= 0) {
         m_gameFinished = true;
         m_gameWon = false;
+        m_state = GameState::Finished;
 
         if (m_timer) {
             m_timer->stop();
@@ -736,9 +658,12 @@ void GameWidget::checkGameResult()
     }
 
     // 胜利条件：所有敌人生成完，并且地图上没有敌人
-    if (m_spawnedCount >= m_totalEnemies && m_enemies.isEmpty()) {
+    if (!m_scheduler.hasPendingGeneration()
+        && m_scheduler.spawnedCount() == m_scheduler.totalEnemies()
+        && m_enemies.isEmpty()) {
         m_gameFinished = true;
         m_gameWon = true;
+        m_state = GameState::Finished;
 
         if (m_timer) {
             m_timer->stop();
@@ -759,6 +684,14 @@ void GameWidget::removeBulletsTargeting(Enemy* enemy)
 }
 void GameWidget::keyPressEvent(QKeyEvent *event)
 {
+    if ((event->key() == Qt::Key_P || event->key() == Qt::Key_Escape)
+        && !event->isAutoRepeat() && m_state != GameState::Finished) {
+        setPaused(m_state == GameState::Running);
+        return;
+    }
+    if (m_state != GameState::Running) {
+        return;
+    }
     if (event->key() == Qt::Key_1) {
         m_selectedTowerType = TowerType::Normal;
         update();
@@ -855,7 +788,7 @@ void GameWidget::applyBossAuraToAllEnemies()
 void GameWidget::removeBossAuraFromAllEnemies()
 {
     for (Enemy* enemy : m_enemies) {
-        if (enemy && !enemy->isDead() && !enemy->hasReachedEnd() && !enemy->isBoss()) {
+        if (!enemy->isBoss() && !enemy->isDead() && !enemy->hasReachedEnd()) {
             enemy->removeBossAura();
         }
     }
@@ -874,7 +807,7 @@ void GameWidget::drawStatusMessage(QPainter& painter)
         return;
     }
 
-    QRectF box(width() / 2 - 330, 80, 660, 56);
+    QRectF box(190, 80, 630, m_statusMessage.size() > 32 ? 76 : 56);
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(QColor(30, 30, 30, 180));
@@ -884,10 +817,11 @@ void GameWidget::drawStatusMessage(QPainter& painter)
 
     QFont font = painter.font();
     font.setBold(true);
-    font.setPointSize(18);
+    font.setPointSize(m_statusMessage.size() > 32 ? 12 : 18);
     painter.setFont(font);
 
-    painter.drawText(box, Qt::AlignCenter, m_statusMessage);
+    painter.drawText(box.adjusted(12, 4, -12, -4),
+                     Qt::AlignCenter | Qt::TextWordWrap, m_statusMessage);
 }
 void GameWidget::drawGameResultScreen(QPainter& painter)
 {
@@ -896,21 +830,21 @@ void GameWidget::drawGameResultScreen(QPainter& painter)
     if (!resultImage.isNull()) {
         // 直接把整张胜利/失败图铺满 1200×800
         painter.drawPixmap(rect(), resultImage);
-        return;
+    } else {
+        painter.fillRect(rect(), QColor(40, 80, 45));
+        painter.setPen(Qt::white);
+        QFont font = painter.font();
+        font.setBold(true);
+        font.setPointSize(36);
+        painter.setFont(font);
+        painter.drawText(rect(), Qt::AlignCenter,
+                         m_gameWon ? "游戏胜利！" : "游戏失败！");
     }
-
-    // 如果图片加载失败，显示备用文字
-    painter.fillRect(rect(), QColor(40, 80, 45));
-
-    painter.setPen(Qt::white);
-
-    QFont font = painter.font();
-    font.setBold(true);
-    font.setPointSize(36);
-    painter.setFont(font);
-
-    QString text = m_gameWon ? "游戏胜利！" : "游戏失败！";
-    painter.drawText(rect(), Qt::AlignCenter, text);
+    for (Control control : {Control::Retry, Control::Menu}) {
+        drawButtonFeedback(painter, controlRect(control),
+                           m_hoveredControl == control,
+                           m_pressedControl == control);
+    }
 }
 
 QRect GameWidget::resultRetryRect() const
@@ -940,25 +874,22 @@ void GameWidget::restartGame(bool startTimer)
     if (m_timer) {
         m_timer->stop();
     }
+    const bool wasPaused = m_state == GameState::Paused;
+    m_state = GameState::Stopped;
 
+    qDeleteAll(m_bullets);
+    m_bullets.clear();
     qDeleteAll(m_enemies);
     m_enemies.clear();
 
     qDeleteAll(m_towers);
     m_towers.clear();
 
-    qDeleteAll(m_bullets);
-    m_bullets.clear();
 
     m_selectedTower = nullptr;
 
     m_gold = 150;
     m_life = 10;
-    m_wave = 1;
-
-    m_spawnCounter = 0;
-    m_spawnedCount = 0;
-    m_totalEnemies = 0;
 
     m_gameFinished = false;
     m_gameWon = false;
@@ -969,27 +900,177 @@ void GameWidget::restartGame(bool startTimer)
     m_statusMessage.clear();
     m_statusMessageCounter = 0;
 
-    m_currentWaveIndex = 0;
-    m_spawnIndexInWave = 0;
     m_nextPathIndex = 0;
-
-    m_waveWaitCounter = 0;
-
-    m_burstRemaining = 0;
-    m_burstGapCounter = 0;
-
     m_selectedTowerType = TowerType::Normal;
+    resetInteraction();
+    m_previewVisible = false;
 
     initPaths();
-    initSpawnQueue();
+    const bool configured = m_scheduler.reset(QString(), &m_configurationWarning,
+                                               &m_configurationError);
+    if (wasPaused) emit pauseChanged(false);
+    if (!configured) {
+        showStatusMessage("进攻配置错误：" + m_configurationError, 600);
+    } else if (startTimer && !m_configurationWarning.isEmpty()) {
+        showStatusMessage(m_configurationWarning, 180);
+    }
 
-    if (startTimer && m_timer) {
+    if (startTimer && configured && m_timer) {
+        m_state = GameState::Running;
         m_timer->start(30);
     }
 
     setFocus();
     update();
 }
+
+QRect GameWidget::controlRect(Control control) const
+{
+    switch (control) {
+    case Control::Preview: return QRect(870, 20, 92, 32);
+    case Control::Pause: return QRect(970, 20, 92, 32);
+    case Control::Exit: return QRect(1070, 20, 92, 32);
+    case Control::Retry: return resultRetryRect();
+    case Control::Menu: return resultMenuRect();
+    case Control::None: return QRect();
+    }
+    return QRect();
+}
+
+QRect GameWidget::previewPanelRect() const
+{
+    return QRect(840, 70, 330, 145);
+}
+
+GameWidget::Control GameWidget::controlAt(const QPoint& pos) const
+{
+    if (m_gameFinished) {
+        if (resultRetryRect().contains(pos)) return Control::Retry;
+        if (resultMenuRect().contains(pos)) return Control::Menu;
+        return Control::None;
+    }
+    if (m_state == GameState::Stopped) {
+        return controlRect(Control::Exit).contains(pos) ? Control::Exit : Control::None;
+    }
+    for (Control control : {Control::Preview, Control::Pause, Control::Exit}) {
+        if (controlRect(control).contains(pos)) return control;
+    }
+    return Control::None;
+}
+
+void GameWidget::setPaused(bool paused)
+{
+    if (paused && m_state == GameState::Running) {
+        m_state = GameState::Paused;
+        if (m_timer) m_timer->stop();
+        emit pauseChanged(true);
+    } else if (!paused && m_state == GameState::Paused) {
+        m_state = GameState::Running;
+        if (m_timer) m_timer->start(30);
+        emit pauseChanged(false);
+    }
+    update();
+}
+
+void GameWidget::resetInteraction()
+{
+    m_hoveredControl = Control::None;
+    m_pressedControl = Control::None;
+    m_hasMousePosition = false;
+    setCursor(Qt::ArrowCursor);
+}
+
+void GameWidget::drawButtonFeedback(QPainter& painter, const QRect& button,
+                                    bool hovered, bool pressed, bool selected) const
+{
+    if (!hovered && !pressed && !selected) return;
+    painter.setPen(QPen(pressed ? QColor(255, 218, 100) : QColor(245, 225, 155),
+                        pressed ? 3 : 2));
+    painter.setBrush(pressed ? QColor(0, 0, 0, 78)
+                             : selected ? QColor(245, 204, 75, 65)
+                             : QColor(255, 255, 255, 32));
+    painter.drawRoundedRect(button.adjusted(2, 2, -2, -2), 13, 13);
+}
+
+void GameWidget::drawBuildPreview(QPainter& painter)
+{
+    if (!m_hasMousePosition || m_state != GameState::Running
+        || towerAt(m_mousePosition) != nullptr) return;
+    const BuildEvaluation candidate = evaluateBuild(m_mousePosition);
+    if (candidate.problem == BuildProblem::OutsideMap) return;
+    const bool valid = candidate.valid();
+    const int radius = Tower::radiusForType(m_selectedTowerType);
+    painter.setPen(QPen(valid ? QColor(80, 255, 145, 220)
+                              : QColor(255, 95, 90, 230), 3));
+    painter.setBrush(valid ? QColor(60, 225, 120, 100)
+                           : QColor(230, 65, 65, 105));
+    painter.drawEllipse(candidate.center, radius, radius);
+}
+
+void GameWidget::drawPauseOverlay(QPainter& painter)
+{
+    painter.fillRect(rect(), QColor(0, 0, 0, 125));
+    QFont font = painter.font();
+    font.setBold(true);
+    font.setPointSize(38);
+    painter.setFont(font);
+    painter.setPen(QColor(255, 239, 175));
+    painter.drawText(QRect(0, 300, width(), 90), Qt::AlignCenter, "已暂停");
+    font.setPointSize(16);
+    painter.setFont(font);
+    painter.drawText(QRect(0, 390, width(), 60), Qt::AlignCenter,
+                     "按 P / Esc 或点击继续；退出将放弃本局");
+}
+
+void GameWidget::drawEventPreview(QPainter& painter)
+{
+    if (!m_previewVisible) return;
+    const QRect panel = previewPanelRect();
+    painter.setPen(QPen(QColor(230, 215, 150), 2));
+    painter.setBrush(QColor(24, 45, 30, 235));
+    painter.drawRoundedRect(panel, 12, 12);
+    QFont font = painter.font();
+    font.setBold(true);
+    font.setPointSize(12);
+    painter.setFont(font);
+    painter.setPen(QColor(255, 240, 185));
+    painter.drawText(QRect(panel.x() + 14, panel.y() + 10, 300, 25),
+                     Qt::AlignLeft | Qt::AlignVCenter, "进攻事件预览");
+    font.setBold(false);
+    font.setPointSize(11);
+    painter.setFont(font);
+    const QVector<AttackScheduler::Event> next = m_scheduler.preview(3);
+    if (next.isEmpty()) {
+        const QString text = m_scheduler.waitingForClear()
+                                 ? QString("清场至 %1 名敌人后进入下一波")
+                                       .arg(m_scheduler.clearThreshold())
+                                 : "当前没有待执行事件";
+        painter.drawText(QRect(panel.x() + 14, panel.y() + 48, 300, 25), text);
+        return;
+    }
+    for (int i = 0; i < next.size(); ++i) {
+        const auto& event = next.at(i);
+        const qint64 remaining = qMax(qint64(0),
+                                      event.dueTick - m_scheduler.currentTick());
+        const QString enemyName = event.enemyType == "bug" ? "小怪"
+                                  : event.enemyType == "ddl" ? "DDL"
+                                  : event.enemyType == "virus" ? "变异体"
+                                  : event.enemyType == "boss" ? "Boss"
+                                  : event.enemyType;
+        const QString label = event.kind == AttackScheduler::Kind::WaveStart
+                                  ? QString("第%1波开始").arg(event.waveIndex + 1)
+                                  : QString("第%1波 %2%3")
+                                        .arg(event.waveIndex + 1)
+                                        .arg(event.kind == AttackScheduler::Kind::Reinforcement
+                                                 ? "增援 " : "出怪 ")
+                                        .arg(enemyName);
+        painter.drawText(QRect(panel.x() + 14, panel.y() + 43 + i * 29, 300, 25),
+                         QString("%1  ·  %2 秒")
+                             .arg(label)
+                             .arg(QString::number(remaining * 0.03, 'f', 1)));
+    }
+}
+
 void GameWidget::drawMapMarkers(QPainter& painter)
 {
     if (m_paths.isEmpty()) {

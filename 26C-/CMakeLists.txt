@@ -10,7 +10,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
-
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
@@ -18,6 +17,8 @@ set(PROJECT_SOURCES
         mainwindow.ui
         gamewidget.cpp
         gamewidget.h
+        attackscheduler.cpp
+        attackscheduler.h
         startmenuwidget.cpp
         startmenuwidget.h
         enemy.cpp
@@ -29,11 +30,7 @@ set(PROJECT_SOURCES
         resources.qrc
 )
 
-qt_add_executable(final
-    MANUAL_FINALIZATION
-    ${PROJECT_SOURCES}
-)
-
+qt_add_executable(final MANUAL_FINALIZATION ${PROJECT_SOURCES})
 target_link_libraries(final PRIVATE
     Qt6::Widgets
     Qt6::Multimedia
@@ -54,10 +51,13 @@ set_target_properties(final PROPERTIES
 )
 
 include(GNUInstallDirs)
+configure_file(attack_rhythm.example.json
+               ${CMAKE_CURRENT_BINARY_DIR}/attack_rhythm.example.json COPYONLY)
 install(TARGETS final
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+install(FILES attack_rhythm.example.json DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 qt_finalize_executable(final)

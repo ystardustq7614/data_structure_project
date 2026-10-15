@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     GameWidget* gameWidget = nullptr;
 
     connect(menuWidget, &StartMenuWidget::startGameClicked,
-            this, [this, stackWidget, menuWidget, gameWidget, playLoopMusic, allAttackEffect]() mutable {
+            this, [this, stackWidget, menuWidget, gameWidget, playLoopMusic, allAttackEffect, musicPlayer]() mutable {
                 if (gameWidget == nullptr) {
                     gameWidget = new GameWidget(stackWidget);
                     stackWidget->addWidget(gameWidget);
@@ -81,7 +81,13 @@ MainWindow::MainWindow(QWidget *parent)
                                 allAttackEffect->stop();
                                 allAttackEffect->play();
                             });
-                } else {
+                    connect(gameWidget, &GameWidget::pauseChanged,
+                            this, [musicPlayer](bool paused) {
+                                if (paused) musicPlayer->pause();
+                                else musicPlayer->play();
+                            });
+                }
+                else {
                     gameWidget->restartGame(true);
                 }
 

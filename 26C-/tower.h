@@ -42,6 +42,7 @@ public:
    bool isSelected() const;            // 是否被选中
     // 根据塔类型返回价格
     static int costForType(TowerType type);
+    static int radiusForType(TowerType type);
 
     // 根据塔类型返回名称
     static QString nameForType(TowerType type);

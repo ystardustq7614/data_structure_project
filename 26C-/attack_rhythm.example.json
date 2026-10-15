@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "waves": [
+    {"openingDelayFrames": 18, "spawnIntervalFrames": 10},
+    {},
+    {},
+    {},
+    {},
+    {}
+  ]
+}

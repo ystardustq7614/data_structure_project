@@ -158,6 +158,13 @@ int Tower::costForType(TowerType type)
 
 
 // 根据类型返回名字
+int Tower::radiusForType(TowerType type)
+{
+    if (type == TowerType::Fast) return 17;
+    if (type == TowerType::Heavy) return 22;
+    return 18;
+}
+
 QString Tower::nameForType(TowerType type)
 {
     if (type == TowerType::Normal) {

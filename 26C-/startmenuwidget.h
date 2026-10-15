@@ -6,6 +6,8 @@
 #include <QRect>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QFocusEvent>
+class QPainter;
 
 class StartMenuWidget : public QWidget
 {
@@ -20,7 +22,10 @@ signals:
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
@@ -35,6 +40,13 @@ private:
     QRect m_backButtonRect;     // 说明界面返回按钮范围
 
     bool isOnButton(const QPoint& pos) const;
+    enum class Button { None, Start, Help, Exit, Back };
+    Button buttonAt(const QPoint& pos) const;
+    QRect buttonRect(Button button) const;
+    void drawButtonFeedback(QPainter& painter, Button button) const;
+    void clearInteraction();
+    Button m_hoveredButton = Button::None;
+    Button m_pressedButton = Button::None;
 };
 
 #endif // STARTMENUWIDGET_H

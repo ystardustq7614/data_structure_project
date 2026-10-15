@@ -19,9 +19,9 @@ StartMenuWidget::StartMenuWidget(QWidget *parent)
 
     // 进入界面的三个点击区域
     // QRect(x, y, width, height)
-    m_startButtonRect = QRect(218, 345, 303, 83);   // 开始游戏: X[218, 520], Y[345, 427]
-    m_helpButtonRect  = QRect(239, 446, 261, 63);   // 游戏说明: X[239, 499], Y[446, 508]
-    m_exitButtonRect  = QRect(239, 526, 261, 63);   // 退出游戏: X[239, 499], Y[526, 588]
+    m_startButtonRect = QRect(218, 345, 303, 83);  // 开始游戏
+    m_helpButtonRect  = QRect(239, 446, 261, 63);  // 游戏说明
+    m_exitButtonRect  = QRect(239, 526, 261, 63);  // 退出游戏
 
     // 游戏说明页左上角返回区域
     m_backButtonRect  = QRect(230, 695, 280, 75);
@@ -52,6 +52,7 @@ void StartMenuWidget::paintEvent(QPaintEvent *event)
                              Qt::AlignCenter,
                              "游戏说明图片加载失败\n请检查 images/help_bg.png");
         }
+        drawButtonFeedback(painter, Button::Back);
         return;
     }
 
@@ -71,6 +72,10 @@ void StartMenuWidget::paintEvent(QPaintEvent *event)
         painter.drawText(rect(),
                          Qt::AlignCenter,
                          "进入界面图片加载失败\n请检查 images/menu_bg.jpg");
+    }
+
+    for (Button button : {Button::Start, Button::Help, Button::Exit}) {
+        drawButtonFeedback(painter, button);
     }
 
     // 后面如果点击范围不准，可以临时打开这几行红框调试
@@ -94,33 +99,33 @@ void StartMenuWidget::mousePressEvent(QMouseEvent *event)
     QPoint clickPos = event->pos();
 #endif
 
-    // 如果当前在游戏说明界面，只处理返回按钮
-    if (m_showHelp) {
-        if (m_backButtonRect.contains(clickPos)) {
-            m_showHelp = false;
-            update();
-        }
+    m_pressedButton = buttonAt(clickPos);
+    m_hoveredButton = m_pressedButton;
+    update();
+}
 
-        return;
-    }
-
-    // 开始游戏
-    if (m_startButtonRect.contains(clickPos)) {
+void StartMenuWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton) return;
+    const Button released = buttonAt(event->position().toPoint());
+    const Button pressed = m_pressedButton;
+    m_pressedButton = Button::None;
+    m_hoveredButton = released;
+    update();
+    if (pressed == Button::None || pressed != released) return;
+    if (released == Button::Start) {
+        clearInteraction();
         emit startGameClicked();
-        return;
-    }
-
-    // 游戏说明
-    if (m_helpButtonRect.contains(clickPos)) {
+    } else if (released == Button::Help) {
         m_showHelp = true;
+        clearInteraction();
         update();
-        return;
-    }
-
-    // 退出游戏
-    if (m_exitButtonRect.contains(clickPos)) {
+    } else if (released == Button::Back) {
+        m_showHelp = false;
+        clearInteraction();
+        update();
+    } else if (released == Button::Exit) {
         QApplication::quit();
-        return;
     }
 }
 
@@ -132,12 +137,31 @@ void StartMenuWidget::mouseMoveEvent(QMouseEvent *event)
     QPoint pos = event->pos();
 #endif
 
+    m_hoveredButton = buttonAt(pos);
+    if (m_pressedButton != Button::None && m_pressedButton != m_hoveredButton) {
+        m_pressedButton = Button::None;
+    }
     if (isOnButton(pos)) {
         setCursor(Qt::PointingHandCursor);
     }
     else {
         setCursor(Qt::ArrowCursor);
     }
+    update();
+}
+
+void StartMenuWidget::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event);
+    clearInteraction();
+    update();
+}
+
+void StartMenuWidget::focusOutEvent(QFocusEvent *event)
+{
+    clearInteraction();
+    update();
+    QWidget::focusOutEvent(event);
 }
 
 void StartMenuWidget::keyPressEvent(QKeyEvent *event)
@@ -145,6 +169,7 @@ void StartMenuWidget::keyPressEvent(QKeyEvent *event)
     // 在说明界面按 Esc 也可以返回主菜单
     if (m_showHelp && event->key() == Qt::Key_Escape) {
         m_showHelp = false;
+        clearInteraction();
         update();
         return;
     }
@@ -154,11 +179,44 @@ void StartMenuWidget::keyPressEvent(QKeyEvent *event)
 
 bool StartMenuWidget::isOnButton(const QPoint& pos) const
 {
-    if (m_showHelp) {
-        return m_backButtonRect.contains(pos);
-    }
+    return buttonAt(pos) != Button::None;
+}
 
-    return m_startButtonRect.contains(pos)
-           || m_helpButtonRect.contains(pos)
-           || m_exitButtonRect.contains(pos);
+StartMenuWidget::Button StartMenuWidget::buttonAt(const QPoint& pos) const
+{
+    if (m_showHelp) return m_backButtonRect.contains(pos) ? Button::Back : Button::None;
+    if (m_startButtonRect.contains(pos)) return Button::Start;
+    if (m_helpButtonRect.contains(pos)) return Button::Help;
+    if (m_exitButtonRect.contains(pos)) return Button::Exit;
+    return Button::None;
+}
+
+QRect StartMenuWidget::buttonRect(Button button) const
+{
+    switch (button) {
+    case Button::Start: return m_startButtonRect;
+    case Button::Help: return m_helpButtonRect;
+    case Button::Exit: return m_exitButtonRect;
+    case Button::Back: return m_backButtonRect;
+    case Button::None: return QRect();
+    }
+    return QRect();
+}
+
+void StartMenuWidget::drawButtonFeedback(QPainter& painter, Button button) const
+{
+    if (button != m_hoveredButton && button != m_pressedButton) return;
+    const bool pressed = button == m_pressedButton;
+    painter.setPen(QPen(pressed ? QColor(255, 218, 100) : QColor(245, 225, 155),
+                        pressed ? 3 : 2));
+    painter.setBrush(pressed ? QColor(0, 0, 0, 78)
+                             : QColor(255, 255, 255, 32));
+    painter.drawRoundedRect(buttonRect(button).adjusted(2, 2, -2, -2), 20, 20);
+}
+
+void StartMenuWidget::clearInteraction()
+{
+    m_hoveredButton = Button::None;
+    m_pressedButton = Button::None;
+    setCursor(Qt::ArrowCursor);
 }
