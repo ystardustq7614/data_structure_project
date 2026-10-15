@@ -4,7 +4,7 @@
 
 当前实施者：Codex contributor。
 
-> **当前协作状态**：根仓库当前位于 `feature-ui-pause-placement-events`，由 `main` 的 `e6a5350` 创建；本轮交付包含此前保留的产品修复和测试。按用户新要求，Codex 已完成按钮按下/悬停反馈、局内暂停/继续/退出、底部建塔越界修复与预览，以及最小堆波次/增援调度、外部节奏配置和事件预览。三个连接产品实现的 Qt 6 CTest 通过，完整产品重新编译并独立离屏启动；默认 90 次出怪与改造前产品真实轨迹完全一致。计划双审、改动与证据见第 20 节；用户已说明本轮无需人工验收。
+> **当前协作状态**：根仓库当前位于已推送的 `feature-ui-pause-placement-events`，由 `main` 的 `e6a5350` 创建；本轮交付包含此前保留的产品修复和测试。按用户新要求，Codex 已完成按钮按下/悬停反馈、局内暂停/继续/退出、底部建塔越界修复与预览，以及最小堆波次/增援调度、外部节奏配置和事件预览。三个连接产品实现的 Qt 6 CTest 通过，完整产品重新编译并独立离屏启动；默认 90 次出怪与改造前产品真实轨迹完全一致。计划双审、改动与证据见第 20 节；用户已说明本轮无需人工验收。
 
 ## 1. 目标与协作分工
 
@@ -22,7 +22,7 @@
 | 工作区根目录 | D:\data_structure_project |
 | 产品源码 | D:\data_structure_project\26C-，由根仓库直接追踪 |
 | 协作 Git 仓库 | 工作区根目录，`main` 已同步到 `e6a5350`；远端 `ystardustq7614/data_structure_project` |
-| Git 分支 | 当前为 `feature-ui-pause-placement-events`，从 `main` 的 `e6a5350` 创建 |
+| Git 分支 | 当前为 `feature-ui-pause-placement-events`，从 `main` 的 `e6a5350` 创建，跟踪 `origin/feature-ui-pause-placement-events` |
 | 项目 | “顶流争夺保卫战”，CMake target 为 `final`，声明版本 `0.1` |
 | 技术栈 | C++17、Qt Widgets、Qt Multimedia、CMake |
 | 游戏概况 | 固定 1200×800，30 ms 游戏计时器，6 波共 90 个敌人，3 种塔；支持升级、出售、结算和重试 |
@@ -861,7 +861,7 @@ ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure
 
 - 产品新目录配置和 13/13 完整编译链接成功；测试构建成功。CTest `attack_scheduler`、`enemy_product`、`gui_product` 共 3/3 通过。调度测试将 90 条事件、类型、波切换 tick 与改造前产品探针输出逐行对比，并覆盖清场门槛、`C+19` 切波、Boss 第 72 个、18 个增援、外部节奏覆盖/非法整份回退、缺失内置资源等。GUI 测试连接真实产品源码，覆盖按下反馈及拖出取消、帮助页、暂停/继续/退出、停表和复用重开、合法/道路/占用/金币不足建塔、底部 `y=799→750`、事件面板点击截获、胜负两种结果页及重试/返回。
 - `QT_QPA_PLATFORM=offscreen` 单独启动新 `final.exe`，3 秒后仍存活，主动结束，检查退出 0。测试生成菜单按下、道路/有效/金币不足建塔预览、事件面板、暂停、胜/败按钮按下截图于 `builds/Codex-Feature-20261015/`，已人工查看绘制布局。`git diff --check` 退出 0；Git 仅提示当前 LF 下次触碰可能转换为 CRLF。
-- 用户本轮已取消人工验收要求。离屏自动测试不证明真实桌面鼠标手感或音频听感；该范围没有宣称通过。临时构建与探针目录不作为源码交付。
+- 用户本轮已取消人工验收要求。离屏自动测试不证明真实桌面鼠标手感或音频听感；该范围没有宣称通过。临时构建与探针目录不作为源码交付。源码、测试和文档已提交并推送到 `origin/feature-ui-pause-placement-events`。
 
 ### 20.4 下一执行者
 
