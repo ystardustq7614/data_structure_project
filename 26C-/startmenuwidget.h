@@ -7,6 +7,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QFocusEvent>
+#include <array>
 class QPainter;
 
 class StartMenuWidget : public QWidget
@@ -31,6 +32,7 @@ protected:
 private:
     QPixmap m_menuBackground;   // 进入界面图片
     QPixmap m_helpBackground;   // 游戏说明图片
+    std::array<QPixmap, 4> m_enemyIcons; // 与战斗中的四种敌人共用资源
 
     bool m_showHelp = false;    // false 显示进入界面，true 显示说明界面
 
@@ -43,6 +45,7 @@ private:
     enum class Button { None, Start, Help, Exit, Back };
     Button buttonAt(const QPoint& pos) const;
     QRect buttonRect(Button button) const;
+    void drawEnemyRoster(QPainter& painter) const;
     void drawButtonFeedback(QPainter& painter, Button button) const;
     void clearInteraction();
     Button m_hoveredButton = Button::None;

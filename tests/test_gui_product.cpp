@@ -107,6 +107,8 @@ int main(int argc, char* argv[])
              ":/images/images/menu_bg.jpg", ":/images/images/help_bg.png",
              ":/images/images/game_map.jpg", ":/images/images/win.png",
              ":/images/images/lose.png", ":/config/attack_waves.json",
+             ":/images/images/enemy_bug.png", ":/images/images/enemy.ddl.gif",
+             ":/images/images/enemy_virus.png", ":/images/images/enemy_boss.png",
              ":/audio/music/menu.mp3",
              ":/audio/music/battle.mp3", ":/audio/music/final_wave.wav"}) {
         require(QResource(path).isValid(), "embedded product resource is missing");

@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QPen>
 #include <QFont>
+#include <QLinearGradient>
 #include <QtGlobal>
 
 StartMenuWidget::StartMenuWidget(QWidget *parent)
@@ -16,6 +17,12 @@ StartMenuWidget::StartMenuWidget(QWidget *parent)
     // 从 resources.qrc 里读取进入界面和说明界面图片
     m_menuBackground = QPixmap(":/images/images/menu_bg.jpg");
     m_helpBackground = QPixmap(":/images/images/help_bg.png");
+    m_enemyIcons = {
+        QPixmap(":/images/images/enemy_bug.png"),
+        QPixmap(":/images/images/enemy.ddl.gif"),
+        QPixmap(":/images/images/enemy_virus.png"),
+        QPixmap(":/images/images/enemy_boss.png")
+    };
 
     // 进入界面的三个点击区域
     // QRect(x, y, width, height)
@@ -33,6 +40,7 @@ void StartMenuWidget::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
 
     // 当前显示游戏说明界面
     if (m_showHelp) {
@@ -59,6 +67,7 @@ void StartMenuWidget::paintEvent(QPaintEvent *event)
     // 当前显示进入界面
     if (!m_menuBackground.isNull()) {
         painter.drawPixmap(rect(), m_menuBackground);
+        drawEnemyRoster(painter);
     }
     else {
         painter.fillRect(rect(), QColor(70, 110, 70));
@@ -201,6 +210,56 @@ QRect StartMenuWidget::buttonRect(Button button) const
     case Button::None: return QRect();
     }
     return QRect();
+}
+
+void StartMenuWidget::drawEnemyRoster(QPainter& painter) const
+{
+    // 原背景中的三张示意怪物已烘焙进图片，在纸张内覆盖它们并展示实际敌人资源。
+    const QRect panel(695, 212, 315, 190);
+    QLinearGradient paper(panel.topLeft(), panel.bottomLeft());
+    paper.setColorAt(0, QColor(250, 239, 207));
+    paper.setColorAt(1, QColor(226, 203, 151));
+    painter.setPen(QPen(QColor(143, 108, 55), 2));
+    painter.setBrush(paper);
+    painter.drawRoundedRect(panel, 12, 12);
+
+    QFont font = painter.font();
+    font.setBold(true);
+    font.setPixelSize(18);
+    painter.setFont(font);
+    painter.setPen(QColor(65, 74, 39));
+    painter.drawText(QRect(704, 217, 297, 31), Qt::AlignCenter, "敌方阵营");
+
+    const char* names[] = {"小怪", "DDL", "Virus", "Boss"};
+    for (int i = 0; i < static_cast<int>(m_enemyIcons.size()); ++i) {
+        const QRect card(703 + i * 76, 255, 70, 111);
+        painter.setPen(QPen(QColor(169, 136, 79), 1));
+        painter.setBrush(QColor(255, 249, 230));
+        painter.drawRoundedRect(card, 8, 8);
+
+        const QRect iconArea(card.left() + 4, card.top() + 4, 62, 68);
+        const QPixmap& icon = m_enemyIcons[i];
+        if (!icon.isNull()) {
+            const QPixmap thumbnail = icon.scaled(iconArea.size(), Qt::KeepAspectRatio,
+                                                  Qt::SmoothTransformation);
+            painter.drawPixmap(iconArea.center().x() - thumbnail.width() / 2,
+                               iconArea.center().y() - thumbnail.height() / 2,
+                               thumbnail);
+        }
+
+        font.setPixelSize(14);
+        painter.setFont(font);
+        painter.setPen(QColor(65, 74, 39));
+        painter.drawText(QRect(card.left(), 335, card.width(), 24),
+                         Qt::AlignCenter, QString::fromUtf8(names[i]));
+    }
+
+    font.setBold(false);
+    font.setPixelSize(12);
+    painter.setFont(font);
+    painter.setPen(QColor(86, 91, 56));
+    painter.drawText(QRect(703, 372, 299, 22), Qt::AlignCenter,
+                     "Virus 可在战斗中变异");
 }
 
 void StartMenuWidget::drawButtonFeedback(QPainter& painter, Button button) const

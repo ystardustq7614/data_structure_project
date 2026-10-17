@@ -1,10 +1,10 @@
 # 执行交接：塔防项目问题修复
 
-更新时间：2026-10-15（Asia/Shanghai）
+更新时间：2026-10-17（Asia/Shanghai）
 
 当前实施者：Codex contributor。
 
-> **当前协作状态**：根仓库当前位于已推送的 `feature-ui-pause-placement-events`，由 `main` 的 `e6a5350` 创建；本轮交付包含此前保留的产品修复和测试。按用户新要求，Codex 已完成按钮按下/悬停反馈、局内暂停/继续/退出、底部建塔越界修复与预览，以及最小堆波次/增援调度、外部节奏配置和事件预览。三个连接产品实现的 Qt 6 CTest 通过，完整产品重新编译并独立离屏启动；默认 90 次出怪与改造前产品真实轨迹完全一致。计划双审、改动与证据见第 20 节；用户已说明本轮无需人工验收。
+> **当前协作状态**：根仓库位于 `feature-ui-pause-placement-events`；此前的开发已推送。本轮根据用户反馈，将开始菜单内烘焙的三张示意怪物覆盖为游戏实际使用的四种敌人图片，改动已提交到本地分支，尚未推送。Qt 6 产品和 GUI 测试重新编译成功，CTest 3/3 通过，新菜单离屏截图已目视检查；详见第 21 节。
 
 ## 1. 目标与协作分工
 
@@ -26,9 +26,9 @@
 | 项目 | “顶流争夺保卫战”，CMake target 为 `final`，声明版本 `0.1` |
 | 技术栈 | C++17、Qt Widgets、Qt Multimedia、CMake |
 | 游戏概况 | 固定 1200×800，30 ms 游戏计时器，6 波共 90 个敌人，3 种塔；支持升级、出售、结算和重试 |
-| 当前产品内容 | 远端此前修复已纳入基线；本轮额外修改与验证见第 18 节 |
+| 当前产品内容 | 远端此前修复已纳入基线；最新菜单修改与验证见第 21 节 |
 | 协作与验证文件 | 根仓库统一追踪产品源码、报告、根文档、`tests/`、`.vscode/`；`26C-/.git` 为本地旧仓库历史 |
-| 构建目录 | 当前开发验证使用 `builds/Codex-Feature-Product-20261015/`、`builds/Codex-Feature-20261015/`；改造前轨迹探针在 `builds/LegacyTrace-20261015/`。第 19 节的 Qt6 安装验收目录和失败的 QtTest 隔离构建仍作为历史生成物保留 |
+| 构建目录 | 当前开发验证使用 `builds/Codex-Feature-Product-20261015/`、`builds/Codex-Feature-20261015/`；新菜单截图在 `builds/MenuRoster-20261017/`，均为本地生成物。改造前轨迹探针在 `builds/LegacyTrace-20261015/` |
 
 截图中的 Qt 6.10.2 和旧工作区的 Qt 6.10.3 属于历史参考。当前机器实际使用 MSYS2 MinGW64 Qt 6.11.2、g++ 16.2.0、CMake 4.3.1 和 Ninja 1.13.0；配置命令显式指定 `C:/msys64/mingw64` 前缀与编译器，避免误用 Conda Qt 5。
 
@@ -866,3 +866,10 @@ ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure
 ### 20.4 下一执行者
 
 - 下一执行者：Codex contributor 负责处理用户后续反馈；协作审查者可从根仓库检查本轮产品、测试、配置及文档的实际 diff。当前四项开发已落地，若提出新的交互手感或外部节奏数值，优先修改 `attack_rhythm.json` 并按 `ATTACK_RHYTHM.md` 复核。不覆盖之前修复。
+
+## 21. 2026-10-17 开始菜单敌人图片对齐
+
+- 用户指出菜单“小怪、精英、Boss”插画与战斗中的敌人图片不一致。核对 `menu_bg.jpg` 后确认这三张插画已烘焙在背景里；实际关卡使用 `bug`、`ddl`、`virus`、`boss` 四类敌人，Virus 还可能变异。
+- `26C-/startmenuwidget.h/.cpp` 在原背景的敌方区域内绘制纸张面板，直接使用与 `Enemy::setupByType` 相同的四个 qrc 图片路径，显示“小怪、DDL、Virus、Boss”和变异说明。保留原菜单背景边框、我方阵营和按钮，未改敌人逻辑与平衡。`tests/test_gui_product.cpp` 补充四个资源存在性检查。
+- 工作目录 `D:\data_structure_project`。PATH 前置 `C:\msys64\mingw64\bin` 与 `C:\msys64\usr\bin`；复用已有 Qt 6.11.2 / g++ 16.2.0 / CMake 4.3.1 / Ninja 1.13.0 构建目录。产品与 GUI 测试增量编译链接成功，`ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure` 为 3/3 通过。直接运行 `builds/Codex-Feature-20261015/test_gui_product.exe builds/MenuRoster-20261017` 退出 0，并在 `builds/MenuRoster-20261017/menu.png` 保存新截图；已目视确认四个实际资源、标题、按钮及下方塔卡片布局。此前目录的 `builds/Codex-Feature-20261015/menu.png` 是旧截图，不用作本轮证据。
+- 当前变更已提交到本地 `feature-ui-pause-placement-events`，尚未推送。离屏截图与自动测试不替代真实桌面输入观感；用户本轮未要求手动桌面验收。下一执行者为 Codex contributor，按用户反馈调整菜单呈现；构建和截图目录不作为源码交付。
