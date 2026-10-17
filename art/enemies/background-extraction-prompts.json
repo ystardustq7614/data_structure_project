@@ -1,0 +1,32 @@
+{
+  "tool": "image_gen.imagegen",
+  "transparent_background": true,
+  "purpose": "Background extraction derivatives of user-provided artwork; original JPEGs remain unchanged.",
+  "prompts": [
+    {
+      "type": "bug",
+      "source": "source/bug.jpg",
+      "prompt": "Use case: background-extraction. Edit the supplied image only. This is user-provided artwork for a game sprite: preserve the exact existing character identity, face, expression, pose, clothing, colors, linework, texture, camera view, and existing crop. Remove only the external background and ground/cast shadow to a genuinely transparent alpha background. Preserve internal dark/white regions that belong to the subject and preserve fine edge details. Do not redesign, redraw, change style, invent anatomy, extend the image, add a body, add text, outline, glow, border, or a replacement background. Return one clean cutout with the entire supplied subject contained and a small transparent margin. Keep the entire orange cartoon creature, diaper, both hands, both feet, teeth and tongue exactly as in the reference. Remove the beige room and floor only."
+    },
+    {
+      "type": "ddl",
+      "source": "source/ddl.jpg",
+      "prompt": "Use case: background-extraction. Edit the supplied image only. This is user-provided artwork for a game sprite: preserve the exact existing character identity, face, expression, pose, clothing, colors, linework, texture, camera view, and existing crop. Remove only the external background and ground/cast shadow to a genuinely transparent alpha background. Preserve internal dark/white regions that belong to the subject and preserve fine edge details. Do not redesign, redraw, change style, invent anatomy, extend the image, add a body, add text, outline, glow, border, or a replacement background. Return one clean cutout with the entire supplied subject contained and a small transparent margin. Keep the yellow quadruped dragon, both large ears/wings, green eyes, blue tongue, every visible paw and its tail. Remove the off-white studio background and ground shadow only."
+    },
+    {
+      "type": "virus",
+      "source": "source/virus.jpg",
+      "prompt": "Use case: background-extraction. Edit the supplied image only. This is user-provided artwork for a game sprite: preserve the exact existing character identity, face, expression, pose, clothing, colors, linework, texture, camera view, and existing crop. Remove only the external background and ground/cast shadow to a genuinely transparent alpha background. Preserve internal dark/white regions that belong to the subject and preserve fine edge details. Do not redesign, redraw, change style, invent anatomy, extend the image, add a body, add text, outline, glow, border, or a replacement background. Return one clean cutout with the entire supplied subject contained and a small transparent margin. Keep the exact blue-haired anime maid portrait, headband, hair tufts, blue eyes, ears and partial clothing. Maintain the existing portrait crop at the bottom and sides. Remove the pale gray outside background only. Do not invent lower body or restore hair that is already cropped by the original frame."
+    },
+    {
+      "type": "mutant",
+      "source": "source/mutant.jpg",
+      "prompt": "Use case: background-extraction. Edit the supplied image only. This is user-provided artwork for a game sprite: preserve the exact existing character identity, face, expression, pose, clothing, colors, linework, texture, camera view, and existing crop. Remove only the external background and ground/cast shadow to a genuinely transparent alpha background. Preserve internal dark/white regions that belong to the subject and preserve fine edge details. Do not redesign, redraw, change style, invent anatomy, extend the image, add a body, add text, outline, glow, border, or a replacement background. Return one clean cutout with the entire supplied subject contained and a small transparent margin. Keep the exact yellow creature portrait with its crossed arms and entire visible sheathed sword including handle, handguard and sheath. Preserve the original lower-edge crop. Remove the off-white outside background only."
+    },
+    {
+      "type": "boss",
+      "source": "source/boss.jpg",
+      "prompt": "Use case: background-extraction. Edit the supplied image only. This is user-provided artwork for a game sprite: preserve the exact existing character identity, face, expression, pose, clothing, colors, linework, texture, camera view, and existing crop. Remove only the external background and ground/cast shadow to a genuinely transparent alpha background. Preserve internal dark/white regions that belong to the subject and preserve fine edge details. Do not redesign, redraw, change style, invent anatomy, extend the image, add a body, add text, outline, glow, border, or a replacement background. Return one clean cutout with the entire supplied subject contained and a small transparent margin. Keep the exact pink-haired anime portrait, pale blue horn/ear shapes, every yellow star, knife, fork, hands, clothes and visible ornaments. Preserve all original dark outlines and eyes. Remove only the solid black outside background and the black gaps connected to that outside background. Maintain the existing image crop; do not add a lower body."
+    }
+  ]
+}

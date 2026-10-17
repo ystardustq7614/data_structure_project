@@ -1,17 +1,17 @@
-# 执行交接：Git同步交付 codex/port-visuals
+# 执行交接：旧素材清理与main版本交付
 
-更新时间：2026-10-17（Asia/Shanghai），第33轮。Git同步准备与核对：Codex；第30轮实施者：Gemini，第32轮独立复核：Codex。
+更新时间：2026-10-17（Asia/Shanghai），第36轮。用户明确授权清理已被替换的旧素材，并将这一版更新至主分支。
 
-> **当前结论**：第32轮独立复核通过后，按用户Git同步要求整理现有集成分支 `codex/port-visuals`。交付树共74份文件，59份源码/测试/配置与已验收版本一致，干净导出的产品与测试双CMake入口配置均通过。补齐最新根文档，新增根 `.gitignore`，29份旧构建缓存及旧测试exe仅停止跟踪、本机保留。同步目标为团队远端同名分支，具体提交和推送结果以Git分支HEAD及远端引用为准；根工作区原分支、索引和已有修改保留。详情见第33节，测试修复证据仍见第32节及 `REVIEW_PREVIEW_CLOSURE_20261017.md`。
+> **当前结论**：已删除5张旧敌人图和4张旧背景图；原菜单中的三座塔头像按既有裁图像素无损保存到 `images/towers/`，不再依赖旧菜单。用户提供的5份原始JPG保留。新目录产品22/22、测试45/45编译通过，CTest5/5（5.73秒），13张实装截图与第35轮RGB完全一致，18条qrc路径检查通过。本轮作为用户授权的main交付版本，采用正常快进更新、保留提交历史；具体提交及远端同步结果以 `main` / `origin/main` 和本机 `builds/Codex-Main-Cleanup-20261017/publication.json` 为准。详见第36节。
 
 ## 1. 目标与协作分工
 
-本轮按用户要求准备Git同步。沿用已审查的 `codex/port-visuals` 集成分支，保留协作者视觉提交历史，补齐实际新增源码、测试和最新文档，排除本机生成物；同步至团队远端同名分支，后续主分支合并由用户安排。
+本轮用户要求清理已被替换的原素材，并将当前完整版本更新至主分支。保留第34/35轮已确认的新敌人和四页背景，不修改核心规则或操作界面；正常快进合入main，保留已有历史。
 
-- **本轮已完成**：最新远端核对、交付暂存清单、生成物排除、干净索引导出与双入口配置、原工作区保护检查；不改产品规则。
-- **下一执行者**：由用户确定后续协作或PR合并安排；Gemini无需继续修补第30轮两项问题。同步分支为 `codex/port-visuals`。
-- **同步范围**：已复核的源码重构、视觉迁移、真实测试、协作文档与忽略规则；构建缓存、独立测试exe和本机审查快照留在本地。
-- 第9～32节为历史记录及实施者回传；当前Git交付状态与边界见第33节。
+- **本轮已完成**：九份旧素材清理、三张独立塔PNG及来源记录、资源/绘制/测试引用更新、产品和测试编译、全套回归及13图保护核对。
+- **下一执行者**：用户使用main版本验收或提出后续调整；Codex按反馈继续，Gemini无需重做本轮清理。
+- **当前交付**：包含第34/35轮美术适配和本轮清理的完整版本；提交精确标识及main同步状态以Git引用为准。主分支工作树为 `builds/Codex-Main-Cleanup-20261017/main/`，原根工作区分支与既有工作内容保留。
+- 第9～35节为历史记录；当前任务与验证以第36节为准，旧节中的“原图保留”“未提交”仅描述当时状态。
 
 ## 2. 工作区与当前状态
 
@@ -19,18 +19,18 @@
 | --- | --- |
 | 工作区根目录 | `D:\VS Project\data_structrue_project` |
 | 产品源码 | `D:\VS Project\data_structrue_project\26C-`，由根仓库直接追踪 |
-| 协作 Git 仓库 | 根仓库统一管理；本轮已fetch，`origin/main` 为 `e6a5350`、`origin/feature-ui-pause-placement-events` 为 `a715821`，没有新提交；远端 `ystardustq7614/data_structure_project` |
-| Git 分支 | 根工作区仍为 `codex/review-ui-pause-placement-events` / `6b22b94`；Git同步使用根仓库的集成worktree `codex/port-visuals`，保留基点 `a715821`，本轮提交以该分支HEAD为准 |
+| 协作 Git 仓库 | 根仓库统一管理；本轮用户授权完整版本交付main，更新采用快进方式；实际提交和远端同步以Git引用为准 |
+| Git 分支 | 原根工作区保留 `codex/review-ui-pause-placement-events` / `6b22b94` 及工作内容；交付整理在codex/port-visuals工作树完成，main在独立工作树更新 |
 | 项目 | “顶流争夺保卫战”，CMake target 为 `final`，声明版本 `0.1` |
 | 技术栈 | C++17、Qt Widgets、Qt Multimedia、CMake |
 | 游戏概况 | 固定 1200×800，30 ms 游戏计时器，6 波共 90 个敌人，3 种塔；支持升级、出售、结算和重试 |
-| 当前产品内容 | 两个 worktree 产品/测试/配置一致，59份入库源文件与已验收内容一致；最新根文档同步至集成分支；构建缓存和旧exe退出版本跟踪但不删本机文件 |
+| 当前产品内容 | 五张战斗敌人PNG、四张新页面背景、三张独立塔PNG；旧九图已移除，用户原JPG保留；来源记录在art/enemies、art/screens、art/towers |
 | 协作与验证文件 | 根仓库统一追踪产品源码、报告、根文档、`tests/`、`.vscode/`；`26C-/.git` 为本地旧仓库历史 |
-| 构建目录 | 第32轮 `builds/Codex-Review-Preview-Closure-20261017/build-tests/` 为已验收快照；第33轮 `builds/Codex-Git-Sync-20261017/` 保存索引导出、产品/tests全新配置和同步检查；所有本机生成物保留 |
+| 构建目录 | 本轮 `builds/Codex-Main-Cleanup-20261017/build-product/`、`build-tests/` 绑定根当前源码；22/22、45/45成功，screenshots/含13张与清理前一致的效果图；旧目录保留 |
 
 已实测 Qt 6.10.3 / MinGW 13.1.0 / CMake 3.30.5 / Ninja 1.12.1，本轮干净配置仍使用此kit。PATH 中另有 MSYS2 编译器和 Anaconda qmake，后续必须显式使用匹配的 `C:/Qt` kit。第19/20节的 MSYS2 Qt 6.11.2 是另一台机器的历史环境，不能当作本机安装事实。
 
-第22节保留重构构建证据，第27/29节保留旧审查证据，第30节是修复回传，第31节为准备，第32节为独立复核；本轮Git交付见第33节。
+第22节保留重构构建证据，第27/29节保留旧审查证据，第30～32节为修复与复核，第33节为前次Git交付，第34/35节为美术替换；本轮清理及main交付见第36节。
 
 ## 3. 已有资料与使用方式
 
@@ -38,9 +38,12 @@
 - [变更记录](<D:/VS Project/data_structrue_project/CHANGELOG.md>)：记录实际变更与验证进展。
 - [工作原则](<D:/VS Project/data_structrue_project/AGENTS.md>)：规定范围保护、产品约束、证据要求和交接流程。
 - [最新独立复核](<D:/VS Project/data_structrue_project/REVIEW_PREVIEW_CLOSURE_20261017.md>)：第30轮修复的实际diff、回归、反向对照及文档恢复证明范围。
+- [敌人素材说明](<D:/VS Project/data_structrue_project/art/enemies/README.md>)：本轮五图对应、原始文件、透明衍生图及显示规则；处理提示词单独保存。
+- [四页角色替换说明](<D:/VS Project/data_structrue_project/art/screens/README.md>)：新旧背景对应、角色替换范围、固定塔图源及内置imagegen提示词/哈希记录。
+- [独立塔贴图说明](<D:/VS Project/data_structrue_project/art/towers/README.md>)：原菜单裁图坐标、无损PNG与Git来源记录。
 - 当前交接文档补充原报告的勘误和执行要求。原报告中的修复片段是建议，未经编译或运行验证，不能直接作为已验证补丁使用。
 
-第4、5节为初始问题，第9～32节为历史实施、审查及回传；当前Git状态以顶部摘要、第8节和第33节为准，修复验收事实见第32节。历史路径、工具版本和测试状态不能直接沿用。迁移方案与第29轮复核报告已标记闭环状态，不能据旧结论重做迁移或继续修补已解决问题。
+第4、5节为初始问题，第9～35节为历史实施、审查及回传；当前任务以顶部摘要、第8节和第36节为准。九份旧敌人/背景路径仅用于历史追溯，当前运行资源已不再引用；塔头像现为三张独立PNG。
 
 ## 4. 原报告勘误
 
@@ -137,18 +140,18 @@ Qt 官方机制参考：[QDialog::exec()](https://doc.qt.io/qt-6/qdialog.html#ex
 
 Codex 依据实际 diff 反馈文件位置、触发条件和修正要求；Gemini 修改后回传新证据。`CHANGELOG.md` 按实际变更及时记录，并分别说明静态检查、数值检查、构建和 GUI 验收状态。后续用户新增指令优先于本文件的建议。
 
-## 8. 当前交接状态（2026-10-17 Git同步交付）
+## 8. 当前交接状态（2026-10-17 旧素材清理与main交付）
 
 - `core`：GameSession 唯一持有战局和实体；GameMap 管几何；AttackPlanLoader 读取明确路径并产生有效 AttackPlan；AttackScheduler 仅管理运行事件；Enemy/Tower/Bullet 仅依赖 QtCore。
 - `ui`：GameWidget 负责 Qt 输入和唯一 QTimer，GameRenderer 负责包含实体的全部战斗绘制和图片缓存，GameUiState 保存交互与字幕；MainWindow 改具名函数；菜单发 quitRequested。
 - 已建塔与预览共用 Renderer 私有绘制，预览读取当前塔型并使用0.72透明度；菜单缓存四类敌人图标。真实源码与稳定架构文档主描述一致。
-- Git同步使用 `codex/port-visuals`，父基点a715821包含协作者两次视觉提交；根工作区仍在6b22b94，原未提交修改和根索引保留。交付完整包含core/ui/cmake新增、旧路径删除、测试和最新根文档。
-- Qt 6.10.3匹配kit的新目录测试配置/编译43/43通过，CTest 5/5（3.33秒），菜单源码几何15点通过；未以旧二进制替代当前验收。
+- 第33轮基线为75914dc；本轮用户已授权将后续美术及清理版本更新到main。原根工作区仍在6b22b94，原有修改、删除和索引保留；独立main工作树用于主分支交付，精确发布状态以Git引用为准。
 - 第30轮新增逐塔原画/透明度断言经四项故意回归确认有效；恢复副本并重建GUI退出0。交接无残留替换符/私用区乱码，第9～23节与独立正常快照完全一致；其余历史全文证明边界见第32节。
-- 九张正常截图与既有同环境远端参考逐张RGB像素一致；集成71份及根产品/测试/配置60份文件哈希保持，副本逐字节恢复。未重新构建final，未重复旧产品烟雾验收。
-- 本轮补齐集成分支的最新14份根文档及 `.gitignore`；仅从索引移除29份旧缓存与旧测试exe，磁盘文件保留。提交树74份文件，不含构建/可执行生成物或内层旧Git。
-- 索引导出中的59份产品/测试/配置与已验收版一致（文本归一化LF/CRLF、媒体按字节核对），产品和测试双入口新目录配置通过；暂存diff空白检查通过，不重复编译和运行未变的产品测试。
-- 两项旧问题不再待修补；远端交付分支的后续PR/主分支合并由用户安排。真实桌面字体/交互、完整玩法、全部等级画面和音频听感仍未人工验收。
+- 第34/35轮五种敌人与四页背景保持；本轮移除五张旧敌人图和四张旧背景图，保留用户新原JPG。三座塔按原裁图像素独立存储，运行时不再加载旧菜单。
+- 仅产品qrc、Renderer塔图源及GUI测试引用有新增修改；core、GameWidget、按钮布局、地图、音频、新敌人与背景素材保持。
+- 新目录产品22/22、测试45/45完成，CTest5/5（5.73秒）；18条qrc路径唯一且存在，九份旧图无运行引用，用户原JPG与当前PNG哈希匹配记录。
+- 13张GUI截图与第35轮RGB逐像素一致，清理与资源拆分没有改变验证场景。原有离屏缺字仍可见，真实桌面与听感未人工验收。
+- main发布授权来自本轮用户明确指令；Git流程与保护材料见第36节，实际提交/远端确认以Git引用和publication.json为准。
 
 ## 9. Gemini 首轮回传（历史记录，复核结果见第 10 节）
 
@@ -1417,3 +1420,136 @@ git -C builds/Codex-Port-Visuals-20261017/source diff --cached --check
 ```
 
 本交接随同步提交发布，具体提交哈希以 `codex/port-visuals` 的HEAD为准，是否已同步以远端 `refs/heads/codex/port-visuals` 与本地HEAD对照为准。目标为团队远端同名集成分支，主分支合并与发布仍由用户后续安排。下一执行者：用户安排PR审阅或后续需求，Gemini无需重做已闭环修复。
+
+## 34. 用户五张敌人素材接入与等比适配（2026-10-17）
+
+用户明确“美术素材由用户提供，Codex负责适配”，并指定五图依次对应普通怪、快攻怪、病毒、变异体、Boss。本轮由Codex实际实施，不生成新角色设定，不修改核心规则或平衡参数。
+
+### 实际改动与约定
+
+- `art/enemies/source/{bug,ddl,virus,mutant,boss}.jpg` 原样保存五份用户输入，`manifest.json` 记录原始SHA256与对应顺序；原JPG哈希核对保持，不编入Qt资源。
+- 通过内置 `image_gen.imagegen` 做背景提取，`transparent_background=true`，五份透明衍生PNG复制入 `26C-/images/enemies/`。提示词保存在 `art/enemies/background-extraction-prompts.json`，用途、来源及对应见README。衍生图不宣称与原前景像素逐字节一致；保留头像/半身构图，不另加动画。
+- 新增 `ui/enemyartwork.h/.cpp`，只在加载阶段裁去透明留白并平滑等比缩放；菜单和Renderer各自缓存。普通形态使用65×65包围框，Boss使用75×75，战斗贴图底边对齐原占位底边，血条位置和宽度规则保持。避免竖图被再次拉伸成正方形。
+- `ui/gamerenderer.cpp` 映射五张新PNG，真实病毒变异后读取第四张mutant；`ui/startmenuwidget.cpp` 同步四类基础敌人卡片，并在原卡片内居中。按钮布局与其他UI保持。
+- `resources.qrc` 仅嵌新五PNG，删除旧DDL重复资源别名；旧五图本机文件不删除。当前15条qrc URL唯一且文件均存在。共享CMake清单纳入加载模块，game_core依旧仅依赖QtCore。
+- `tests/test_gui_product.cpp` 连接真实资源/Renderer/Enemy，校验五图透明背景、对应图像、长宽比例、底边对齐、血条位置，包含真实病毒两次推进后的变异状态；菜单四图按真实主体校验。新增五形态战斗示例截图 `enemy_lineup.png`，原有交互与塔预览断言保留。
+- 外层维护AGENTS/ARCHITECTURE、第四五章报告的当前资源及绘制说明，更新HANDOFF/CHANGELOG。原工作区已有迁移、删除和旧构建状态保留；本轮代码、素材、测试与文档选择性同步至75914dc集成worktree，未提交/推送。
+
+### 验证证据
+
+工作目录：`D:/VS Project/data_structrue_project`。匹配kit：Qt6.10.3 / MinGW13.1.0 / CMake3.30.5 / Ninja1.12.1；TEMP/TMP及截图均位于本轮隔离目录。
+
+| 范围 | 实际结果 |
+| --- | --- |
+| 产品新目录配置/编译 | 22/22完成，退出0，生成final.exe |
+| 测试新目录配置/编译 | 45/45完成，退出0 |
+| CTest | 5/5通过，5.17秒；GUI含新增五形态映射/几何/血条检查 |
+| 菜单几何 | 15点通过，退出0 |
+| 素材与qrc | 五份原始JPG哈希保持，五PNG均有真实Alpha，15条URL唯一且存在 |
+| 改动保护 | 原有60份源文件中只有预定的5份既有实现/配置/测试变化，core、地图/音频/塔及旧素材未改 |
+| GUI截图 | 正常导出10图，已查看菜单和五形态战斗效果；7张旧场景RGB完全一致，菜单两图仅敌人图标区域变化 |
+| 产品smoke | 离屏存活3秒，随后harness终止；不是正常自行退出证明 |
+| 恢复后收尾复核 | 两工作区25份本轮文件逐字节一致，集成其他文件未变、双索引为空；素材/运行图哈希及顺序正确，文档严格UTF-8、第9～33节历史保持，双工作区有效源码diff检查退出0；未发现新增功能问题 |
+
+实际执行的核心命令：
+
+```powershell
+& './builds/Codex-Enemy-Artwork-20261017/verify_build.ps1' -Kind product
+& './builds/Codex-Enemy-Artwork-20261017/verify_build.ps1' -Kind tests
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Enemy-Artwork-20261017/check_assets.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B tests/test_menu_geometry.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Enemy-Artwork-20261017/smoke_product.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Enemy-Artwork-20261017/final_review.py
+git diff --check -- . ':(exclude)builds/**'
+```
+
+本轮材料：`builds/Codex-Enemy-Artwork-20261017/`，包含输入哈希、透明图检查、两套配置/编译日志、CTest日志、smoke记录、截图、相对75914dc的实际diff及同步检查。`run_game.ps1` 是本机匹配kit的桌面预览入口，不写入共享构建配置。
+
+限制：截图来自离屏平台，原有文字缺字仍可见；真实桌面字体/交互和音频听感未人工验收。图片风格和头像构图遵循用户指定输入，主体衍生图的美术细节可继续根据用户反馈调整。本轮不代表整个UI改版完成。
+
+下一执行者：用户查看实装效果并确定下一处UI调整，Codex据反馈继续适配；本轮未提交或推送，Git后续同步按用户新指示执行。
+
+## 35. 菜单、说明与胜负页仅替换敌人角色（2026-10-17）
+
+用户明确“根据替换，延续当前游戏风格”“核心操作界面不用改，只需要替换角色”。本轮使用内置 `image_gen.imagegen` 编辑四张现有背景，以第34轮已确认的普通怪、快攻怪、Boss作为原三只敌人角色的替换身份，保留森林主题与主要布局。
+
+### 实际改动与范围保护
+
+- 新增 `26C-/images/screens/{menu,help,lose,win}.png`，均为1536×1024、不透明PNG；生成文件原样复制，未用脚本编辑图像像素。原四背景文件及五张战斗敌人贴图保持原字节。原场景有三个示意位置，未为病毒/变异体增改页面布局。
+- `resources.qrc`、`ui/startmenuwidget.cpp`、`ui/gamerenderer.cpp` 接入新路径。原menu_bg.jpg仍嵌入qrc，仅供Renderer按原坐标裁取三座塔；战斗塔和建造预览不从新菜单取图。当前16条资源URL唯一，文件均存在。
+- 菜单/说明/结算按钮坐标、反馈和输入实现保持；`core`、GameWidget、地图、音频和战斗素材未变。没有调整数值、规则或玩法。
+- GUI测试保持真实资源与产品连接，更新资源路径，新增说明/胜负背景的精确加载比对以及help/lose/win正常态截图；既有敌人映射、变异、塔原画/预览及生命周期断言保留。
+- 素材说明、提示词（含一次说明标题恢复）和SHA256保存在 `art/screens/`。维护AGENTS/ARCHITECTURE、第四五章报告、HANDOFF/CHANGELOG，共16份本轮文件选择性同步至集成worktree；原有工作树修改、删除及旧构建状态保持，未提交/推送。
+
+生成器第一版说明图顺带纠正了原第四节标题，本轮按“只换角色”范围将其恢复为原文；旧说明文案本身不在本轮修订范围。衍生美术不宣称非角色区域与原图逐像素一致，已目视核对主要文字、按钮位置与四页实装。
+
+### 验证与问题定位
+
+工作目录为工作区根；Qt6.10.3 / MinGW13.1.0 / CMake3.30.5 / Ninja1.12.1，与第34轮匹配kit一致，构建和临时材料均位于 `builds/Codex-Screen-Characters-20261017/`。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 产品与测试编译 | 新目录初次22/22、45/45通过；最终选图与参考画布修正后分别完成3步、5步更新编译，退出0 |
+| 最终CTest | 5/5通过，5.57秒；GUI再运行导图退出0 |
+| 菜单源码几何 | 15点通过；菜单/结算矩形与任务前源码一致 |
+| 原图与资源 | 四份原背景哈希保持，四新PNG哈希匹配清单，16条qrc路径唯一且存在 |
+| 战斗保护 | 6张战斗场景（五形态、事件、无金币、暂停、建造和道路预览）与第34轮RGB逐像素一致 |
+| 实装检查 | 13张截图完整；已查看menu/help/lose/win四页 |
+| 工作树与文档 | 两工作区16份本轮文件一致，集成其他文件未变，双索引为空；有效源码diff检查退出0，严格UTF-8及第9～34节历史保护检查通过 |
+
+首次GUI逐像素断言失败，原因是参考画布ARGB32与实际QWidget RGB32采用不同缩放舍入路径。临时 `probe_canvas.cpp` 链接真实Qt与已构建qrc，测得ARGB32有819677像素差、最大RGB差2；RGB32和ARGB32_Premultiplied均为0差。测试参考改用RGB32，仍保持精确比较，没有放宽阈值或修改产品绘制。首次失败日志保存在 `ctest-initial.log`，定位输出见 `probe-canvas.log`；最终结果以build-tests/ctest.log为准。
+
+实际命令：
+
+```powershell
+& './builds/Codex-Screen-Characters-20261017/verify_build.ps1' -Kind product
+& './builds/Codex-Screen-Characters-20261017/verify_build.ps1' -Kind tests
+& './builds/Codex-Screen-Characters-20261017/probe_canvas.ps1'
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B tests/test_menu_geometry.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Screen-Characters-20261017/verify_assets.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Screen-Characters-20261017/finish_review.py
+```
+
+同目录保存初始哈希、完整任务diff、同步保护结果、两套配置/编译日志、13张截图及本机 `run_game.ps1`。验证来自离屏平台；原有动态字体缺字仍存在，真实桌面字体、手动交互和音频听感未人工验收。
+
+下一执行者：用户查看四页实装并给出具体反馈，Codex按需继续适配；Gemini无需重做。本轮和第34轮美术改动均未提交/推送，后续Git操作按用户明确指示执行。
+
+## 36. 清理旧素材并交付主分支（2026-10-17）
+
+用户明确要求“原先被替换掉的素材清理掉，然后这一版覆盖到主分支”，本轮已获得清理、提交及main远端同步授权。fetch后确认origin/main为e6a5350、集成基线为75914dc，main是集成分支祖先，可正常快进，不需要强推或改写历史。
+
+### 实际改动
+
+- 删除 `26C-/images/` 下9份已替换素材：`enemy_bug.png`、`enemy.ddl.gif`、`enemy_virus.png`、`enemy_mutant.png`、`enemy_boss.png`、`menu_bg.jpg`、`help_bg.png`、`win.png`、`lose.png`。原文件合计10718837字节；来源仍在Git历史，未改写历史清除对象。
+- 旧菜单仍供塔原画使用，因此先以Qt按原三个矩形无损提取 `images/towers/{normal,fast,heavy}.png`，合计44109字节。逐图验证保存后解码像素与原裁图一致，再删除旧菜单；来源提交、SHA256及矩形见 `art/towers/manifest.json`。
+- qrc由旧菜单资源改为三张独立塔PNG，当前18条URL；Renderer直接缓存独立贴图，GUI原画/预览回归同步读取相应资源。没有修改核心规则、输入、按钮坐标、地图、音频或已确认的新素材。
+- 更新素材说明、背景历史来源元数据、架构、项目报告和交接。`art/enemies/source/` 的5份用户原JPG保持，四张新背景与五张战斗PNG保持；历史记录中的旧路径不作为当前文件存在性声明。
+
+### 验证证据
+
+工作目录：`D:/VS Project/data_structrue_project`；Qt6.10.3 / MinGW13.1.0 / CMake3.30.5 / Ninja1.12.1。
+
+| 检查 | 结果 |
+| --- | --- |
+| 产品新目录编译 | 22/22，退出0 |
+| 测试新目录编译 | 45/45，退出0 |
+| CTest | 5/5通过，5.73秒；GUI再次导图退出0 |
+| 塔图提取 | 三图保存后与原裁图解码像素完全一致 |
+| 完整场景保护 | 13张截图与第35轮RGB逐像素一致，含菜单/说明/胜负、塔预览、暂停及战斗场景 |
+| 素材与资源 | 九旧图缺失、18条qrc路径唯一且存在，用户原JPG及现用PNG哈希匹配记录；运行源码无旧图引用 |
+| 代码范围 | 除资源清单、Renderer塔图源及GUI引用外，其他已有产品/测试文件哈希保持 |
+
+```powershell
+& './builds/Codex-Main-Cleanup-20261017/extract_towers.ps1'
+& './builds/Codex-Main-Cleanup-20261017/verify_build.ps1' -Kind product
+& './builds/Codex-Main-Cleanup-20261017/verify_build.ps1' -Kind tests
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Main-Cleanup-20261017/verify_cleanup.py
+```
+
+同目录保存清理前工作树哈希、九份删除清单、Qt提取源码/日志、两套构建日志、CTest日志、13图对照、提交实际diff及Git同步保护材料。工具验证仍为离屏；真实桌面与音频听感未人工验收，原动态字体缺字不在本轮修复范围。
+
+### Git交付与保护
+
+第34/35轮已确认的美术改动与本轮清理一起纳入协作仓库提交，在codex/port-visuals工作树整理；main在 `builds/Codex-Main-Cleanup-20261017/main/` 独立工作树按正常快进接收完整版本。原根工作区不切分支、不重置索引、不清理旧构建目录，原有未提交内容与非本轮文件保持；生成物不进入交付树。第9～35节保留历史正文，当前状态以本节和顶部为准。
+
+本交接随版本提交。提交精确哈希、main与origin/main是否一致，以Git引用及本机 `publication.json` 中的实际远端确认结果为准；不以文档中的计划替代push成功证据。下一执行者：用户使用main版本继续验收或安排后续需求，Gemini无需重复清理或重新替换素材。

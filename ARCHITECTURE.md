@@ -16,6 +16,7 @@
 | `AttackScheduler` | 稳定最小堆、逻辑 tick、出怪/增援/切波 | 不读文件，不创建实体 |
 | `Enemy / Tower / Bullet` | 单个实体的移动、技能、攻击冷却、伤害等规则 | 只依赖 QtCore，不绘制、不加载贴图 |
 | `GameRenderer` | 图片缓存、地图与全部实体/HUD/覆盖层绘制、共享命中布局 | 只读 Session/UiState，不推进模型 |
+| `EnemyArtwork` | 菜单与战斗共用的透明留白裁切及等比缩放 | 仅展示层加载时使用，不修改实体或源素材 |
 | `GameUiState` | 悬停、按压、鼠标、候选塔型、预览、字幕 | 不复制战局状态或选中实体 |
 | `UiDrawing` | 菜单和战斗共用的按钮反馈绘制 | 不抽象业务输入或页面生命周期 |
 
@@ -48,8 +49,10 @@ flowchart LR
 - 删除敌人前先删关联子弹；清空时先删全部子弹，再删敌人和塔，最后清选中引用。出售塔清选中，不销毁已经发射的子弹。
 - Tower::updateAttack() 只返回借用目标，Session 创建子弹并复制当时伤害。展示不在实体上保存 selected 副本。
 - Session::State 唯一定义 Stopped、Running、Paused、Won、Lost；QTimer 是否活动由 GameWidget::syncTimer() 同步，不以 QWidget 隐藏代替暂停。
-- Renderer 构造时缓存图像，跨帧不缓存实体地址。实体通过类型、生命及强化/变异只读查询提供绘制信息。普通塔、速射塔、重炮塔头像在 Renderer 构造期从 `menu_bg.jpg` 裁剪一次并缓存；`drawTower()` 与 `drawBuildPreview()` 共用私有 `drawTowerVisual()` 绘制角色原画、类型色边框与等级徽章，预览以 0.72 透明度叠加有效性色圈。核心 `Tower` 维持 QtCore-only，无任何绘图或 QPixmap 依赖。
+- Renderer 构造时缓存图像，跨帧不缓存实体地址。实体通过类型、生命及强化/变异只读查询提供绘制信息。普通塔、速射塔、重炮塔头像从 `images/towers/{normal,fast,heavy}.png` 加载一次并缓存；这些PNG无损保存原菜单中的裁图像素，不再依赖旧菜单文件。`drawTower()` 与 `drawBuildPreview()` 共用私有 `drawTowerVisual()` 绘制角色原画、类型色边框与等级徽章，预览以 0.72 透明度叠加有效性色圈。核心 `Tower` 维持 QtCore-only，无任何绘图或 QPixmap 依赖。
 - StartMenuWidget 缓存四类真实敌人（bug/ddl/virus/boss）图标，在进入菜单背景上叠加纸张渐变卡片展示，保留原有按钮反馈与 `quitRequested` 信号。
+- 五种敌人形态统一读取 `images/enemies/{bug,ddl,virus,mutant,boss}.png`。`EnemyArtwork::load()` 在加载时去除透明留白并等比缩放，由Renderer/菜单各自缓存；战斗使用原65×65或Boss 75×75包围框，图像底边与原占位底边对齐，不再强制拉伸到正方形。血条宽度与位置仍依原占位计算；病毒真实变异后切换mutant图。用户原始JPG与处理记录保存在 `art/enemies/`，不编入运行资源。
+- 菜单、说明和胜负页读取 `images/screens/{menu,help,win,lose}.png`，在原1200×800页面布局中显示。背景中的旧敌人按原三角色位置替换为已确认的普通怪、快攻怪和Boss，按钮命中区域与战斗界面保持。九份旧敌人/背景文件已清理，来源可从Git历史追溯；处理与提取记录位于 `art/screens/`、`art/towers/`，用户提供的敌人原始JPG继续保存在 `art/enemies/source/`。
 
 ## 单帧与输入契约
 
@@ -69,7 +72,7 @@ flowchart LR
 
 内置计划失败不允许开局。外部路径为空或不存在使用默认值；存在但无效则整份回退并返回 warning，不部分覆盖。外部只修改七项节奏字段，不改敌人名单；每次开始或重试重新加载，不热更新。示例文件需复制或更名才启用。约束常量集中在 `attackplan.h`，Loader 与运行时溢出保护共享边界。
 
-保留六波 90 敌人及原始轨迹，默认清场阈值 6，切波时间为首次满足条件 tick 加等待参数减一。所有价格、伤害、速度、奖励、生命映射取整规则保持。实体基础参数和视觉参数分开；DDL GIF 仍是 QPixmap 静态图，最终波仍重播 battle.mp3 并播放一次 final_wave.wav。
+保留六波 90 敌人及原始轨迹，默认清场阈值 6，切波时间为首次满足条件 tick 加等待参数减一。所有价格、伤害、速度、奖励、生命映射取整规则保持。实体基础参数和视觉参数分开；五种敌人PNG均为静态贴图，最终波仍重播 battle.mp3 并播放一次 final_wave.wav。
 
 完整资源只由产品或 GUI 测试可执行文件嵌入；核心静态库不打包资源。调度/战局测试使用仅配置 qrc，备用绘制测试刻意不带图片。qrc 路径和资源文件目录不随代码分层搬迁。
 

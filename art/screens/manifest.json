@@ -1,0 +1,62 @@
+{
+  "tool": "image_gen.imagegen",
+  "request": "Replace only the old enemy mascots using the supplied enemy identities; retain current forest theme and controls.",
+  "slots": [
+    "ordinary (bug)",
+    "fast (ddl)",
+    "boss"
+  ],
+  "originals_retained": false,
+  "assets": [
+    {
+      "name": "menu",
+      "original": "26C-/images/menu_bg.jpg",
+      "original_sha256": "e9dd712db14684cd3effcba9543bad3f6eface8e62b543bdfa00e9aea90c7343",
+      "runtime": "26C-/images/screens/menu.png",
+      "runtime_sha256": "7fc384c8e765a14883ba7d6e5b62f4873ac10379001cf3f501912d200f7c9828",
+      "size": [
+        1536,
+        1024
+      ],
+      "original_git_blob": "42fb2e6ba6c1509403f01e5ed713b553dae3e01f"
+    },
+    {
+      "name": "help",
+      "original": "26C-/images/help_bg.png",
+      "original_sha256": "a17e002e8c5f94624f480edc7d515833dc1056639a66d9ed2a5890cfe8346d43",
+      "runtime": "26C-/images/screens/help.png",
+      "runtime_sha256": "9f037448c00ce25e1ecdeeb24e07c31b95f0807f5e4be9e24215aa28bdce99e3",
+      "size": [
+        1536,
+        1024
+      ],
+      "original_git_blob": "cceb28977855340201cb7cb0574f907cf39dad7f"
+    },
+    {
+      "name": "lose",
+      "original": "26C-/images/lose.png",
+      "original_sha256": "ad4300c3ea530b06c3a93afe4f5b32e8154e128a3ba82a19e7a15076d0e36a72",
+      "runtime": "26C-/images/screens/lose.png",
+      "runtime_sha256": "d72a87ccf40c4f70986dad0616e005f4f1748738fafde388f783e068ca5c90db",
+      "size": [
+        1536,
+        1024
+      ],
+      "original_git_blob": "24a253991d996bfe9079b3b4fbff2dc7845e1ba4"
+    },
+    {
+      "name": "win",
+      "original": "26C-/images/win.png",
+      "original_sha256": "448df5cf2192a5e9c1100a00f1f63ffd3db1bb05395195cfa3af33857f6bcdcb",
+      "runtime": "26C-/images/screens/win.png",
+      "runtime_sha256": "e7c98e270442cd0c86c74fee2f39441fc705c88bf9cdbe7dc7c89bca6c6f72ae",
+      "size": [
+        1536,
+        1024
+      ],
+      "original_git_blob": "729010e4e985f0e4eaa180a069794b634257d893"
+    }
+  ],
+  "originals_commit": "75914dc8dca1ce22ee3aa2cae1f796c2f130d429",
+  "original_storage": "Git history; original paths identify the historical edit inputs."
+}

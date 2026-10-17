@@ -22,6 +22,8 @@ add_library(game_core STATIC
 target_include_directories(game_core PUBLIC ${GAME_SOURCE_ROOT})
 target_link_libraries(game_core PUBLIC Qt6::Core)
 set(GAME_RENDER_SOURCES
+    ${GAME_SOURCE_ROOT}/ui/enemyartwork.cpp
+    ${GAME_SOURCE_ROOT}/ui/enemyartwork.h
     ${GAME_SOURCE_ROOT}/ui/gamerenderer.cpp
     ${GAME_SOURCE_ROOT}/ui/gamerenderer.h
     ${GAME_SOURCE_ROOT}/ui/gameuistate.h

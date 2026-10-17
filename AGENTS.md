@@ -15,10 +15,11 @@
 | `26C-/core/enemy.*`、`tower.*`、`bullet.*` | 仅依赖 QtCore 的实体规则；塔返回目标，战局创建子弹 |
 | `26C-/ui/mainwindow.*` | 页面切换、游戏实例与音频组织 |
 | `26C-/ui/gamewidget.*`、`gameuistate.h` | Qt 输入、唯一计时器、界面交互和字幕状态 |
-| `26C-/ui/gamerenderer.*`、`buttonfeedback.*` | 只读绘制、图片缓存及绘制与命中共用布局 |
+| `26C-/ui/gamerenderer.*`、`enemyartwork.*`、`buttonfeedback.*` | 只读绘制、透明贴图适配、图片缓存及绘制与命中共用布局 |
 | `26C-/ui/startmenuwidget.*` | 菜单/说明绘制与输入，发出开始和退出请求 |
 | `26C-/cmake/GameTargets.cmake` | 产品与独立测试共用的 QtCore 核心目标及展示源码清单 |
 | `26C-/resources.qrc`、`images/`、`music/` | 嵌入资源及媒体文件；后两者位于 `26C-/` 下 |
+| `art/enemies/`、`art/screens/`、`art/towers/` | 敌人原始素材、类型对应及敌人/背景处理与塔贴图提取记录，不编入运行资源 |
 | `tests/` | 外层验证源码和脚本 |
 | `.vscode/settings.json` | 外层工作区配置 |
 | `HANDOFF.md` | 最新任务状态、证据、待办与下一执行者 |

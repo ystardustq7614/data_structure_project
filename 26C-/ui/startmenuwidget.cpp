@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include "buttonfeedback.h"
+#include "enemyartwork.h"
 #include <QPen>
 #include <QFont>
 #include <QLinearGradient>
@@ -15,13 +16,13 @@ StartMenuWidget::StartMenuWidget(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
 
     // 从 resources.qrc 里读取进入界面和说明界面图片
-    m_menuBackground = QPixmap(":/images/images/menu_bg.jpg");
-    m_helpBackground = QPixmap(":/images/images/help_bg.png");
+    m_menuBackground = QPixmap(":/images/images/screens/menu.png");
+    m_helpBackground = QPixmap(":/images/images/screens/help.png");
     m_enemyIcons = {
-        QPixmap(":/images/images/enemy_bug.png"),
-        QPixmap(":/images/images/enemy.ddl.gif"),
-        QPixmap(":/images/images/enemy_virus.png"),
-        QPixmap(":/images/images/enemy_boss.png")
+        EnemyArtwork::load(":/images/images/enemies/bug.png", QSize(62, 68)),
+        EnemyArtwork::load(":/images/images/enemies/ddl.png", QSize(62, 68)),
+        EnemyArtwork::load(":/images/images/enemies/virus.png", QSize(62, 68)),
+        EnemyArtwork::load(":/images/images/enemies/boss.png", QSize(62, 68))
     };
 
     // 进入界面的三个点击区域
@@ -58,7 +59,7 @@ void StartMenuWidget::paintEvent(QPaintEvent *event)
 
             painter.drawText(rect(),
                              Qt::AlignCenter,
-                             "游戏说明图片加载失败\n请检查 images/help_bg.png");
+                             "游戏说明图片加载失败\n请检查 images/screens/help.png");
         }
         drawButtonFeedback(painter, Button::Back);
         return;
@@ -80,7 +81,7 @@ void StartMenuWidget::paintEvent(QPaintEvent *event)
 
         painter.drawText(rect(),
                          Qt::AlignCenter,
-                         "进入界面图片加载失败\n请检查 images/menu_bg.jpg");
+                         "进入界面图片加载失败\n请检查 images/screens/menu.png");
     }
 
     for (Button button : {Button::Start, Button::Help, Button::Exit}) {
@@ -253,11 +254,8 @@ void StartMenuWidget::drawEnemyRoster(QPainter& painter) const
         const QRect iconArea(card.left() + 4, card.top() + 4, 62, 68);
         const QPixmap& icon = m_enemyIcons[i];
         if (!icon.isNull()) {
-            const QPixmap thumbnail = icon.scaled(iconArea.size(), Qt::KeepAspectRatio,
-                                                  Qt::SmoothTransformation);
-            painter.drawPixmap(iconArea.center().x() - thumbnail.width() / 2,
-                               iconArea.center().y() - thumbnail.height() / 2,
-                               thumbnail);
+            painter.drawPixmap(iconArea.x() + (iconArea.width() - icon.width()) / 2,
+                               iconArea.y() + (iconArea.height() - icon.height()) / 2, icon);
         }
 
         font.setPixelSize(14);

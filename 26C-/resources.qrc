@@ -4,18 +4,18 @@
     </qresource>
     <qresource prefix="/images">
         <file>images/game_map.jpg</file>
-        <file>images/help_bg.png</file>
-        <file>images/menu_bg.jpg</file>
-        <file>images/enemy_boss.png</file>
-        <file>images/enemy_bug.png</file>
-        <file>images/enemy_mutant.png</file>
-        <file>images/enemy_virus.png</file>
-        <file>images/enemy.ddl.gif</file>
-        <file>images/win.png</file>
-        <file>images/lose.png</file>
-    </qresource>
-    <qresource prefix="/">
-        <file>images/enemy.ddl.gif</file>
+        <file>images/towers/normal.png</file>
+        <file>images/towers/fast.png</file>
+        <file>images/towers/heavy.png</file>
+        <file>images/screens/menu.png</file>
+        <file>images/screens/help.png</file>
+        <file>images/enemies/bug.png</file>
+        <file>images/enemies/ddl.png</file>
+        <file>images/enemies/virus.png</file>
+        <file>images/enemies/mutant.png</file>
+        <file>images/enemies/boss.png</file>
+        <file>images/screens/win.png</file>
+        <file>images/screens/lose.png</file>
     </qresource>
     <qresource prefix="/audio">
         <file>music/battle.mp3</file>

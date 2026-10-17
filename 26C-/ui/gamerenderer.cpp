@@ -1,5 +1,6 @@
 #include "gamerenderer.h"
 #include "buttonfeedback.h"
+#include "enemyartwork.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QFont>
@@ -8,28 +9,26 @@
 
 GameRenderer::GameRenderer()
     : m_gameMapBackground(":/images/images/game_map.jpg"),
-      m_winImage(":/images/images/win.png"), m_loseImage(":/images/images/lose.png")
+      m_winImage(":/images/images/screens/win.png"), m_loseImage(":/images/images/screens/lose.png")
 {
     // 每种贴图只加载一次；模型构造、变异和强化均不触碰 GUI 资源。
     const QHash<QString, QString> paths{
-        {"bug", ":/images/images/enemy_bug.png"},
-        {"ddl", ":/images/images/enemy.ddl.gif"},
-        {"virus", ":/images/images/enemy_virus.png"},
-        {"boss", ":/images/images/enemy_boss.png"},
-        {"mutant", ":/images/images/enemy_mutant.png"}};
+        {"bug", ":/images/images/enemies/bug.png"},
+        {"ddl", ":/images/images/enemies/ddl.png"},
+        {"virus", ":/images/images/enemies/virus.png"},
+        {"boss", ":/images/images/enemies/boss.png"},
+        {"mutant", ":/images/images/enemies/mutant.png"}};
     for (auto it = paths.cbegin(); it != paths.cend(); ++it) {
         const int size = it.key() == "boss" ? 75 : 65;
-        m_enemyIcons.insert(it.key(), QPixmap(it.value()).scaled(
-            size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        m_enemyIcons.insert(it.key(), EnemyArtwork::load(it.value(), QSize(size, size)));
     }
 
-    // 三座塔的原画只存在于菜单背景的「我方阵营」卡片中。
-    const QPixmap menu(":/images/images/menu_bg.jpg");
-    if (!menu.isNull()) {
-        m_towerPortraits[0] = menu.copy(QRect(708, 452, 82, 84));   // 普通塔：海星
-        m_towerPortraits[1] = menu.copy(QRect(809, 451, 95, 87));   // 速射塔：黄色炮台
-        m_towerPortraits[2] = menu.copy(QRect(914, 448, 89, 91));   // 重炮塔：红色炮台
-    }
+    // 独立塔贴图保留原菜单裁图像素，不再依赖已替换的整张菜单。
+    m_towerPortraits = {
+        QPixmap(":/images/images/towers/normal.png"),
+        QPixmap(":/images/images/towers/fast.png"),
+        QPixmap(":/images/images/towers/heavy.png")
+    };
 }
 
 const QPixmap& GameRenderer::towerPortrait(TowerType type) const
@@ -541,8 +540,9 @@ void GameRenderer::drawEnemy(QPainter& painter, const Enemy& enemy) const
     const QPixmap icon = m_enemyIcons.value(iconKey);
     const QPointF pos = enemy.position();
     if (!icon.isNull()) {
-        painter.drawPixmap(static_cast<int>(pos.x() - half), static_cast<int>(pos.y() - half),
-                           size, size, icon);
+        // 按原图比例绘制，底边与原有敌人占位对齐，不再把竖图拉伸成正方形。
+        painter.drawPixmap(static_cast<int>(pos.x()) - icon.width() / 2,
+                           static_cast<int>(pos.y()) + half + 1 - icon.height(), icon);
     } else {
         painter.setPen(Qt::NoPen);
         painter.setBrush(color);
