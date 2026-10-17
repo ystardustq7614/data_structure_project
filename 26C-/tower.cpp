@@ -3,7 +3,27 @@
 #include "bullet.h"
 #include <QPen>
 #include <QFont>
+#include <QPainterPath>
 #include <QtMath>
+#include <array>
+
+namespace {
+
+const QPixmap& towerPortrait(TowerType type)
+{
+    // 三座塔的原画只存在于菜单背景的「我方阵营」卡片中。
+    static const QPixmap menu(":/images/images/menu_bg.jpg");
+    static const std::array<QPixmap, 3> portraits = {
+        menu.copy(QRect(708, 452, 82, 84)),   // 普通塔：海星
+        menu.copy(QRect(809, 451, 95, 87)),   // 速射塔：黄色炮台
+        menu.copy(QRect(914, 448, 89, 91))    // 重炮塔：红色炮台
+    };
+    if (type == TowerType::Fast) return portraits[1];
+    if (type == TowerType::Heavy) return portraits[2];
+    return portraits[0];
+}
+
+} // namespace
 // Tower 构造函数
 Tower::Tower(const QPointF& pos, TowerType type)
     : m_pos(pos),m_type(type)        // 把传进来的位置保存到 m_pos
@@ -90,34 +110,52 @@ bool Tower::isEnemyInRange(Enemy* enemy) const
 // 绘制防御塔
 void Tower::draw(QPainter& painter) const
 {
-    int half = m_size / 2;   // 塔大小的一半，用来让塔居中绘制
+    painter.save();
+    const int half = m_size / 2;
     // 如果塔被选中，显示攻击范围
     if (m_selected) {
         painter.setPen(QPen(QColor(255, 200, 60, 150), 2, Qt::DashLine));
         painter.setBrush(Qt::NoBrush);
         painter.drawEllipse(m_pos, m_range, m_range);
     }
-    painter.setPen(QPen(QColor(40, 60, 90), 3));
-    painter.setBrush(m_bodyColor);
-    painter.drawEllipse(m_pos, half, half);
+    const QRectF body(m_pos.x() - half, m_pos.y() - half, m_size, m_size);
+    const QPixmap& portrait = towerPortrait(m_type);
+    if (!portrait.isNull()) {
+        painter.save();
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+        QPainterPath clip;
+        clip.addRoundedRect(body, 6, 6);
+        painter.setClipPath(clip);
+        painter.drawPixmap(body, portrait, QRectF(portrait.rect()));
+        painter.restore();
 
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(240, 245, 255));
-    painter.drawEllipse(m_pos, 9, 9);
+        painter.setPen(QPen(m_bodyColor, 2));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRoundedRect(body, 6, 6);
 
-    painter.setPen(QColor(20, 40, 80));
-
-    QFont font = painter.font();
-    font.setBold(true);
-    font.setPointSize(12);
-    painter.setFont(font);
-QString text = m_text + QString::number(m_level);
-    painter.drawText(QRectF(m_pos.x() - half,
-                            m_pos.y() - half,
-                            m_size,
-                            m_size),
-                     Qt::AlignCenter,
-                    text);
+        const QRectF badge(body.left() - 1, body.bottom() - 15, 16, 16);
+        painter.setPen(QPen(QColor(40, 60, 90), 1));
+        painter.setBrush(QColor(255, 248, 225));
+        painter.drawEllipse(badge);
+        QFont font = painter.font();
+        font.setBold(true);
+        font.setPixelSize(11);
+        painter.setFont(font);
+        painter.setPen(QColor(20, 40, 80));
+        painter.drawText(badge, Qt::AlignCenter, QString::number(m_level));
+    } else {
+        // 菜单背景缺失时仍可辨识塔型和等级。
+        painter.setPen(QPen(QColor(40, 60, 90), 3));
+        painter.setBrush(m_bodyColor);
+        painter.drawEllipse(m_pos, half, half);
+        QFont font = painter.font();
+        font.setBold(true);
+        font.setPointSize(12);
+        painter.setFont(font);
+        painter.setPen(QColor(20, 40, 80));
+        painter.drawText(body, Qt::AlignCenter, m_text + QString::number(m_level));
+    }
+    painter.restore();
 }
 
 

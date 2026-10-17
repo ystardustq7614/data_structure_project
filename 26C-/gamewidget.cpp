@@ -1000,10 +1000,14 @@ void GameWidget::drawBuildPreview(QPainter& painter)
     if (candidate.problem == BuildProblem::OutsideMap) return;
     const bool valid = candidate.valid();
     const int radius = Tower::radiusForType(m_selectedTowerType);
+    Tower preview(candidate.center, m_selectedTowerType);
+    painter.save();
+    painter.setOpacity(0.72);
+    preview.draw(painter);
+    painter.restore();
     painter.setPen(QPen(valid ? QColor(80, 255, 145, 220)
                               : QColor(255, 95, 90, 230), 3));
-    painter.setBrush(valid ? QColor(60, 225, 120, 100)
-                           : QColor(230, 65, 65, 105));
+    painter.setBrush(Qt::NoBrush);
     painter.drawEllipse(candidate.center, radius, radius);
 }
 
