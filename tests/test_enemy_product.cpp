@@ -1,6 +1,6 @@
-#include "../26C-/enemy.h"
+#include "../26C-/core/enemy.h"
 
-#include <QGuiApplication>
+#include <QCoreApplication>
 #include <QPointF>
 #include <QString>
 #include <QVector>
@@ -104,6 +104,10 @@ void checkMutation(bool enhanced, bool aura, int expectedMaxHp, int expectedArmo
         enemy.applyBossAura();
     }
     enemy.update(); // A two-point path triggers Virus mutation before movement.
+    require(enemy.type() == "mutant" && enemy.hasMutated()
+                && enemy.lateGameEnhanced() == enhanced
+                && enemy.mutatedAfterLateEnhancement() == enhanced,
+            "mutation state does not preserve enhancement order");
     require(enemy.damageToLife() == 2 && enemy.reward() == 60,
             "Virus did not mutate");
     require(enemy.maxHp() == expectedMaxHp && enemy.armor() == expectedArmor,
@@ -136,8 +140,7 @@ void checkMutation(bool enhanced, bool aura, int expectedMaxHp, int expectedArmo
 
 int main(int argc, char* argv[])
 {
-    qputenv("QT_QPA_PLATFORM", "offscreen");
-    QGuiApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
     checkRoundTrips("bug", false, 40);
     checkRoundTrips("bug", true, 52);

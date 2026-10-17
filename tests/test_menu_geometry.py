@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 
-source_path = Path(__file__).resolve().parents[1] / "26C-" / "startmenuwidget.cpp"
+source_path = Path(__file__).resolve().parents[1] / "26C-" / "ui" / "startmenuwidget.cpp"
 source = source_path.read_text(encoding="utf-8")
 
 

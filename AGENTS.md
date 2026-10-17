@@ -9,15 +9,21 @@
 | 位置 | 用途 |
 | --- | --- |
 | `26C-/` | 产品源码，由工作区根目录的协作 Git 仓库直接追踪 |
-| `26C-/mainwindow.*` | 页面切换、游戏实例与音频组织 |
-| `26C-/gamewidget.*` | 游戏循环、波次、建塔、结算与交互 |
-| `26C-/enemy.*`、`tower.*`、`bullet.*` | 敌人、防御塔与子弹逻辑 |
-| `26C-/startmenuwidget.*` | 菜单绘制及点击/悬停判定 |
+| `26C-/core/gamesession.*` | 单局状态、实体所有权、单步模拟、建造交易和结算 |
+| `26C-/core/gamemap.*` | 固定地图、路径、网格吸附与几何规则 |
+| `26C-/core/attackplan*`、`attackscheduler.*` | 已验证配置、显式路径加载与纯运行态事件调度 |
+| `26C-/core/enemy.*`、`tower.*`、`bullet.*` | 仅依赖 QtCore 的实体规则；塔返回目标，战局创建子弹 |
+| `26C-/ui/mainwindow.*` | 页面切换、游戏实例与音频组织 |
+| `26C-/ui/gamewidget.*`、`gameuistate.h` | Qt 输入、唯一计时器、界面交互和字幕状态 |
+| `26C-/ui/gamerenderer.*`、`buttonfeedback.*` | 只读绘制、图片缓存及绘制与命中共用布局 |
+| `26C-/ui/startmenuwidget.*` | 菜单/说明绘制与输入，发出开始和退出请求 |
+| `26C-/cmake/GameTargets.cmake` | 产品与独立测试共用的 QtCore 核心目标及展示源码清单 |
 | `26C-/resources.qrc`、`images/`、`music/` | 嵌入资源及媒体文件；后两者位于 `26C-/` 下 |
 | `tests/` | 外层验证源码和脚本 |
 | `.vscode/settings.json` | 外层工作区配置 |
 | `HANDOFF.md` | 最新任务状态、证据、待办与下一执行者 |
 | `CHANGELOG.md` | 实际变更及对应验证状态 |
+| `ARCHITECTURE.md` | 稳定模块职责、依赖方向、所有权和单帧顺序 |
 | `ISSUE_VERIFICATION_REPORT.md` | 初始问题报告，含已指出的错误，作为历史资料阅读 |
 
 协作 Git 仓库位于工作区根目录，统一追踪 `26C-/` 产品源码、根目录文档、`tests/` 和 `.vscode/`，远端为 `ystardustq7614/data_structure_project`。`26C-/.git` 仅保留本地旧仓库历史，旧远端不是团队推送入口；新克隆不依赖该内层仓库。交付时从根目录检查 `git diff`，并完整列出源码、文档和配置变化。
@@ -52,6 +58,8 @@
 
 ### 生命周期与对象
 
+- 核心层不得反向依赖界面、QtGui、Widgets 或音频；配置加载显式接收路径，战局和调度器不隐式读取程序目录。
+- `GameSession` 是战斗实体和战局状态的唯一持有者；界面只读查询，绘制不推进逻辑。`GameWidget` 唯一负责游戏计时器，字幕在实际推进的一帧末计时。
 - 返回菜单后游戏计时器应停止；开始新局和结算重试应按规则重置并启动。检查首次创建、返回菜单、复用实例和重试全部入口。
 - 隐藏 QWidget 不等于暂停 QTimer。重置与启动的控制关系必须明确。
 - 删除敌人前清理引用该敌人的子弹；删除塔后清理选中指针。检查 raw pointer 的持有者、删除顺序和 lambda 捕获关系。

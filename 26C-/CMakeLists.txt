@@ -9,29 +9,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
-set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-        gamewidget.cpp
-        gamewidget.h
-        attackscheduler.cpp
-        attackscheduler.h
-        startmenuwidget.cpp
-        startmenuwidget.h
-        enemy.cpp
-        enemy.h
-        tower.cpp
-        tower.h
-        bullet.cpp
-        bullet.h
-        resources.qrc
-)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Multimedia)
+include(cmake/GameTargets.cmake)
+set(PROJECT_SOURCES main.cpp ${GAME_UI_SOURCES} resources.qrc)
 
 qt_add_executable(final MANUAL_FINALIZATION ${PROJECT_SOURCES})
 target_link_libraries(final PRIVATE
+    game_core
     Qt6::Widgets
     Qt6::Multimedia
 )

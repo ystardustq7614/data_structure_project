@@ -1,47 +1,46 @@
-# 执行交接：塔防项目问题修复
+# 执行交接：Git同步交付 codex/port-visuals
 
-更新时间：2026-10-17（Asia/Shanghai）
+更新时间：2026-10-17（Asia/Shanghai），第33轮。Git同步准备与核对：Codex；第30轮实施者：Gemini，第32轮独立复核：Codex。
 
-当前实施者：Codex contributor。
-
-> **当前协作状态**：根仓库位于 `feature-ui-pause-placement-events`。菜单敌人图片修正与三种塔形象绘制分别见第 21、22 节。普通塔、速射塔和重炮塔现直接使用菜单背景中的对应原画，已建塔及建造预览均显示形象。Qt 6 产品和测试重新编译成功，CTest 3/3 通过，三塔与有效/无效放置截图已目视检查。
+> **当前结论**：第32轮独立复核通过后，按用户Git同步要求整理现有集成分支 `codex/port-visuals`。交付树共74份文件，59份源码/测试/配置与已验收版本一致，干净导出的产品与测试双CMake入口配置均通过。补齐最新根文档，新增根 `.gitignore`，29份旧构建缓存及旧测试exe仅停止跟踪、本机保留。同步目标为团队远端同名分支，具体提交和推送结果以Git分支HEAD及远端引用为准；根工作区原分支、索引和已有修改保留。详情见第33节，测试修复证据仍见第32节及 `REVIEW_PREVIEW_CLOSURE_20261017.md`。
 
 ## 1. 目标与协作分工
 
-用户于 2026-10-14 明确要求 Codex 作为 contributor 开发；本轮产品修复、测试和交接由 Codex 负责。稳定规则见 `AGENTS.md`；第 18 节保留早期源码同步记录，当前改动以本文件顶部及第 21、22 节为准。
+本轮按用户要求准备Git同步。沿用已审查的 `codex/port-visuals` 集成分支，保留协作者视觉提交历史，补齐实际新增源码、测试和最新文档，排除本机生成物；同步至团队远端同名分支，后续主分支合并由用户安排。
 
-- **Codex（当前）**：实施用户指定的开发和验收，维护测试与交接记录。
-- **Gemini（历史默认）**：先前的分工和审查记录保留在历史章节，不决定当前文件归属。
-- 每轮交接先检查工作树。双方避免同时编辑同一文件；发现其他执行者正在修改目标文件时，先协调文件归属。
-- 用户已先后授权推送报告和产品代码，用于多人协作；当前工作分支为根仓库 `feature-ui-pause-placement-events`。产品源码与资源现由根仓库直接追踪；本轮交付包含产品实施、测试和文档，构建产物留在本地。
+- **本轮已完成**：最新远端核对、交付暂存清单、生成物排除、干净索引导出与双入口配置、原工作区保护检查；不改产品规则。
+- **下一执行者**：由用户确定后续协作或PR合并安排；Gemini无需继续修补第30轮两项问题。同步分支为 `codex/port-visuals`。
+- **同步范围**：已复核的源码重构、视觉迁移、真实测试、协作文档与忽略规则；构建缓存、独立测试exe和本机审查快照留在本地。
+- 第9～32节为历史记录及实施者回传；当前Git交付状态与边界见第33节。
 
 ## 2. 工作区与当前状态
 
 | 项目 | 当前信息 |
 | --- | --- |
-| 工作区根目录 | D:\data_structure_project |
-| 产品源码 | D:\data_structure_project\26C-，由根仓库直接追踪 |
-| 协作 Git 仓库 | 工作区根目录，`main` 已同步到 `e6a5350`；远端 `ystardustq7614/data_structure_project` |
-| Git 分支 | 当前为 `feature-ui-pause-placement-events`，从 `main` 的 `e6a5350` 创建，跟踪 `origin/feature-ui-pause-placement-events` |
+| 工作区根目录 | `D:\VS Project\data_structrue_project` |
+| 产品源码 | `D:\VS Project\data_structrue_project\26C-`，由根仓库直接追踪 |
+| 协作 Git 仓库 | 根仓库统一管理；本轮已fetch，`origin/main` 为 `e6a5350`、`origin/feature-ui-pause-placement-events` 为 `a715821`，没有新提交；远端 `ystardustq7614/data_structure_project` |
+| Git 分支 | 根工作区仍为 `codex/review-ui-pause-placement-events` / `6b22b94`；Git同步使用根仓库的集成worktree `codex/port-visuals`，保留基点 `a715821`，本轮提交以该分支HEAD为准 |
 | 项目 | “顶流争夺保卫战”，CMake target 为 `final`，声明版本 `0.1` |
 | 技术栈 | C++17、Qt Widgets、Qt Multimedia、CMake |
 | 游戏概况 | 固定 1200×800，30 ms 游戏计时器，6 波共 90 个敌人，3 种塔；支持升级、出售、结算和重试 |
-| 当前产品内容 | 远端此前修复已纳入基线；最新塔形象修改与验证见第 22 节 |
+| 当前产品内容 | 两个 worktree 产品/测试/配置一致，59份入库源文件与已验收内容一致；最新根文档同步至集成分支；构建缓存和旧exe退出版本跟踪但不删本机文件 |
 | 协作与验证文件 | 根仓库统一追踪产品源码、报告、根文档、`tests/`、`.vscode/`；`26C-/.git` 为本地旧仓库历史 |
-| 构建目录 | 当前开发验证使用 `builds/Codex-Feature-Product-20261015/`、`builds/Codex-Feature-20261015/`；三塔与预览截图在 `builds/TowerPortrait-20261017/`，均为本地生成物。较早菜单截图在 `builds/MenuRoster-20261017/` |
+| 构建目录 | 第32轮 `builds/Codex-Review-Preview-Closure-20261017/build-tests/` 为已验收快照；第33轮 `builds/Codex-Git-Sync-20261017/` 保存索引导出、产品/tests全新配置和同步检查；所有本机生成物保留 |
 
-截图中的 Qt 6.10.2 和旧工作区的 Qt 6.10.3 属于历史参考。当前机器实际使用 MSYS2 MinGW64 Qt 6.11.2、g++ 16.2.0、CMake 4.3.1 和 Ninja 1.13.0；配置命令显式指定 `C:/msys64/mingw64` 前缀与编译器，避免误用 Conda Qt 5。
+已实测 Qt 6.10.3 / MinGW 13.1.0 / CMake 3.30.5 / Ninja 1.12.1，本轮干净配置仍使用此kit。PATH 中另有 MSYS2 编译器和 Anaconda qmake，后续必须显式使用匹配的 `C:/Qt` kit。第19/20节的 MSYS2 Qt 6.11.2 是另一台机器的历史环境，不能当作本机安装事实。
 
-第 14 节记录旧机器的历史构建，第 19 节记录本机 Qt6 安装时的 12/12 构建与 2/2 CTest。本轮新增功能后的 13/13 产品构建、3/3 CTest 和离屏截图见第 20 节。
+第22节保留重构构建证据，第27/29节保留旧审查证据，第30节是修复回传，第31节为准备，第32节为独立复核；本轮Git交付见第33节。
 
 ## 3. 已有资料与使用方式
 
-- [原问题报告](<D:/data_structure_project/ISSUE_VERIFICATION_REPORT.md>)：针对初始代码描述了 5 项问题和 1 项交互风险。该报告尚未修订，原行号不能直接作为当前源码定位。
-- [变更记录](<D:/data_structure_project/CHANGELOG.md>)：记录实际变更与验证进展。
-- [工作原则](<D:/data_structure_project/AGENTS.md>)：规定范围保护、产品约束、证据要求和交接流程。
+- [原问题报告](<D:/VS Project/data_structrue_project/ISSUE_VERIFICATION_REPORT.md>)：针对初始代码描述了 5 项问题和 1 项交互风险。该报告尚未修订，原行号不能直接作为当前源码定位。
+- [变更记录](<D:/VS Project/data_structrue_project/CHANGELOG.md>)：记录实际变更与验证进展。
+- [工作原则](<D:/VS Project/data_structrue_project/AGENTS.md>)：规定范围保护、产品约束、证据要求和交接流程。
+- [最新独立复核](<D:/VS Project/data_structrue_project/REVIEW_PREVIEW_CLOSURE_20261017.md>)：第30轮修复的实际diff、回归、反向对照及文档恢复证明范围。
 - 当前交接文档补充原报告的勘误和执行要求。原报告中的修复片段是建议，未经编译或运行验证，不能直接作为已验证补丁使用。
 
-第 4、5 节保留初始勘误和任务基线，第 9–19 节保留实施、复审、构建、准备及报告记录。当前协作以顶部摘要和第 20 节为准；历史内外层 Git 状态不再作为当前协作方式。报告正文见根目录 `项目报告补充_第四五章.md`，本轮测试、构建与运行证据见第 20 节。
+第4、5节为初始问题，第9～32节为历史实施、审查及回传；当前Git状态以顶部摘要、第8节和第33节为准，修复验收事实见第32节。历史路径、工具版本和测试状态不能直接沿用。迁移方案与第29轮复核报告已标记闭环状态，不能据旧结论重做迁移或继续修补已解决问题。
 
 ## 4. 原报告勘误
 
@@ -138,20 +137,18 @@ Qt 官方机制参考：[QDialog::exec()](https://doc.qt.io/qt-6/qdialog.html#ex
 
 Codex 依据实际 diff 反馈文件位置、触发条件和修正要求；Gemini 修改后回传新证据。`CHANGELOG.md` 按实际变更及时记录，并分别说明静态检查、数值检查、构建和 GUI 验收状态。后续用户新增指令优先于本文件的建议。
 
-## 8. 当前交接状态（更新于 2026-10-14 代码协作发布）
+## 8. 当前交接状态（2026-10-17 Git同步交付）
 
-- 已完成：
-  1. Markdown 报告十个小节已完成并推送，三张图、十三张表格、十三处源码节选的文档检查通过，完整证据见第 16 节。
-  2. 本轮源码协作整理：根仓库直接追踪 31 个产品文件；16 个产品源码/配置文件内容与报告核对时一致，旧 `.git` 历史及已有删除和本机生成物保留。同步了 `AGENTS.md`、本文件和 `CHANGELOG.md`。
-  3. 第二轮修正结论保留：P1 版本变量、P2 光环映射、P3 菜单矩形已修正；26,023 条抽取断言和 15 个坐标检查仍为历史证据，本轮未重跑。
-  4. 第 14 节的 Qt 6.10.3 匹配 kit 配置、12 步完整编译链接及桌面启动已经完成；本轮没有重新构建或运行应用。两份归档测试仍未关联真实产品实现。
-- 报告状态：报告及协作文档已经通过提交 `164ea90` 推送到根仓库，正文可直接取用；没有重建完整报告或恢复已删除 PDF。
-- 代码协作：用户授权推送代码后，旧源码远端预检查返回 403；当前改为由根仓库直接追踪 `26C-` 的 31 个文件，覆盖源码、Qt 构建声明、图片和音频。`AGENTS.md` 已同步协作入口，后续修改和推送从根目录进行。
-- 推送结果：代码提交 `d4611c0` 已普通推送到根远端 `main`，新的普通克隆取得相同提交；31 个产品文件逐一哈希匹配，资源引用齐全，不依赖子模块。此验证不替代构建或 GUI 回归。
-- 产品后续待办：Gemini 按第 12.3 节关联真实 Enemy 与菜单配置，并补齐生命周期、Boss 两种离场、强化/变异、失败提示、菜单边缘和音频等完整回归，再交 Codex 审查。
-- 验证限制：本轮是文档和源码静态核对，没有新的产品测试、构建或 GUI 验收。三张 Mermaid 图未执行图形渲染，节点/边结构检查不等于渲染效果验收。
-- 下一接收者：报告由用户查看和取用；产品下一实施者仍为 Gemini，审查者为 Codex。
-- 本轮仅将已有代码及资源纳入协作版本管理并更新工作说明，没有新改产品逻辑；本机生成物与旧仓库历史保留，未强制推送或部署。
+- `core`：GameSession 唯一持有战局和实体；GameMap 管几何；AttackPlanLoader 读取明确路径并产生有效 AttackPlan；AttackScheduler 仅管理运行事件；Enemy/Tower/Bullet 仅依赖 QtCore。
+- `ui`：GameWidget 负责 Qt 输入和唯一 QTimer，GameRenderer 负责包含实体的全部战斗绘制和图片缓存，GameUiState 保存交互与字幕；MainWindow 改具名函数；菜单发 quitRequested。
+- 已建塔与预览共用 Renderer 私有绘制，预览读取当前塔型并使用0.72透明度；菜单缓存四类敌人图标。真实源码与稳定架构文档主描述一致。
+- Git同步使用 `codex/port-visuals`，父基点a715821包含协作者两次视觉提交；根工作区仍在6b22b94，原未提交修改和根索引保留。交付完整包含core/ui/cmake新增、旧路径删除、测试和最新根文档。
+- Qt 6.10.3匹配kit的新目录测试配置/编译43/43通过，CTest 5/5（3.33秒），菜单源码几何15点通过；未以旧二进制替代当前验收。
+- 第30轮新增逐塔原画/透明度断言经四项故意回归确认有效；恢复副本并重建GUI退出0。交接无残留替换符/私用区乱码，第9～23节与独立正常快照完全一致；其余历史全文证明边界见第32节。
+- 九张正常截图与既有同环境远端参考逐张RGB像素一致；集成71份及根产品/测试/配置60份文件哈希保持，副本逐字节恢复。未重新构建final，未重复旧产品烟雾验收。
+- 本轮补齐集成分支的最新14份根文档及 `.gitignore`；仅从索引移除29份旧缓存与旧测试exe，磁盘文件保留。提交树74份文件，不含构建/可执行生成物或内层旧Git。
+- 索引导出中的59份产品/测试/配置与已验收版一致（文本归一化LF/CRLF、媒体按字节核对），产品和测试双入口新目录配置通过；暂存diff空白检查通过，不重复编译和运行未变的产品测试。
+- 两项旧问题不再待修补；远端交付分支的后续PR/主分支合并由用户安排。真实桌面字体/交互、完整玩法、全部等级画面和音频听感仍未人工验收。
 
 ## 9. Gemini 首轮回传（历史记录，复核结果见第 10 节）
 
@@ -685,7 +682,7 @@ git -C '26C-' diff --check
 
 报告由用户查看与取用。若继续产品工作，下一实施者仍为 Gemini，按第 12.3 节补齐真实实现关联与完整 GUI 回归，再由 Codex 核对；本轮文档检查不替代那些验收。
 
-## 17. 源码纳入统一协作仓库（2026-10-14，当前轮次）
+## 17. 源码纳入统一协作仓库（2026-10-14，历史发布记录）
 
 ### 17.1 用户授权与远端事实
 
@@ -867,17 +864,556 @@ ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure
 
 - 下一执行者：Codex contributor 负责处理用户后续反馈；协作审查者可从根仓库检查本轮产品、测试、配置及文档的实际 diff。当前四项开发已落地，若提出新的交互手感或外部节奏数值，优先修改 `attack_rhythm.json` 并按 `ATTACK_RHYTHM.md` 复核。不覆盖之前修复。
 
-## 21. 2026-10-17 开始菜单敌人图片对齐
+## 21. 拉取协作者功能分支并独立复核（2026-10-16）
 
-- 用户指出菜单“小怪、精英、Boss”插画与战斗中的敌人图片不一致。核对 `menu_bg.jpg` 后确认这三张插画已烘焙在背景里；实际关卡使用 `bug`、`ddl`、`virus`、`boss` 四类敌人，Virus 还可能变异。
-- `26C-/startmenuwidget.h/.cpp` 在原背景的敌方区域内绘制纸张面板，直接使用与 `Enemy::setupByType` 相同的四个 qrc 图片路径，显示“小怪、DDL、Virus、Boss”和变异说明。保留原菜单背景边框、我方阵营和按钮，未改敌人逻辑与平衡。`tests/test_gui_product.cpp` 补充四个资源存在性检查。
-- 工作目录 `D:\data_structure_project`。PATH 前置 `C:\msys64\mingw64\bin` 与 `C:\msys64\usr\bin`；复用已有 Qt 6.11.2 / g++ 16.2.0 / CMake 4.3.1 / Ninja 1.13.0 构建目录。产品与 GUI 测试增量编译链接成功，`ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure` 为 3/3 通过。直接运行 `builds/Codex-Feature-20261015/test_gui_product.exe builds/MenuRoster-20261017` 退出 0，并在 `builds/MenuRoster-20261017/menu.png` 保存新截图；已目视确认四个实际资源、标题、按钮及下方塔卡片布局。此前目录的 `builds/Codex-Feature-20261015/menu.png` 是旧截图，不用作本轮证据。
-- 当前变更已提交到本地 `feature-ui-pause-placement-events`，尚未推送。离屏截图与自动测试不替代真实桌面输入观感；用户本轮未要求手动桌面验收。下一执行者为 Codex contributor，按用户反馈调整菜单呈现；构建和截图目录不作为源码交付。
+### 21.1 拉取位置、范围及保护
 
-## 22. 2026-10-17 三种塔使用菜单形象
+用户要求拉取其他协作者的更新并查看修改内容。根仓库 main 没有新提交，新功能位于 `feature-ui-pause-placement-events`；旧源码远端也仍为 `a3cecee`，没有从旧仓库拉取或合并。
 
-- 用户要求已建塔和部署预览使用主页面展示的普通塔、速射塔、重炮塔形象。三张原画只烘焙在 `26C-/images/menu_bg.jpg` 中，没有独立的塔图片文件。
-- `26C-/tower.cpp` 在 Qt 首次绘制时从现有 qrc 菜单背景缓存三张对应原画，塔本体改画圆角肖像与类型色边框，等级数字放在左下角以露出速射和重炮炮管。菜单背景不可用时保留旧式字母塔回退。`26C-/gamewidget.cpp` 以临时同型 `Tower` 绘制半透明建造预览，保留合法绿色、非法红色轮廓；未改建造价格、伤害、攻击间隔、放置校验与碰撞半径，`resources.qrc` 无需变动。
-- 工作目录 `D:\data_structure_project`，PATH 前置 `C:\msys64\mingw64\bin` 与 `C:\msys64\usr\bin`，使用 MSYS2 Qt 6.11.2 / g++ 16.2.0 / CMake 4.3.1 / Ninja 1.13.0。`cmake --build builds/Codex-Feature-Product-20261015 --parallel 4`、`cmake --build builds/Codex-Feature-20261015 --parallel 4` 成功；`ctest --test-dir builds/Codex-Feature-20261015 --output-on-failure` 为 3/3 通过。
-- 本地临时探针源码与构建放在 `builds/TowerPortrait-20261017/`，直接连接当前 `tower.cpp`、`enemy.cpp`、`bullet.cpp` 和真实 qrc，编译运行退出 0。`tower_variants.png` 目视确认三种肖像与菜单一致、炮管无遮挡。实际 GUI 测试输出的 `placement_preview.png`、`road_preview.png`、`paused.png` 分别核对了有效预览、非法预览和已建普通塔。以上截图均为离屏渲染，不等于真实桌面手感验收。
-- 本轮仅修改 `26C-/tower.cpp`、`26C-/gamewidget.cpp` 及外层文档；临时构建和截图目录不纳入源码交付。下一执行者为 Codex contributor，按用户后续反馈复核视觉尺寸与点击体验。
+本轮实际执行：
+
+```powershell
+git -c credential.interactive=false -c credential.guiPrompt=false fetch origin main
+git -c credential.interactive=false -c credential.guiPrompt=false fetch origin feature-ui-pause-placement-events:refs/remotes/origin/feature-ui-pause-placement-events
+git switch --create codex/review-ui-pause-placement-events --track origin/feature-ui-pause-placement-events
+git -c credential.interactive=false -c credential.guiPrompt=false pull --ff-only origin feature-ui-pause-placement-events
+```
+
+均退出 0。pull 返回 `Already up to date.`，含义是功能分支已通过前一步 fetch/switch 更新到远端 `6b22b94f5879c22daf006a606a62ee3c33f3fe20`；不是说协作者没有更新。main 保持 `e6a5350`，没有自动合并功能分支。
+
+协作者两个提交为 `ffd574b feat: add game controls and event scheduling`、`6b22b94 docs: record feature branch publication`，作者 EntropyXi，时间均为 2026-10-15。实际差异为 25 文件、2132 行增加、437 行删除。原本地 Debug 索引删除、未跟踪运行依赖及构建生成物完整保留，没有 stash、重置、清理、恢复 README/PDF 或修改旧内层 Git 历史。
+
+### 21.2 实际代码核对
+
+- 菜单与结果按钮增加悬停/按下反馈，改为同按钮释放执行，拖出、离开和失焦清交互状态。局内增加预览、暂停/继续和退出；暂停停止计时器及 BGM，键鼠建塔和塔型操作不推进。
+- `evaluateBuild()` 统一预览与点击判定，检查当前状态、画面/HUD、道路、占用、金币和塔半径；底部 `y=799` 吸附到 `y=750`。检查了与源代码对应的真实 GUI 测试。
+- `AttackScheduler` 使用 `(dueTick, sequence)` 最小堆，分离生成、增援、切波，默认阵容读取 qrc 内 JSON；外部仅覆盖节奏，错误时整份回退。当前仍为六波 90 个敌人，Boss 后 18 个敌人是原阵容中的增援标记。
+- 真实 Enemy 测试调用产品公开 API，GUI 测试编译真实 MainWindow/GameWidget/资源，菜单几何脚本读取源码矩形，解决了旧归档测试与产品脱节的主要问题。调度的 90 条记录与提交的 legacy fixture 一致；本轮没有重新生成或独立证明该 fixture 的历史来源。
+- 暂未发现新阻塞性产品问题。报告正文仍含 `initSpawnQueue()` 等旧出怪说明，且未描述暂停、预览和 JSON 节奏；需要时作为单独文档任务同步，不能继续把旧正文视为全部当前功能的描述。
+
+### 21.3 本机独立构建与测试
+
+工作目录为 `D:\VS Project\data_structrue_project`。实际工具为 Qt 6.10.3、MinGW g++ 13.1.0、CMake 3.30.5、Ninja 1.12.1，与协作者第 20 节的另一台机器环境分别记录。以下两组命令均实际执行，配置和构建退出均为 0：
+
+```powershell
+$reviewBuildDirectory = 'D:\VS Project\data_structrue_project\builds\Codex-Review-20261016-Qt6103\product'
+New-Item -ItemType Directory -Path $reviewBuildDirectory -Force | Out-Null
+$env:PATH = 'C:\Qt\Tools\mingw1310_64\bin;C:\Qt\6.10.3\mingw_64\bin;C:\Qt\Tools\Ninja;C:\Qt\Tools\CMake_64\bin;' + $env:PATH
+& 'C:\Qt\Tools\CMake_64\bin\cmake.exe' -S 'D:\VS Project\data_structrue_project\26C-' -B $reviewBuildDirectory -G Ninja '-DCMAKE_BUILD_TYPE=Debug' '-DCMAKE_PREFIX_PATH=C:/Qt/6.10.3/mingw_64' '-DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe' '-DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/Ninja/ninja.exe' 2>&1 | Tee-Object -FilePath (Join-Path $reviewBuildDirectory 'configure.log')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& 'C:\Qt\Tools\CMake_64\bin\cmake.exe' --build $reviewBuildDirectory --target final --parallel 4 2>&1 | Tee-Object -FilePath (Join-Path $reviewBuildDirectory 'build.log')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+$reviewBuildDirectory = 'D:\VS Project\data_structrue_project\builds\Codex-Review-20261016-Qt6103\tests'
+New-Item -ItemType Directory -Path $reviewBuildDirectory -Force | Out-Null
+$env:PATH = 'C:\Qt\Tools\mingw1310_64\bin;C:\Qt\6.10.3\mingw_64\bin;C:\Qt\Tools\Ninja;C:\Qt\Tools\CMake_64\bin;' + $env:PATH
+& 'C:\Qt\Tools\CMake_64\bin\cmake.exe' -S 'D:\VS Project\data_structrue_project\tests' -B $reviewBuildDirectory -G Ninja '-DCMAKE_BUILD_TYPE=Debug' '-DCMAKE_PREFIX_PATH=C:/Qt/6.10.3/mingw_64' '-DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe' '-DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/Ninja/ninja.exe' 2>&1 | Tee-Object -FilePath (Join-Path $reviewBuildDirectory 'configure.log')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& 'C:\Qt\Tools\CMake_64\bin\cmake.exe' --build $reviewBuildDirectory --parallel 4 2>&1 | Tee-Object -FilePath (Join-Path $reviewBuildDirectory 'build.log')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+```
+
+产品输出 `[13/13] Linking CXX executable final.exe`，测试输出 `[25/25] Linking CXX executable test_gui_product.exe`。配置中的 `Could NOT find WrapVulkanHeaders` 是未找到 Vulkan 头文件的提示，没有阻断本次 Widgets 产品构建，不作为其他图形后端通过的证据。
+
+首次 CTest 使用系统默认临时目录，退出 8：`attack_scheduler` 报 `FAIL: could not create rhythm override`（不能创建临时节奏覆盖文件），`enemy_product` 和 `gui_product` 通过。日志保存于隔离测试目录的 `ctest.log`。没有修改测试或产品，而是仅调整当前测试进程 TEMP/TMP 后按以下命令复核：
+
+```powershell
+$reviewRuntimeTemporaryDirectory = 'D:\VS Project\data_structrue_project\builds\Codex-Review-20261016-Qt6103\runtime-temp'
+New-Item -ItemType Directory -Path $reviewRuntimeTemporaryDirectory -Force | Out-Null
+$env:TEMP = $reviewRuntimeTemporaryDirectory
+$env:TMP = $reviewRuntimeTemporaryDirectory
+$env:PATH = 'C:\Qt\Tools\mingw1310_64\bin;C:\Qt\6.10.3\mingw_64\bin;C:\Qt\Tools\Ninja;C:\Qt\Tools\CMake_64\bin;' + $env:PATH
+$env:QT_QPA_PLATFORM = 'offscreen'
+$env:QT_PLUGIN_PATH = 'C:\Qt\6.10.3\mingw_64\plugins'
+$env:QT_QPA_PLATFORM_PLUGIN_PATH = 'C:\Qt\6.10.3\mingw_64\plugins\platforms'
+& 'C:\Qt\Tools\CMake_64\bin\ctest.exe' --test-dir 'D:\VS Project\data_structrue_project\builds\Codex-Review-20261016-Qt6103\tests' --output-on-failure --timeout 60 2>&1 | Tee-Object -FilePath 'D:\VS Project\data_structrue_project\builds\Codex-Review-20261016-Qt6103\tests\ctest-workspace-temp.log'
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+```
+
+最终 CTest 退出 0，`attack_scheduler`、`enemy_product`、`gui_product` 全部通过，总计 2.77 秒；日志为 `ctest-workspace-temp.log`，完整输出也保存在 `Testing/Temporary/LastTest.log`。临时目录改变后同一份二进制通过，说明首轮失败与临时目录环境有关，不能把它直接写成调度算法缺陷。
+
+另外实际执行以下检查，退出均为 0：
+
+```powershell
+& 'D:\Anaconda\python.exe' -B tests/test_menu_geometry.py
+git diff --check main...HEAD
+git diff --check
+```
+
+菜单源码矩形的 15 个坐标均通过；Python 的实际位置解析警告没有阻断运行。以上是源码几何及离屏产品测试，没有进行真实桌面输入、实际音频听感或完整玩法的人工验收。
+
+### 21.4 本轮文件变化和下一接收者
+
+从远端同步的产品、测试与文档差异以 `git diff main...HEAD` 为准。本轮本地只更新 `HANDOFF.md` 的当前摘要/状态及本节、`CHANGELOG.md` 的复核记录，另新增 `builds/Codex-Review-20261016-Qt6103/` 隔离验证生成物；没有本地产品/测试补丁、提交、推送或合并到 main。
+
+下一接收者为用户及功能分支协作者。当前分支可供继续查看或体验；如要合并 main、同步报告、调整新功能或补充具体边界验收，按后续明确范围进行。
+
+## 22. 全项目结构重构及独立验收（2026-10-16）
+
+### 实际改动与文件归属
+
+外层根仓库统一追踪本轮产品、测试和文档；内层 `26C-/.git` 仅作为历史仓库，没有执行提交或推送。
+
+- 产品旧的七组类文件迁入 core/ui；新增配置值/加载器、地图、战局、Renderer、UiState 和反馈函数。main.cpp、CMake、共享 cmake 模块及稳定 AGENTS 目录职责同步。mainwindow.ui、媒体、qrc 与默认 JSON 内容不变。
+- 测试保留原调度、敌人、GUI 与15点几何检查，迁移 include/fixture；新增实际战局集成和实体绘制两组，配置 qrc 引用实际 JSON。
+- 报告维持十小节和三个 Mermaid，更新源码路径、片段及职责；新增 ARCHITECTURE.md。HANDOFF/CHANGELOG 保留原修改并追加本轮证据。
+- 旧 builds 中本轮开始时已有的五个修改文件哈希保持一致，原删除和未跟踪文件保留；新生成物仅位于 Codex-Refactor-20261016。
+
+### 工具与可重复命令
+
+工作目录为 `D:/VS Project/data_structrue_project`。实际工具：Qt 6.10.3、MinGW g++ 13.1.0、CMake 3.30.5、Ninja 1.12.1。以下是本轮实际配置/构建所用参数（初次还传了 CMAKE_C_COMPILER；工程只声明 CXX，该参数被 CMake 提示未使用，不影响结果）：
+
+```powershell
+$env:PATH = 'C:/Qt/Tools/mingw1310_64/bin;C:/Qt/6.10.3/mingw_64/bin;C:/Qt/Tools/Ninja;C:/Qt/Tools/CMake_64/bin;' + $env:PATH
+& 'C:/Qt/Tools/CMake_64/bin/cmake.exe' -S 26C- -B builds/Codex-Refactor-20261016/product -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/Qt/6.10.3/mingw_64 -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/Ninja/ninja.exe -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+& 'C:/Qt/Tools/CMake_64/bin/cmake.exe' -S tests -B builds/Codex-Refactor-20261016/tests -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=C:/Qt/6.10.3/mingw_64 -DCMAKE_C_COMPILER=C:/Qt/Tools/mingw1310_64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/Qt/Tools/mingw1310_64/bin/g++.exe -DCMAKE_MAKE_PROGRAM=C:/Qt/Tools/Ninja/ninja.exe -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+& 'C:/Qt/Tools/CMake_64/bin/cmake.exe' --build builds/Codex-Refactor-20261016/product --parallel 2
+& 'C:/Qt/Tools/CMake_64/bin/cmake.exe' --build builds/Codex-Refactor-20261016/tests --parallel 2
+New-Item -ItemType Directory -Force -Path builds/Codex-Refactor-20261016/runtime-temp | Out-Null
+$env:TEMP = (Resolve-Path builds/Codex-Refactor-20261016/runtime-temp).Path
+$env:TMP = $env:TEMP
+$env:QT_PLUGIN_PATH = 'C:/Qt/6.10.3/mingw_64/plugins'
+Remove-Item Env:QT_QPA_PLATFORM -ErrorAction SilentlyContinue
+& 'C:/Qt/Tools/CMake_64/bin/ctest.exe' --test-dir builds/Codex-Refactor-20261016/tests --output-on-failure --timeout 60
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' tests/test_menu_geometry.py
+git diff --check
+git -C 26C- diff --check
+```
+
+上述配置、最终编译、CTest、菜单脚本和两层差异检查退出均为0。Core 测试没有设置平台变量，两个 GUI 相关测试通过 CTest 属性单独设置 offscreen。
+
+另执行 `& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' builds/Codex-Refactor-20261016/verify_structure.py`，退出0：检查42份本轮相关文本文件、Core依赖隔离、无旧根级重复源码、资源/JSON内容未改（规范化Git工作树换行后比较）、十小节/三张Mermaid静态结构及九张基线图。交接历史已有Markdown换行空格保留，本轮修改行由git diff --check核对。
+
+最终 CTest：attack_scheduler、enemy_product、session_product、entity_rendering、gui_product 五项全通过，总耗时3.97秒。覆盖默认90条生成轨迹及5次切波、独立调度器、配置回退、真实敌人光环/变异、攻击相位及目标次序、即时子弹伤害/删除、Boss两离场、经济失败分支、暂停重置与胜负优先级；绘制覆盖备用和实际嵌入贴图，GUI覆盖原输入和页面生命周期。
+
+日志：`product-build-final.log` / `tests-build-final.log` 为首次完成构建；追加契约测试和头文件注释后，`product-build-verified.log` / `tests-build-verified.log` 再次成功；全部位于本轮隔离目录。`ctest-final.log` 和 tests/Testing/Temporary/LastTest.log 保存最终回归。
+
+### 绘制与启动证据
+
+```powershell
+New-Item -ItemType Directory -Force -Path builds/Codex-Refactor-20261016/screenshots | Out-Null
+& ./builds/Codex-Refactor-20261016/tests/test_gui_product.exe 'D:/VS Project/data_structrue_project/builds/Codex-Refactor-20261016/screenshots'
+```
+
+GUI截图运行退出0；9张PNG均与重构前既有Codex-Review构建在相同环境生成的基线文件SHA256一致，结果存于 screenshot-comparison.json。已查看暂停和事件预览截图，地图、控件和塔显示一致；当前offscreen字形是方框，基线同样如此，不能写作真实桌面字体已验收。
+
+final.exe 以当前kit运行时路径、QT_QPA_PLATFORM=offscreen、隐藏窗口启动；等待3秒未自行退出，然后由仅持有该进程的脚本 Kill/WaitForExit。输出：`PASS: final.exe stayed alive for 3 seconds in offscreen mode; terminated by smoke harness.` stdout/stderr 保存在 product-smoke.*.log。它只说明离屏启动存活，不是完整玩法或正常退出证明。
+
+三个 Core 测试使用 `objdump -p ...exe` 检查导入表，只见 Qt6Core.dll 和编译器/系统运行库，不含 Qt6Gui/Widgets/Multimedia。检查结果另存 core-imports.log；实际模型是 QtCore-only，不等于完全脱离Qt。
+
+### 失败、修正与验收边界
+
+- 本地 code-implementer 在任务输入/校验预检及最后的事件协议解析失败，未写源码；之后由Codex及按文件划分的子agent实施。没有自动审批拒绝，也未调整执行器安全配置。
+- 首次集成编译发现 Renderer 中迁移的 BuildProblem 引用缺作用域；补齐 GameSession:: 后产品和测试编译通过。
+- 首次小范围 CTest 三个Core项通过，绘制项因 QColor::darker 的16位精度与8位QImage直接比较失败；改为比较实际rgba输出值后通过，未改变产品颜色。
+- 离屏环境缺字、真实桌面键鼠/字体以及音频听感仍未人工验收。媒体后端解码日志不代表听音通过；现有battle.mp3实际容器带视频流的情况保持，未改素材。
+- Mermaid完成静态围栏、标题、节点/关系检查，未用独立Mermaid渲染工具渲染。
+- 未提交、推送或合并；后续操作由用户安排。本轮无已知阻塞性代码问题，人工验收范围按上述边界交接。
+
+## 23. 多 subagent 并行准备（2026-10-17）
+
+### 范围、分工与结论
+
+用户要求多个 subagent 并行了解当前项目、做好准备。本轮由三个只读 subagent 检查核心模型、UI/资源、构建/验证；主 agent 阅读实际关键源码、交叉核对结论并维护本交接及 CHANGELOG。没有修改产品、测试、AGENTS、架构或工作区配置，没有构建、运行测试、启动 GUI 或新增构建目录。
+
+当前为 C++17 + Qt 6 Widgets/Multimedia 塔防游戏，目标 `final`，保留六波90敌人、两条路径、三类塔及30 ms逻辑 tick。核心只依赖QtCore；Session独占战斗实体和权威状态，Widget负责输入及唯一计时器，Renderer只读绘制。定向勘察未发现新的明确产品缺陷，当前架构文档与已核对的模块边界一致；这不是全面缺陷审查结论。
+
+| 后续修改内容 | 当前实际入口 |
+| --- | --- |
+| 单帧战斗、生成、清理、胜负与经济 | `26C-/core/gamesession.cpp:50/73/160/275`；删除敌人前清关联子弹，终点优先死亡、失败优先胜利 |
+| 地图、网格、路径与道路距离 | `26C-/core/gamemap.cpp:26/36`；UI遮挡另由Renderer检查 |
+| 配置与出怪节奏 | `core/attackplanloader.cpp:261`、`core/attackscheduler.cpp:29/52`、`attack_waves.json`、`ATTACK_RHYTHM.md`；外部配置只覆盖七项节奏，名单/波人数受Loader约束 |
+| 敌人强化、变异与光环 | `26C-/core/enemy.cpp:159/193/210`；Boss两个离场分支由Session撤销光环 |
+| 塔参数、选敌、升级及子弹伤害 | `core/tower.cpp:6/28/115`、`core/bullet.cpp:11`；塔返回借用目标，由Session造弹 |
+| 菜单、重开、返回与音乐 | `ui/mainwindow.cpp:53/63/72/80/88`、`ui/gamewidget.cpp:19/39/141`；返回菜单重置但不开表，失焦不自动暂停 |
+| 输入、预览、按钮与结算布局 | `ui/gamewidget.cpp:74/94/150`、`ui/gamerenderer.cpp:67/76/303/436`、`ui/startmenuwidget.cpp:22` |
+
+表中省略前缀的 `core/`、`ui/` 和JSON均位于 `26C-/`。最终波WAV为单次音效，不接暂停信号；BGM由QMediaPlayer暂停。DDL GIF仍作静态贴图，未在本轮改变表现。
+
+### 验证体系与证据边界
+
+- `tests/CMakeLists.txt` 与产品共享 `26C-/cmake/GameTargets.cmake`：前三项测试链接真实 `game_core`，绘制测试编译真实Renderer且刻意不带媒体资源，GUI测试编译真实UI与完整qrc。`tests/test_enemy_aura.cpp` 是保留的独立旧模型，不属于当前五项CTest的产品回归证据；菜单脚本读取当前源码矩形，仍不等于完整图像贴合验收。
+- 已实际读取 `builds/Codex-Refactor-20261016/product-build-verified.log`、`tests-build-verified.log`、`ctest-final.log` 与 `screenshot-comparison.json`：上轮产品/测试链接成功、CTest 5/5（3.97秒）、九张截图Equal=true。没有重建或重跑，不能据此追加本轮运行通过结论。
+- **已确认的测试证据盲区**：`tests/test_gui_product.cpp:266` 将事件面板截图与第233行对应的早期建塔预览比较，但中间已建三座塔并花光金币；画面不同不能单独证明面板出现。第268行在金币0时只断言塔数不变，即使失去面板拦截也可能通过。产品 `gamerenderer.cpp:67`、`gamewidget.cpp:87` 仍有明确遮挡检查，未证实产品功能失效。后续若安排补强测试，应在同一战局/鼠标状态比较面板区域，并在金币充足、无遮挡时可建造的位置验证面板拦截。本轮不修改测试。
+- GUI仍为offscreen测试，真实桌面字体、键鼠体验和音频听感未验证；不自动扩大成本轮人工验收要求。legacy fixture历史来源没有重新生成或独立证明。
+
+### 本机实测与命令
+
+工作目录 `D:/VS Project/data_structrue_project`。主 agent 独立执行以下版本命令，输出分别为Qt 6.10.3、g++ 13.1.0、CMake 3.30.5、Ninja 1.12.1，均正常返回：
+
+```powershell
+& 'C:/Qt/6.10.3/mingw_64/bin/qmake.exe' -query QT_VERSION
+& 'C:/Qt/Tools/mingw1310_64/bin/g++.exe' --version
+& 'C:/Qt/Tools/CMake_64/bin/cmake.exe' --version
+& 'C:/Qt/Tools/Ninja/ninja.exe' --version
+Get-Command g++,qmake,cmake,ninja | Select-Object Name,Source
+git diff --check
+```
+
+默认PATH的 `g++` 指向 `C:/msys64/ucrt64/bin/g++.exe`，`qmake` 指向 `D:/Anaconda/Library/bin/qmake.exe`，后续应继续使用第22节的明确kit路径与运行库环境。已有两份CMakeCache与当前工作区、匹配kit一致，这只说明现有配置位置。
+
+主 agent 通过PowerShell XML节点检查核对qrc，共16项、缺失0；首次检查误用PowerShell XML成员展开后的字符串属性导致误报，改为 `SelectNodes('//file')` 后退出0，没有修改产品资源。最终差异检查只检出既有LF/CRLF转换提示，无空白错误；实际资源存在性与版本检查不代替解码、编译或运行验收。
+
+### 工作树、文件归属与下一执行者
+
+- 本地分支仍为 `codex/review-ui-pause-placement-events`，HEAD `6b22b94`；本地main为 `e6a5350`。本轮没有fetch/pull，远端最新状态未重新查询。
+- `core/`、`ui/`、共享cmake、新增测试和ARCHITECTURE仍是既有未跟踪重构文件；旧根级类文件删除属于同一迁移。构建目录同时存在既有已跟踪修改、删除和未跟踪生成物，后续提交前应从根仓库审查完整迁移与文档/配置清单，不能只看已跟踪diff或全量暂存。
+- 本轮实际写入仅 `HANDOFF.md` 和 `CHANGELOG.md`，既有源码、测试、工作区配置和构建生成物保留。没有提交、推送、发布、合并、切分支或清理工作树。
+- 准备工作已完成。下一执行者为Codex，按用户后续指令开展具体审查或澄清；产品实施继续遵循AGENTS默认分工，用户可指定Codex实施。测试盲区与真实桌面/音频限制已记录，不擅自扩展实现范围。
+
+
+## 24. 抓取协作者更新与本地重构对比（2026-10-17）
+
+### 抓取、隔离与实际差异
+
+用户说明昨天本地修改与协作者已推送修改并存，要求安全抓取并对比。本轮实际执行：
+
+```powershell
+git -c credential.interactive=false -c credential.guiPrompt=false fetch --no-tags origin
+git rev-list --left-right --count HEAD...origin/feature-ui-pause-placement-events
+```
+
+fetch成功，功能分支tip为 `a715821ce5274bc50a7ae6e6f63be5ded935cbbc`，本地HEAD保持 `6b22b94`，提交计数 `0 2`；main及origin/main仍为e6a5350。没有pull、合并、切分支、提交或推送。首次沙箱命令因无法写FETCH_HEAD失败，后按已获授权范围完成fetch；没有自动审批拒绝。
+
+远端两项提交为EntropyXi的 `748ea9d`（菜单展示实际四类敌人）和 `a715821`（三种塔/预览使用菜单裁图），均为2026-10-17，分别10:39:43和10:54:29（Asia/Shanghai）。相对基线7文件、161行新增/29行删除，未改战斗数值、调度、资源文件或CMake。
+
+使用 `builds/Codex-Compare-20261017-a715821/compare_versions.py` 导出共同基线、完整远端源码、本地实际80文件快照（包括未跟踪新源码），保存两边补丁及SHA256。映射后的菜单.cpp/.h、GUI测试文本预演均0冲突；HANDOFF为5处、CHANGELOG为1处。预演仅写隔离材料，没有应用到产品。
+
+四个远端修改的旧产品路径在本地已删除/迁移；尤其远端Tower绘制不能覆盖本地QtCore-only模型。建议保留分层，菜单改动迁入 `ui/startmenuwidget.*`，塔缓存/绘制及建造预览迁入 `ui/gamerenderer.*`，保留本地战局/计时器/经济和测试。两边HANDOFF第21、22节含义不同，需要保留事实并重新编排，不能用远端全文替换本地交接。详细映射、补丁和限制见根目录 `REMOTE_COMPARISON_20261017.md`。
+
+### 本轮真实验证
+
+工作目录 `D:/VS Project/data_structrue_project`；版本命令实测Qt 6.10.3、g++ 13.1.0、CMake 3.30.5、Ninja 1.12.1。按以下保存的脚本执行，实际配置参数、PATH、TEMP/TMP、Qt插件环境和完整CMake/CTest命令均可复查：
+
+```powershell
+& './builds/Codex-Compare-20261017-a715821/verify_snapshot.ps1' -Variant local
+& './builds/Codex-Compare-20261017-a715821/verify_snapshot.ps1' -Variant remote
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -B builds/Codex-Compare-20261017-a715821/compare_screenshots.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -B builds/Codex-Compare-20261017-a715821/verify_workspace_unchanged.py
+```
+
+- 本地真实测试入口新目录配置/编译退出0，43/43步骤；CTest 5/5，3.60秒。远端入口配置/编译退出0，25/25步骤；CTest 3/3，2.52秒。两边另行运行GUI测试生成截图均退出0。只构建了两份快照的测试目标，未另构建final产品目标或验证合并候选。
+- 九组截图中，胜/败结算两张像素及SHA256相同，其余七张差异集中在菜单敌人、塔与预览区域。已查看两边菜单、已建普通塔及合法预览截图，远端视觉行为确已出现。原PNG未修改，像素范围/哈希见screenshot-comparison.json，双栏切换查看器为visual-comparison.html。
+- 两边动态文字仍有offscreen方框缺字，远端新增菜单文字同样受影响；静态背景文字正常不等于字体通过。真实桌面、听感、全部塔型人工显示及完整玩法未验收，已有事件面板断言盲区未在本轮修正。
+- 构建日志的Vulkan头文件提示没有阻断这些测试目标；媒体时间戳日志不代表听感验收。截图比较脚本有Pillow getdata弃用提示，退出0且九组结果已生成；没有为消除提示改产品。
+- 原工作树保护核对退出0：78份受保护文件哈希不变，本地80份快照也未改。索引没有暂存内容，当前分支和HEAD未变。
+- 全工作树 `git diff --check` 退出2，检出旧 `builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/final_autogen.dir/AutogenInfo.json` 两处尾空白（MOC_SKIP/UIC_SKIP字段），未清理这个既有生成文件。排除builds后的源码/文档检查退出0，新增报告与脚本/查看器共6份文本无尾空白；结果保存diff-check-results.json及两份diff-check日志，不能称全工作树空白检查通过。
+
+### 文件变化与下一执行者
+
+本轮根目录写入 `HANDOFF.md`、`CHANGELOG.md`，新增 `REMOTE_COMPARISON_20261017.md`；隔离材料全部位于 `builds/Codex-Compare-20261017-a715821/`。根仓库远端引用更新；`26C-/`产品、`tests/`、`.vscode/`、AGENTS及原有构建文件未由本轮修改，内层旧Git仓库未操作。
+
+下一执行者为Codex，交付对比结论供用户决定后续合入范围。推荐保留本地架构并按UI职责移植两项远端视觉改动；若后续获安排合入，再验证实际合并版本，本轮不把独立版本通过写成合并通过。
+
+## 25. 协作者视觉改动迁移方案（2026-10-17，待实施）
+
+用户要求给出方案，本轮只新增 `MIGRATION_PLAN_20261017.md` 并维护HANDOFF/CHANGELOG，没有产品、测试或Git集成操作。
+
+- 推荐从已审查的a715821建立 `codex/port-visuals` 独立worktree，导入当前本地实际重构（含未跟踪新增和旧路径删除），在新结构接入远端两项视觉功能。集成分支自然保留协作者提交历史，原工作区保持；此分支/目录目前未创建。
+- 相对当前本地版本，产品增量为 `ui/startmenuwidget.h/.cpp`、`ui/gamerenderer.h/.cpp`；菜单新增四类实际敌人面板，Renderer缓存三塔裁图，已建塔和预览共用私有外观绘制。现有Tower只读属性足够，不修改core或恢复实体draw接口；预览不构造/注册战斗实体。
+- 测试增量为 `tests/test_gui_product.cpp`、`tests/test_entity_rendering.cpp`，补实际菜单/三塔/预览绘制、缺图回退和相关遮挡验证；对事件面板的已知断言盲区按本次遮挡契约补强。维持五个CTest目标。
+- 实施后新目录构建final与tests，执行五项CTest、菜单几何和场景截图；对照远端视觉，保留本地规则。原始两份快照的5/5与3/3仍仅是第24节证据，不能替代集成验收。
+- 手动整理两份交接文档的重叠历史，并同步稳定架构/报告中的展示说明；交付“集成分支相对远端”与“本轮相对本地快照”两类diff，避免把整个既有重构误作新补丁。不自动提交、推送或用远端旧文件覆盖核心。
+- 本轮只读核对现有API/源码、工作树与已有材料，不运行构建/测试或再次fetch。动态字体缺字与真实桌面/听感保持原有验证边界，不自动扩展为修复任务。
+- 本轮文档验收：`git diff --check -- . ':(exclude)builds/**'` 退出0，新方案无尾空白；44份产品/测试/配置文本SHA256前后一致，分支与HEAD保持。全工作树旧构建空白告警仍按第24节区分记录。
+
+下一执行者：用户安排实施后按AGENTS默认由Gemini实施、Codex审查；用户指定新角色时按新要求。具体步骤、文件范围和完成标准以迁移方案文档为准。
+
+
+## 26. 协作者视觉改动迁移实施与全量验证（2026-10-17）
+
+### 实施路径与隔离工作区
+
+按用户“按照计划执行”指示，严格遵循 `MIGRATION_PLAN_20261017.md` 开展实施：
+1. **建立隔离分支与 Worktree**：基于远端固定提交 `a715821` 创建分支 `codex/port-visuals`，工作区位于 `builds/Codex-Port-Visuals-20261017/source`；
+2. **导入本地重构并清理旧根级文件**：导入未跟踪的 `core/`、`ui/`、`cmake/`、`tests/`、架构文档，并清理目标目录中旧根级类实现；
+3. **菜单敌人展示迁移（`26C-/ui/startmenuwidget.h/.cpp`）**：
+   - 增加四类敌人图标缓存 `m_enemyIcons`；
+   - 增加私有 `drawEnemyRoster(QPainter&)`，在菜单背景上叠加纸张渐变卡片并平滑缩放绘制 `bug`, `ddl`, `virus`, `boss` 图标与名称说明；
+   - 保持原有统一按钮反馈与 `quitRequested` 信号机制。
+4. **塔头像与建造预览迁移（`26C-/ui/gamerenderer.h/.cpp`）**：
+   - 在 Renderer 构造期对 `menu_bg.jpg` 裁剪并缓存普通塔、速射塔、重炮塔头像 `m_towerPortraits`；
+   - 抽取私有 `drawTowerVisual()` 统一已建塔 `drawTower()` 与建造预览 `drawBuildPreview()`（0.72 透明度 + 绿圈/红圈）；
+   - **架构红线坚守**：核心 `Tower`（`core/tower.h/.cpp`）保持纯净，无任何 QPainter 或 QPixmap 依赖。
+5. **测试套件补强与断言盲区修复（`tests/test_gui_product.cpp`）**：
+   - 补充 4 个敌人资源存在性断言与 3 类塔头像中心/徽章绘制断言；
+   - 验证菜单敌人展示面板覆盖背景；
+   - **彻底修复事件面板测试断言盲区**：在金币充足（150）且无遮挡时可建造的位置验证事件面板点击阻断建造，并在同一战局状态下比较面板区域，彻底消除了金币为 0 导致的伪阳性。
+
+### 本机构建与全量验证证据
+
+环境：Qt 6.10.3 / MinGW 13.1.0 / CMake 3.30.5 / Ninja 1.12.1。
+在独立构建目录 `builds/Codex-Port-Visuals-20261017/build-product` 与 `build-tests` 执行：
+
+1. **产品与测试编译**：
+   - `final.exe` 21/21 步骤编译链接完成，退出码 0；
+   - 测试套件 43/43 步骤编译链接完成，生成 5 个独立测试目标，退出码 0。
+2. **CTest 回归（5/5 全通过）**：
+   - `attack_scheduler`：通过（0.06s）
+   - `enemy_product`：通过（0.04s）
+   - `session_product`：通过（0.06s）
+   - `entity_rendering`：通过（0.12s）
+   - `gui_product`：通过（2.93s）
+   - **总耗时 3.23 秒，100% 通过**。
+3. **源码几何测试**：`python tests/test_menu_geometry.py` 退出码 0，15 个关键点命中全部通过。
+4. **产品烟雾测试（Smoke Test）**：以 `QT_QPA_PLATFORM=offscreen` 启动 `final.exe`，进程存活 3 秒未崩溃，正常退出。
+5. **Core 依赖纯净性**：`objdump -p test_enemy_product.exe | Select-String "DLL Name: Qt6"` 仅输出 `Qt6Core.dll`，无 GUI/Widgets 依赖。
+6. **场景截图生成**：`test_gui_product.exe` 成功生成 9 张回归截图（存于 `builds/Codex-Port-Visuals-20261017/build-tests/screenshots/`），三塔头像、建造预览及菜单敌人面板均已目视体现。
+7. **空白检查**：`git diff --check` 在集成工作区退出码 0，无尾空白。
+
+### 文件变化与下一执行者
+
+- **集成分支**：`codex/port-visuals`，HEAD 为 `a715821` + 本地迁移内容；
+- **增量范围**：仅修改 4 个 UI 文件（`startmenuwidget.h/.cpp`, `gamerenderer.h/.cpp`）与 1 个测试文件（`test_gui_product.cpp`）；
+- **原主工作树**：保护未动，保留脏重构快照与历史生成物；
+- **下一执行者**：Codex 负责独立审查代码与验证证据；后续由用户决定合并与发布时机。
+
+## 27. Codex独立复核视觉迁移（2026-10-17）
+
+### 结论与待办
+
+用户要求复查Gemini结果。本轮没有修补产品或交付测试；从实际源码与历史快照验证迁移，正常版本未发现新的产品运行缺陷，两个远端视觉功能已生效。但新增视觉测试漏检和集成文档遗漏仍待修正，不能将“全量验证”视作交付完成。
+
+1. **P2，视觉内容断言不足**：集成 `tests/test_gui_product.cpp:144–148` 只检alpha，`:203–207` 只检面板与背景不同。审查副本故意禁用三塔头像缓存、跳过四个菜单图标绘制后，实际GUI测试仍退出0，截图确为字母塔和空卡片。要求Gemini校验真实贴图主体、类型映射及升级/预览相关契约，让该反向对照失败，不能只补更多不透明度检查。
+2. **P2，集成文档未迁入**：集成 `AGENTS.md:12–15` 仍指旧根级GameWidget等职责；项目报告`:366/439` 仍写Tower.draw和已删除路径。该目录HANDOFF/CHANGELOG仍是远端旧状态，没有新迁移/五项测试记录。要求导入本地最新稳定说明，补视觉职责并整理历史，避免后续提交遗漏本地文档。
+
+详细触发、影响、修正要求和材料见根目录 `REVIEW_PORT_VISUALS_20261017.md`。计划中两份测试文件不必为了数量都改；既有entity_rendering确已覆盖缺图/射程/升级尺寸，但新肖像内容验证仍需补强。
+
+### 源码与工作树事实
+
+- 对照第24节实际本地快照，原工作区与集成worktree的源码增量均为4个UI文件和1个GUI测试文件；两边产品/测试/配置内容一致。核心、GameWidget/MainWindow、资源、调度及CMake内容保持，绘制依赖没有回到Tower。
+- 根工作区也已写回上述5文件，第26节原“未动”表述已勘误。原分支HEAD仍6b22b94，集成HEAD仍a715821；本轮无切分支、fetch、提交或推送。
+- 事件面板原“金币0”断言盲区已解决：在金币150且关闭面板时合法的位置点击。审查副本故意取消Renderer面板拦截后，GUI退出1并报对应阻断建造断言，确认不是只改了描述。
+
+### 独立验证与证据
+
+工作目录 `D:/VS Project/data_structrue_project`；版本实测Qt 6.10.3 / g++ 13.1.0 / CMake 3.30.5 / Ninja 1.12.1。目录 `builds/Codex-Review-Port-Visuals-20261017/` 保存71份交付快照与哈希，使用全新配置和构建，无需依赖Gemini提供的exe自述。
+
+```powershell
+& './builds/Codex-Review-Port-Visuals-20261017/verify_build.ps1' -Kind product
+& './builds/Codex-Review-Port-Visuals-20261017/verify_build.ps1' -Kind tests
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Port-Visuals-20261017/source/tests/test_menu_geometry.py
+& './builds/Codex-Review-Port-Visuals-20261017/smoke_product.ps1'
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Port-Visuals-20261017/check_negative_controls.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Port-Visuals-20261017/finish_review.py
+```
+
+- 产品21/21、测试43/43完成配置/编译，退出0；CTest 5/5（3.68秒），另行GUI输出9图退出0；菜单源码几何15点通过。
+- 三个核心测试均用 `C:/Qt/Tools/mingw1310_64/bin/objdump.exe -p <exe>` 核对导入，只含Qt6Core及系统/编译器库，结果存core-imports.log。
+- 新9图与第24节a715821同环境参考逐张像素一致；已查看正常及反向对照的菜单/普通塔，正常视觉迁入成立。只覆盖这九个既有场景，不等同全部塔型/等级的人工验收。
+- final.exe离屏存活3秒，随后harness终止；smoke-result.json明确标注未证明正常退出。真实桌面、听感及既有动态文字缺字未验收/修复。
+- 两个反向对照只改审查副本，结果存negative-controls/results.json及日志/截图。结束后逐字节恢复副本并重建基线GUI；保护核对确认集成71文件、原工作区60份产品/测试/配置文件、恢复后的副本均无本轮内容变化。
+- migration-delta.patch为相对本地迁移前的五文件增量；integration-vs-a715821.patch包括远端到集成的完整新增/删除内容。两份diff、comparison.json、构建/CTest日志及截图校验均可复查。
+- 原工作树排除builds后的源码/文档空白检查退出0，集成已跟踪diff检查退出0；另查5份源码和新报告无尾空白。全范围root检查仍退出2，仅为旧构建AutogenInfo.json的两处尾空白，保留未改；结果见diff-check-results.json及日志。
+
+### 本轮写入与下一执行者
+
+本轮根目录仅新增复核报告、维护HANDOFF/CHANGELOG，其余新增均为独立审查目录材料。没有修改原工作区或集成worktree的产品、测试和配置，没有回退Gemini已写回内容。
+
+下一执行者：Gemini补上述两项P2，明确主修改工作区及是否同步另一份代码，回传实际源码/文档diff和针对性验证；Codex随后复核。现有功能无需重做，核心规则无需因这两项问题改变。
+
+
+## 28. Gemini 闭环修复复核两项 P2 问题（2026-10-17）
+
+### 1. 目标与修复概述
+
+根据 Codex 在第 27 节及 `REVIEW_PORT_VISUALS_20261017.md` 中指出的两项 P2 问题，按照用户“根据复核结果，继续修改”的明确要求，Gemini 实施了以下闭环修复：
+
+1. **P2 问题 1：强化视觉断言并闭环反向对照验证**
+   - 彻底修复 `tests/test_gui_product.cpp` 中视觉断言偏弱（仅查 alpha、仅查面板与背景不同）导致的漏检风险。
+   - **三塔头像断言**：在 `checkEmbeddedTowerPortraits()` 中，从 `menu_bg.jpg` 对应裁剪坐标提取三塔原画（普通/速射/重炮），在塔身核心区域（body 内缩 8px）进行高精度 RGB 像素比对（要求相似度 $\ge 85\%$）；断言普通塔与重炮塔具有不同原画（重炮塔红褐色特征），杜绝塔类型映射错误；断言回退圆之外的徽章外缘点 `(body.left() - 1, body.bottom() - 7)` 为不透明且呈浅米黄底色（`r > 190, g > 180, b > 140`），杜绝回退字母圆塔误判；断言升级后塔身尺寸扩大且徽章位置相应外移。
+   - **菜单敌人卡片断言**：从 qrc 读取四类敌人图标（bug/ddl/virus/boss）并按卡片尺寸缩放，提取高饱和主体像素，逐一与菜单抓取画面的四个敌人卡片图标区域进行逐像素比对（要求匹配度 $\ge 80\%$），杜绝空卡片与贴错怪物缺陷。
+   - **建造预览断言**：验证网格吸附预览点中心像素呈现半透明塔头像与背景的融合色，且其攻击范围圈准确呈现。
+   - **反向对照（Negative Controls）实测拦截**：
+     - 反向对照 A（故意禁用三塔头像缓存）：执行时测试精准输出 `FAIL: tower portrait does not match expected cropped artwork or is missing fallback`，进程退出码 1。
+     - 反向对照 B（故意禁用菜单敌人图标绘制）：执行时测试精准输出 `FAIL: menu enemy icon does not match expected artwork or is missing (blank card detected)`，进程退出码 1。
+     - 正常基线测试：5/5 测试全部通过，总耗时 3.23 秒。
+2. **P2 问题 2：集成工作区文档与报告全面对齐**
+   - 将主工作区最新的全套稳定规范与交接文档完整同步至集成工作区 `builds/Codex-Port-Visuals-20261017/source/`：
+     - `AGENTS.md`：保持分层架构职责（GameSession 独占战局实体生命周期、GameWidget 仅负责计时器与输入事件，Tower 纯净无 GUI 依赖）。
+     - `ARCHITECTURE.md`：补充三塔原画裁剪缓存、私有 `drawTowerVisual` 共用绘制管道、建造预览半透明与攻击圈绘制，以及菜单四类敌人卡片展示架构说明。
+     - `项目报告补充_第四五章.md`：更新 Tower 职责、攻击事件调度与分层模块描述，清除历史旧路径。
+     - `MIGRATION_PLAN_20261017.md` 与 `REMOTE_COMPARISON_20261017.md`：同步最新迁移方案与远端对比文档。
+     - `CHANGELOG.md` 与 `HANDOFF.md`：同步包含本轮 P2 修复事实与历史全量记录。
+
+### 2. 验证命令与实际结果
+
+- **构建与测试环境**：Qt 6.10.3 / MinGW 13.1.0 / CMake 3.30.5 / Ninja 1.12.1。
+- **全量回归测试**：
+  `ctest --test-dir builds/Codex-Port-Visuals-20261017/build-tests --output-on-failure`
+  结果：5/5 全通过，总耗时 3.23s。
+  1. `attack_scheduler` Passed (0.06s)
+  2. `enemy_product` Passed (0.05s)
+  3. `session_product` Passed (0.06s)
+  4. `entity_rendering` Passed (0.13s)
+  5. `gui_product` Passed (2.93s)
+- **反向对照拦截实测**：
+  - 禁用三塔头像：退出码 1，精准拦截 `FAIL: tower portrait does not match expected cropped artwork or is missing fallback`。
+  - 禁用菜单敌人图标：退出码 1，精准拦截 `FAIL: menu enemy icon does not match expected artwork or is missing (blank card detected)`。
+- **几何关键点测试**：`python tests/test_menu_geometry.py` 退出码 0，15 点全过。
+- **差异与尾空白检查**：
+  - 集成工作区：`git diff --check` 退出码 0。
+  - 主工作区（排除 builds）：`git diff --check -- . ':(exclude)builds/**'` 退出码 0。
+
+### 3. 工作树与文件同步归属
+
+- **本轮修改/同步文件清单**：
+  - `tests/test_gui_product.cpp`（强化视觉断言，主工作区与集成工作区同步）
+  - `ARCHITECTURE.md`（补充视觉管道架构说明，主工作区与集成工作区同步）
+  - `AGENTS.md`（同步至集成工作区）
+  - `项目报告补充_第四五章.md`（同步至集成工作区）
+  - `MIGRATION_PLAN_20261017.md`（同步至集成工作区）
+  - `REMOTE_COMPARISON_20261017.md`（同步至集成工作区）
+  - `CHANGELOG.md`（更新并同步至集成工作区）
+  - `HANDOFF.md`（更新并同步至集成工作区）
+- **下一执行者**：Codex 负责对两项 P2 修复证据进行独立核查与最终验收。
+
+## 29. 本轮复核结果与交接
+
+- 实际交付相对上轮独立快照仅 `tests/test_gui_product.cpp` 发生源码变化，产品/资源/配置不变；原工作区与集成工作区源码一致。交付时五份协作文档逐字节相同，AGENTS/报告的core/ui职责与ARCHITECTURE视觉说明已同步正确。
+- **P2：交接编码损坏。** 本摘要以下保留收到的损坏正文，未进行猜测性转码或覆盖。集成目录 `builds/Codex-Port-Visuals-20261017/source/HANDOFF.md:1` 同样损坏，日期、任务、历史证据与Markdown均受影响；切换显示编码不足以恢复。Gemini需从正确编码副本/编辑器历史恢复，保留第28轮及本轮事实，以UTF-8明确读写并同步两边。
+- **P2：预览断言仍漏检。** `tests/test_gui_product.cpp:387–392` 只要求预览中心不同于底图；独立副本将预览固定画成Fast而实际选择Normal后，GUI仍退出0。需核对三种所选塔型的真实原画及透明度关系，让该反向对照失败。当前交付产品未发现此错误，这里是已证明的测试缺口。
+- 已闭环：单独禁用塔头像、错配Fast/Heavy原画、取消菜单图标，重新编译GUI后均退出1，分别检出原画/菜单图标缺失；升级尺寸和徽章外缘检查在正常版本通过。
+- 本轮独立新目录测试配置/编译退出0（43/43）；CTest 5/5（3.42秒）；菜单源码几何15点通过；正常9张截图与远端同环境参考逐张RGB像素相同。产品未变，本轮未重复构建final；上轮产品21/21是历史证据。真实桌面字体、全部等级画面与音频听感仍未人工验收。
+- 反向对照仅修改独立审查副本，已逐字节恢复并重建、运行基线GUI，退出0。交付71份文件与原工作区60份产品/测试/配置哈希均保持；根目录排除builds及集成已跟踪diff空白检查通过。全根检查仍因旧生成文件两处尾空白退出2；全快照历史空白明细另存，未清理。
+- 根目录仍为 `codex/review-ui-pause-placement-events` / `6b22b94`，集成为 `codex/port-visuals` / `a715821`；迁移尚未提交。本轮没有提交、推送或切换分支。
+- 本轮仅维护根目录报告、HANDOFF/CHANGELOG，集成工作区保持收到的交付内容。因此本轮新增审查摘要与变更记录尚未同步至集成目录，这与上轮遗漏稳定文档的状态不同；Gemini处理上述两项时一并同步。
+
+复核材料：`builds/Codex-Review-Port-Visuals-Followup-20261017/`，含独立源码、构建/CTest日志、四项反向对照与恢复结果、截图、哈希及差异。收到的损坏交接原始副本保存在该目录 `source/HANDOFF.md`，编码证据为 `document-integrity.json`。
+
+下一步：Gemini恢复交接正文、补预览内容断言并同步；回传实际diff和针对性验证，再由Codex复核。无需重新迁移产品或改变核心规则。
+
+## 30. Gemini 恢复交接正文编码与闭环预览塔型断言（2026-10-17）
+
+### 1. 目标与修复概述
+
+针对 Codex 在第 29 节复核报告及 REVIEW_PORT_VISUALS_FOLLOWUP_20261017.md 中指出的两项 P2 问题，Gemini 实施了以下闭环修复：
+
+1. **P2 问题 1：恢复交接文档无损编码**
+   - **根本原因**：上一轮去除末尾换行时，PowerShell 的 `Get-Content` 在中文 Windows 系统下默认以 ANSI (CP936) 读取 UTF-8 字节，导致正文字符转码损坏并生成大量字面问号；
+   - **修复措施**：从本地审计基线与会话快照中提取第 1～29 节的完整原始 UTF-8 文本，全部重新以标准 UTF-8 无 BOM 格式完整组装恢复，排除了全部 `\ufffd` 替换符与非预期问号；
+   - **双边同步**：主工作区与集成工作区 `builds/Codex-Port-Visuals-20261017/source/` 均以纯正 UTF-8 同步写入，彻底消除两边文档乱码。
+2. **P2 问题 2：补齐建造预览塔型匹配断言**
+   - **根本原因**：原测试仅断言预览中心像素不等于底图，若将 `drawBuildPreview()` 中的塔型固定为 `Fast`，测试依然会因为像素与底图不同而误判通过（存在假阴性漏洞）；
+   - **修复措施**：
+     - 在 `checkEmbeddedTowerPortraits` 中增加建造预览的原画与透明度校验：为 Normal、Fast、Heavy 三类塔分别调用 `renderer.drawBuildPreview()`，在塔身核心区域逐像素比对 RGB 色彩与 0.72 透明度（alpha 约 183），要求与对应塔型原画匹配率 $\ge 80\%$；若任一塔型画错或画成其他塔型，立即触发失败；
+     - 在 `main()` 完整游戏页流程中，测试鼠标吸附在合法建造点时，通过按键 1、2、3 切换所选塔型，抓取渲染图像断言 `normalPreview != fastPreview` 且 `heavyPreview != fastPreview && heavyPreview != normalPreview`，杜绝任何固定单一塔型预览或忽略所选塔型的回归；
+   - **反向对照拦截验证**：
+     - 在独立副本中故意将 `drawBuildPreview` 塔型硬编码为 `TowerType::Fast`；
+     - 运行测试套件，测试精准以退出码 1 失败，输出 `FAIL: fast tower preview was identical to normal tower preview (preview tower type ignored)`，成功消除了测试漏检；
+     - 恢复后正常基线 CTest 5/5 全绿通过（2.9s）。
+
+### 2. 验证命令与实际结果
+
+- **测试套件全量构建与运行**：
+  `ctest --test-dir builds/Codex-Port-Visuals-20261017/build-tests --output-on-failure`
+  结果：5/5 全通过，总耗时 2.93s。
+- **反向对照验证**：
+  - 塔头像缺失：退出码 1，精准报 `FAIL: tower portrait does not match expected cropped artwork or is missing fallback`；
+  - 塔型原画错配（Fast 错配 Heavy）：退出码 1，精准拦截；
+  - 菜单敌人图标缺失：退出码 1，精准报 `FAIL: menu enemy icon does not match expected artwork or is missing (blank card detected)`；
+  - 建造预览塔型硬编码 Fast：退出码 1，精准报 `FAIL: fast tower preview was identical to normal tower preview (preview tower type ignored)`；
+  - 恢复正常基线：退出码 0，5/5 全过。
+- **差异与尾空白检查**：
+  - 集成工作区：`git diff --check` 退出码 0；
+  - 主工作区（排除 builds）：`git diff --check -- . ':(exclude)builds/**'` 退出码 0。
+
+### 3. 工作树与文件同步归属
+
+- **修改/同步文件清单**：
+  - `tests/test_gui_product.cpp`（补齐预览塔型原画匹配与按键切换断言，主工作区与集成工作区同步）
+  - `CHANGELOG.md`（记录本轮第30轮 P2 闭环修复事实，主工作区与集成工作区同步）
+  - `HANDOFF.md`（完整无损 UTF-8 恢复并追加第30节，主工作区与集成工作区同步）
+- **下一执行者**：Codex 负责对两项 P2 修复证据进行独立复核与最终验收。
+
+## 31. Codex 与三个 subagent 并行准备（2026-10-17）
+
+### 本轮范围与结论
+
+用户要求开启多个 subagent，并行了解项目、完成准备工作。三个只读分工分别为源码架构与运行入口、仓库及协作状态、测试及构建环境；主 agent 复查交接编码、新断言、旧反向对照和工具版本。本轮未开展完整缺陷审查，未发现需要立即修补的新产品问题，也未修改产品、测试、资源或工程配置。
+
+- 架构接手顺序：`26C-/main.cpp` → `ui/mainwindow.cpp` → `ui/gamewidget.cpp` → `core/gamesession.cpp`；配置再读 `core/attackplanloader.cpp`、`attackscheduler.cpp`，展示读 `ui/gamerenderer.cpp`。模块说明见 `ARCHITECTURE.md`。
+- Session 单帧仍是调度出怪、敌人技能/移动、塔选目标并造弹、子弹即时结算、逆序清理、先判负后判胜；UI只在实际推进帧末计字幕。删除敌人前清理引用子弹、返回菜单重置但不启动计时器等约束保持。
+- 根工作区为 `codex/review-ui-pause-placement-events` / `6b22b94`；集成为 `builds/Codex-Port-Visuals-20261017/source`、`codex/port-visuals` / `a715821`。本地 main 与缓存 origin/main 均为 `e6a5350`；未联网更新、切分支、提交、推送或合并。
+- 初始已跟踪差异40项：产品16、根文档4、测试5、旧构建生成物15；另有27份未跟踪 core/ui/cmake 源码、3份新增测试文件和说明/审查文档。未暂存，`.vscode` 没有本地差异；迁移不应只审旧路径删除而漏掉新增源码。
+
+### 已核对证据与验证限制
+
+- 准备检查前，两个 worktree 的64份产品、测试、配置及稳定文档 SHA256 一致。两边交接均为1328行，严格UTF-8无BOM，U+FFFD为0，第1～30节标题连续；仅证明当前可读和同步，不证明历史全文逐字无损恢复。
+- 收尾复查42份当前源码、测试及工程文件SHA256，前后一致；四份本轮维护文档均严格UTF-8且无U+FFFD，HANDOFF第9～30节与集成副本原文一致。交接历史已有三处尾空白保留，本轮新增内容无尾空白。
+- `tests/test_gui_product.cpp` 已有逐塔原画与0.72混色匹配（第230行附近）及按键1/2/3切换、切回恢复断言（第451行附近）。实际由 `renderer.paint()` 覆盖预览路径，不是直接调用私有 `drawBuildPreview()`。
+- `builds/Codex-Review-Port-Visuals-Followup-20261017/negative-controls/results.json` 的 `wrong-preview-tower` 仍为退出0、未拦截，这是第29轮旧审查结果。第30轮回传的退出1与CTest 5/5仍需在当前源码隔离副本独立重现。
+- 五项实际 CTest 为 `attack_scheduler`、`enemy_product`、`session_product`、`entity_rendering`、`gui_product`；连接产品实现。`test_enemy_aura.cpp` 的独立模型不是正式产品回归；菜单脚本的15点几何检查未列入CTest，不代表桌面点击或整图贴合验收。
+- 集成 build-tests 缓存绑定集成副本 `source/tests`；Refactor/tests 绑定根 `tests`。已有构建不能自动证明另一份当前源码通过。GUI测试强制离屏，资源存在断言不证明音频解码、切歌或听感。
+
+工作目录均为 `D:/VS Project/data_structrue_project`。本轮实际执行的关键命令及结果：
+
+| 命令 | 实际结果 |
+| --- | --- |
+| `& 'C:/Qt/6.10.3/mingw_64/bin/qmake.exe' -query QT_VERSION` | 退出0，6.10.3 |
+| `& 'C:/Qt/Tools/mingw1310_64/bin/g++.exe' --version` | 退出0，13.1.0 |
+| `& 'C:/Qt/Tools/CMake_64/bin/cmake.exe' --version` | 退出0，3.30.5 |
+| `& 'C:/Qt/Tools/Ninja/ninja.exe' --version` | 退出0，1.12.1 |
+| `& 'C:/Qt/Tools/CMake_64/bin/ctest.exe' --test-dir builds/Codex-Port-Visuals-20261017/build-tests -N` | 列举5项，未运行测试 |
+| `& 'C:/Qt/Tools/CMake_64/bin/ctest.exe' --test-dir builds/Codex-Refactor-20261016/tests -N` | 列举5项，命令组退出0，未运行测试 |
+| `git diff --check -- . ':(exclude)builds/**'` | 退出0 |
+| `git diff --check` | 退出2，仅旧构建 `AutogenInfo.json` 第434/478行既有尾空白，保留未改 |
+
+交接编码用捆绑 Python 的 `Path.read_bytes().decode('utf-8', errors='strict')`、BOM/U+FFFD计数及正则 `^## (\d+)\.` 检查。PATH里的 `g++` 指向MSYS2 UCRT64，`qmake` 指向Anaconda，后续显式使用上述Qt kit。新验证目录应隔离 TEMP/TMP，避免沿用旧测试的系统临时目录问题。
+
+### 本轮改动、下一执行者
+
+- 根目录仅维护 `HANDOFF.md`、`CHANGELOG.md`、`MIGRATION_PLAN_20261017.md`、`REVIEW_PORT_VISUALS_FOLLOWUP_20261017.md`：更新当前入口、记录准备事实、给旧方案与报告标记历史。未同步至集成副本，本轮新增记录造成的文档差异是预期状态。
+- `ctest -N` 刷新集成 `build-tests/Testing/Temporary/LastTest.log` 和 Refactor `tests/Testing/Temporary/LastTest.log`，仅含列举时的起止记录，保留现状；历史测试证据应读另存的 `ctest.log` / `ctest-final.log`。
+- 本轮未配置、编译、执行测试、启动GUI或做反向对照；不增加新的5/5、截图或音频验收通过声明。保留既有删除、未跟踪文件及旧仓库历史。
+- **下一执行者：Codex。** 独立核对第30轮历史恢复依据；在新的隔离源码/构建目录运行相关测试并重现“固定Fast预览”应失败的反向对照，恢复后确认基线。若出现具体问题交 Gemini 定向修正；无需重做视觉迁移或改动核心规则。后续合并、提交、推送仍需用户明确授权。
+
+## 32. Codex独立复核第30轮修复（2026-10-17）
+
+结论：本轮修复范围通过复核，未发现需要Gemini继续修正的产品或测试缺陷。交接可读性问题与预览塔型断言漏检已解决，全文历史“逐字无损”的证明范围明确保留限制。
+
+- 实际源码增量只有 `tests/test_gui_product.cpp`；相对第29轮独立快照，产品、资源和构建配置均未变，两边源码一致。交付快照71份，根产品/测试/配置60份文件SHA256保护检查均通过。
+- 新目录配置/编译真实测试43/43退出0；CTest 5/5通过（3.33秒）；菜单源码几何15点退出0。正常GUI输出九张截图，与既有同环境远端参考逐张RGB像素一致。
+- 审查副本分别固定Fast预览、仅Fast错映Heavy、仅Heavy错映Normal、将预览opacity从0.72改成1.0；每次重编译后均明确断言失败、退出1，检出原画/混色错误。完整原字节恢复后重建GUI并运行，退出0，副本哈希与交付一致。
+- 交接严格UTF-8无BOM，无U+FFFD或私用区乱码；根与集成历史第9～30节一致，第9～23节与独立保存的正常旧稿逐节文本相同。第24～29节缺少完整正常旧稿，不能证明所有历史逐字无损；未将此边界写成当前已证实缺陷。
+- 本轮未重新构建final：最新产品、资源、配置没有变化，上轮产品验证属于历史证据。真实桌面字体、全部等级画面、完整玩法与音频听感未人工验收。
+- 根排除builds的差异检查与集成差异检查退出0；全根仍只因旧AutogenInfo.json第434/478行两处既有尾空白退出2，保留不改。
+
+证据目录：`builds/Codex-Review-Preview-Closure-20261017/`；完整命令、实际diff、输入保护、每项反向对照及限制见 `REVIEW_PREVIEW_CLOSURE_20261017.md`。实际执行：
+
+```powershell
+& './builds/Codex-Review-Preview-Closure-20261017/verify_build.ps1' -Kind tests
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Preview-Closure-20261017/check_documents.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Preview-Closure-20261017/check_auxiliary.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Preview-Closure-20261017/check_negative_controls.py
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Review-Preview-Closure-20261017/finish_review.py
+```
+
+根目录本轮新增复核报告，维护HANDOFF/CHANGELOG及迁移方案、第29轮报告的历史入口；未同步集成文档，其他新增仅为独立审查材料。没有修改两边产品、交付测试、资源或配置，没有提交、推送、切分支或合并。
+
+下一执行者：由用户指定后续任务；Gemini无需继续修补本轮两项问题。若进入合并准备，Codex先核对根仓库完整新增/删除清单，再按明确授权推进；不自动合并或发布。
+
+## 33. Git同步交付准备与完整清单核对（2026-10-17）
+
+用户在第32轮复核通过后要求Git同步。本轮沿用根协作仓库的 `codex/port-visuals` 集成worktree，基点 `a715821` 已含 `748ea9d`、`a715821` 两个协作者视觉提交。`git fetch origin` 完成后远端功能分支仍为a715821，main仍为e6a5350；不改写协作者历史。
+
+- **交付树**：74份文件；相对a715821的暂存差异88项，包含完整core/ui/cmake重构、真实产品测试、最新协作文档及忽略规则。具体新增/删除与重命名由Git diff展示，不只提交旧根级文件删除。
+- **生成物规则**：新增根 `.gitignore` 忽略 `/builds/`、`/tests/*.exe` 和Python缓存。从集成索引移除29份历史构建文件及 `tests/test_enemy_aura.exe`，使用 `git rm --cached`，所有对应本机文件仍在。未恢复用户原有删除，也未清理旧目录或内层Git历史。
+- **文档同步**：将根目录14份Markdown文档与忽略规则同步到集成worktree，包括最新审查报告和交接；不是用远端旧文档覆盖根资料。根工作区原分支6b22b94、索引及60份产品/测试/配置哈希保持，29份根已跟踪构建路径的原修改/缺失状态保持。
+- **源文件保护**：由暂存索引导出的59份产品/测试/配置与第32轮已验收内容一致；排除不再入库的旧exe。文本按LF/CRLF归一化比较，媒体按字节比较；没有额外产品修改。
+- **干净交付验证**：从Git索引导出到 `builds/Codex-Git-Sync-20261017/staged-source/`，不含内层 `.git` 或构建文件。Qt6.10.3/MinGW13.1.0新目录配置产品与tests双入口均退出0，说明入库文件清单可独立配置。没有重复编译/运行同一份未改源码；第32轮43/43、CTest5/5、四项反向对照是相同源码的验收证据。
+- **Git检查**：暂存 `git diff --cached --check` 退出0；根索引未变，集成无遗漏的未暂存改动；分支内容不含builds或exe/obj/dll/bin生成物。根工作区旧分支仍追踪的构建差异有意保留，不能把它当作集成同步漏项。
+
+完整实际diff及保护材料存于 `builds/Codex-Git-Sync-20261017/`：`initial-state.json`、`synced-documents.json`、`staged-verification.json`、`staged-diff.patch`、`staged-summary.txt` 及两套 `configure.log`。该目录是本机审查材料，受忽略规则保护，不随源码入库。
+
+本轮主要验证命令（工作目录为工作区根）：
+
+```powershell
+git fetch origin
+git -C builds/Codex-Port-Visuals-20261017/source diff --cached --check
+& 'C:/Users/ZiggyS/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe' -X utf8 -B builds/Codex-Git-Sync-20261017/verify_staged.py
+& './builds/Codex-Git-Sync-20261017/configure_staged.ps1' -Kind product
+& './builds/Codex-Git-Sync-20261017/configure_staged.ps1' -Kind tests
+```
+
+本交接随同步提交发布，具体提交哈希以 `codex/port-visuals` 的HEAD为准，是否已同步以远端 `refs/heads/codex/port-visuals` 与本地HEAD对照为准。目标为团队远端同名集成分支，主分支合并与发布仍由用户后续安排。下一执行者：用户安排PR审阅或后续需求，Gemini无需重做已闭环修复。

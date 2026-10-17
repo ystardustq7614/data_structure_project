@@ -4,41 +4,35 @@ project(tower_defense_regression LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Multimedia)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Multimedia)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 enable_testing()
+include(../26C-/cmake/GameTargets.cmake)
 configure_file(fixtures/legacy_spawn_trace.txt
                ${CMAKE_CURRENT_BINARY_DIR}/legacy_spawn_trace.txt COPYONLY)
 add_executable(test_attack_scheduler
-    test_attack_scheduler.cpp ../26C-/attackscheduler.cpp ../26C-/resources.qrc)
-target_link_libraries(test_attack_scheduler PRIVATE Qt6::Widgets)
+    test_attack_scheduler.cpp config_resources.qrc)
+target_link_libraries(test_attack_scheduler PRIVATE game_core)
 add_test(NAME attack_scheduler COMMAND test_attack_scheduler)
-add_executable(test_enemy_product test_enemy_product.cpp ../26C-/enemy.cpp)
-target_link_libraries(test_enemy_product PRIVATE Qt6::Widgets)
+add_executable(test_enemy_product test_enemy_product.cpp)
+target_link_libraries(test_enemy_product PRIVATE game_core)
 add_test(NAME enemy_product COMMAND test_enemy_product)
 
-add_executable(test_gui_product
-    test_gui_product.cpp
-    ../26C-/mainwindow.cpp
-    ../26C-/mainwindow.h
-    ../26C-/mainwindow.ui
-    ../26C-/gamewidget.cpp
-    ../26C-/gamewidget.h
-    ../26C-/attackscheduler.cpp
-    ../26C-/attackscheduler.h
-    ../26C-/startmenuwidget.cpp
-    ../26C-/startmenuwidget.h
-    ../26C-/enemy.cpp
-    ../26C-/enemy.h
-    ../26C-/tower.cpp
-    ../26C-/tower.h
-    ../26C-/bullet.cpp
-    ../26C-/bullet.h
-    ../26C-/resources.qrc
-)
-target_link_libraries(test_gui_product PRIVATE Qt6::Widgets Qt6::Multimedia)
+add_executable(test_session_product test_session_product.cpp config_resources.qrc)
+target_link_libraries(test_session_product PRIVATE game_core)
+add_test(NAME session_product COMMAND test_session_product)
+
+# 备用绘制目标不带图片资源，GUI 目标带完整真实资源。
+add_executable(test_entity_rendering test_entity_rendering.cpp ${GAME_RENDER_SOURCES})
+target_link_libraries(test_entity_rendering PRIVATE game_core Qt6::Gui)
+add_test(NAME entity_rendering COMMAND test_entity_rendering)
+add_executable(test_gui_product test_gui_product.cpp ${GAME_UI_SOURCES}
+               ${GAME_SOURCE_ROOT}/resources.qrc)
+target_link_libraries(test_gui_product PRIVATE game_core Qt6::Widgets Qt6::Multimedia)
 add_test(NAME gui_product COMMAND test_gui_product)
+set_tests_properties(entity_rendering gui_product PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
