@@ -1,0 +1,42 @@
+{
+  "method": "Qt QImage::copy; lossless PNG storage of existing runtime crops",
+  "source": "26C-/images/menu_bg.jpg",
+  "source_commit": "75914dc8dca1ce22ee3aa2cae1f796c2f130d429",
+  "source_sha256": "e9dd712db14684cd3effcba9543bad3f6eface8e62b543bdfa00e9aea90c7343",
+  "source_retained_in_worktree": false,
+  "assets": [
+    {
+      "type": "normal",
+      "file": "26C-/images/towers/normal.png",
+      "source_rect": [
+        708,
+        452,
+        82,
+        84
+      ],
+      "sha256": "4a479c53ab9bff46059c4dd819f8d2ea3f29e1c812cc67c6922170626f5c7a78"
+    },
+    {
+      "type": "fast",
+      "file": "26C-/images/towers/fast.png",
+      "source_rect": [
+        809,
+        451,
+        95,
+        87
+      ],
+      "sha256": "2cddfec5036ab861a66d27458437d0852cb77e7d22e77a3db4ea605c4f87526d"
+    },
+    {
+      "type": "heavy",
+      "file": "26C-/images/towers/heavy.png",
+      "source_rect": [
+        914,
+        448,
+        89,
+        91
+      ],
+      "sha256": "c27953b09adec529b0f1401799eeea624da197b388ff99ad75ee2fac94beafd6"
+    }
+  ]
+}

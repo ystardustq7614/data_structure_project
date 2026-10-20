@@ -92,6 +92,40 @@
 		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCXXSourceCompiles.cmake",
 		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake",
 		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/FindPackageMessage.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigVersion.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigVersionImpl.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6/FindWrapAtomic.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCXXSourceCompiles.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/FindPackageMessage.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersion.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersionImpl.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfig.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsDependencies.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets-relwithdebinfo.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfigVersion.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfigVersionImpl.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfig.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateTargets.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateTargets-relwithdebinfo.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateAdditionalTargetInfo.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointMinGW32Target.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateVersionlessAliasTargets.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreTargets-relwithdebinfo.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigExtras.cmake",
+		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/GNUInstallDirs.cmake",
+		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersion.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Widgets/Qt6WidgetsConfigVersionImpl.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Widgets/Qt6WidgetsConfig.cmake",
@@ -108,7 +142,6 @@
 		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsDependencies.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets-relwithdebinfo.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsConfigVersion.cmake",
@@ -132,39 +165,6 @@
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsTargets-relwithdebinfo.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsAdditionalTargetInfo.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6WidgetsTools/Qt6WidgetsToolsVersionlessTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigVersion.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigVersionImpl.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreDependencies.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6/FindWrapAtomic.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CheckCXXSourceCompiles.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/FindPackageMessage.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersion.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfigVersionImpl.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsConfig.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsDependencies.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfigVersion.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfigVersionImpl.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateConfig.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/CMakeFindDependencyMacro.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateTargets-relwithdebinfo.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateAdditionalTargetInfo.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointMinGW32Target.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6EntryPointPrivate/Qt6EntryPointPrivateVersionlessAliasTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreTargets-relwithdebinfo.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigExtras.cmake",
-		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/GNUInstallDirs.cmake",
-		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Gui/Qt6GuiConfigVersionImpl.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake",
@@ -318,7 +318,9 @@
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginTargets-relwithdebinfo.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Multimedia/Qt6QWindowsMediaPluginAdditionalTargetInfo.cmake",
 		"C:/Qt/6.10.3/mingw_64/lib/cmake/Qt6Multimedia/Qt6MultimediaVersionlessAliasTargets.cmake",
+		"D:/VS Project/data_structrue_project/26C-/cmake/GameTargets.cmake",
 		"C:/Qt/Tools/CMake_64/share/cmake-3.30/Modules/GNUInstallDirs.cmake",
+		"D:/VS Project/data_structrue_project/26C-/attack_rhythm.example.json",
 		"D:/VS Project/data_structrue_project/26C-/resources.qrc"
 	],
 	"CMAKE_SOURCE_DIR" : "D:/VS Project/data_structrue_project/26C-",
@@ -328,39 +330,45 @@
 	"HEADERS" : 
 	[
 		[
-			"D:/VS Project/data_structrue_project/26C-/bullet.h",
+			"D:/VS Project/data_structrue_project/26C-/ui/buttonfeedback.h",
 			"MU",
-			"EWIEGA46WW/moc_bullet.cpp",
+			"UYX5XTB5RZ/moc_buttonfeedback.cpp",
 			null
 		],
 		[
-			"D:/VS Project/data_structrue_project/26C-/enemy.h",
+			"D:/VS Project/data_structrue_project/26C-/ui/enemyartwork.h",
 			"MU",
-			"EWIEGA46WW/moc_enemy.cpp",
+			"UYX5XTB5RZ/moc_enemyartwork.cpp",
 			null
 		],
 		[
-			"D:/VS Project/data_structrue_project/26C-/gamewidget.h",
+			"D:/VS Project/data_structrue_project/26C-/ui/gamerenderer.h",
 			"MU",
-			"EWIEGA46WW/moc_gamewidget.cpp",
+			"UYX5XTB5RZ/moc_gamerenderer.cpp",
 			null
 		],
 		[
-			"D:/VS Project/data_structrue_project/26C-/mainwindow.h",
+			"D:/VS Project/data_structrue_project/26C-/ui/gameuistate.h",
 			"MU",
-			"EWIEGA46WW/moc_mainwindow.cpp",
+			"UYX5XTB5RZ/moc_gameuistate.cpp",
 			null
 		],
 		[
-			"D:/VS Project/data_structrue_project/26C-/startmenuwidget.h",
+			"D:/VS Project/data_structrue_project/26C-/ui/gamewidget.h",
 			"MU",
-			"EWIEGA46WW/moc_startmenuwidget.cpp",
+			"UYX5XTB5RZ/moc_gamewidget.cpp",
 			null
 		],
 		[
-			"D:/VS Project/data_structrue_project/26C-/tower.h",
+			"D:/VS Project/data_structrue_project/26C-/ui/mainwindow.h",
 			"MU",
-			"EWIEGA46WW/moc_tower.cpp",
+			"UYX5XTB5RZ/moc_mainwindow.cpp",
+			null
+		],
+		[
+			"D:/VS Project/data_structrue_project/26C-/ui/startmenuwidget.h",
+			"MU",
+			"UYX5XTB5RZ/moc_startmenuwidget.cpp",
 			null
 		]
 	],
@@ -392,6 +400,7 @@
 	],
 	"MOC_INCLUDES" : 
 	[
+		"D:/VS Project/data_structrue_project/26C-",
 		"C:/Qt/6.10.3/mingw_64/include/QtCore",
 		"C:/Qt/6.10.3/mingw_64/include",
 		"C:/Qt/6.10.3/mingw_64/mkspecs/win32-g++",
@@ -428,7 +437,11 @@
 	],
 	"MOC_PREDEFS_FILE" : "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/final_autogen/moc_predefs.h",
 	"MOC_RELAXED_MODE" : false,
-	"MOC_SKIP" : [],
+	"MOC_SKIP" : 
+	[
+		"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/game_core_autogen/include/ui_mainwindow.h",
+		"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/game_core_autogen/mocs_compilation.cpp"
+	],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 8,
 	"PARSE_CACHE_FILE" : "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/final_autogen.dir/ParseCache.txt",
@@ -439,29 +452,45 @@
 	"SETTINGS_FILE" : "D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/CMakeFiles/final_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
-		[ "D:/VS Project/data_structrue_project/26C-/bullet.cpp", "MU", null ],
-		[ "D:/VS Project/data_structrue_project/26C-/enemy.cpp", "MU", null ],
-		[
-			"D:/VS Project/data_structrue_project/26C-/gamewidget.cpp",
-			"MU",
-			null
-		],
 		[ "D:/VS Project/data_structrue_project/26C-/main.cpp", "MU", null ],
 		[
-			"D:/VS Project/data_structrue_project/26C-/mainwindow.cpp",
+			"D:/VS Project/data_structrue_project/26C-/ui/buttonfeedback.cpp",
 			"MU",
 			null
 		],
 		[
-			"D:/VS Project/data_structrue_project/26C-/startmenuwidget.cpp",
+			"D:/VS Project/data_structrue_project/26C-/ui/enemyartwork.cpp",
 			"MU",
 			null
 		],
-		[ "D:/VS Project/data_structrue_project/26C-/tower.cpp", "MU", null ]
+		[
+			"D:/VS Project/data_structrue_project/26C-/ui/gamerenderer.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/VS Project/data_structrue_project/26C-/ui/gamewidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/VS Project/data_structrue_project/26C-/ui/mainwindow.cpp",
+			"MU",
+			null
+		],
+		[
+			"D:/VS Project/data_structrue_project/26C-/ui/startmenuwidget.cpp",
+			"MU",
+			null
+		]
 	],
 	"UIC_OPTIONS" : [],
-	"UIC_SEARCH_PATHS" : [],
-	"UIC_SKIP" : [],
+	"UIC_SEARCH_PATHS" : [ "D:/VS Project/data_structrue_project/26C-" ],
+	"UIC_SKIP" : 
+	[
+		"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/game_core_autogen/include/ui_mainwindow.h",
+		"D:/VS Project/data_structrue_project/builds/Qt-6.10.3-mingw_64-x86_64/Debug/game_core_autogen/mocs_compilation.cpp"
+	],
 	"UIC_UI_FILES" : [],
 	"USE_BETTER_GRAPH" : true,
 	"VERBOSITY" : 0

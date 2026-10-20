@@ -1,0 +1,51 @@
+{
+  "origin": "User supplied original artwork; order is authoritative.",
+  "assets": [
+    {
+      "order": 1,
+      "type": "bug",
+      "role": "ordinary",
+      "file": "art/enemies/source/bug.jpg",
+      "sha256": "158caf2c6dfc96d79b30c47fc8e1985f04af195e4f642a2ad08e8f238e71a80d",
+      "runtime_file": "26C-/images/enemies/bug.png",
+      "runtime_sha256": "2edf325781cb80f189cdf40d54d9c916fce88616c74ea2a684536a9630064333"
+    },
+    {
+      "order": 2,
+      "type": "ddl",
+      "role": "fast",
+      "file": "art/enemies/source/ddl.jpg",
+      "sha256": "edf87b92b44c3c5f975210dcbb66cfc774d0ba9e1c318d0dcb0ed0bfadce5770",
+      "runtime_file": "26C-/images/enemies/ddl.png",
+      "runtime_sha256": "1c9cd306faf1e0bc5446f3d4922e28b3a2963b716bfde7c508235fc0ba7cf93c"
+    },
+    {
+      "order": 3,
+      "type": "virus",
+      "role": "virus",
+      "file": "art/enemies/source/virus.jpg",
+      "sha256": "22b6d0f6e5c31b38d581a275bd47f44b3fc8491dee3e6e1730df6fb6c6f362cf",
+      "runtime_file": "26C-/images/enemies/virus.png",
+      "runtime_sha256": "e72937d5aeef099b2bc3b3ee37bb7f84a8137369348dfeea65351347c52dfea6"
+    },
+    {
+      "order": 4,
+      "type": "mutant",
+      "role": "mutated",
+      "file": "art/enemies/source/mutant.jpg",
+      "sha256": "fb2b0d1493b829cb7eaed247f789b2247736cf74b08dc75a07ed881400f06096",
+      "runtime_file": "26C-/images/enemies/mutant.png",
+      "runtime_sha256": "a029c7f233baa331e66f1dc1c767c3eaa3eeeaa8b2e3a3ccf83d21e9d3c72c9f"
+    },
+    {
+      "order": 5,
+      "type": "boss",
+      "role": "boss",
+      "file": "art/enemies/source/boss.jpg",
+      "sha256": "aefeba1e4faa5520c1bec1e6510ced397d18ba2a64358a4b21372b4f87c85bb6",
+      "runtime_file": "26C-/images/enemies/boss.png",
+      "runtime_sha256": "d09901ef5df866563368e28d7c115595ae393e067c1834b0ed1a34d60dc2c9e9"
+    }
+  ],
+  "processing": "Transparent derivatives made with built-in image_gen.imagegen background extraction; originals remain byte-for-byte unchanged."
+}

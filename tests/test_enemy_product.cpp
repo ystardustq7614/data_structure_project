@@ -1,6 +1,8 @@
-#include "../26C-/enemy.h"
+/** @file
+ * @brief 连接真实 Enemy 的数值回归；覆盖光环取整、死亡保护及强化/变异组合。 */
+#include "../26C-/core/enemy.h"
 
-#include <QGuiApplication>
+#include <QCoreApplication>
 #include <QPointF>
 #include <QString>
 #include <QVector>
@@ -25,6 +27,7 @@ void require(bool condition, const char* message)
 
 void reduceTo(Enemy& enemy, int hp)
 {
+    // 用真实护甲伤害准备指定生命，不直接修改私有属性；输入敌人应为当前上限满血。
     require(hp >= 0 && hp <= enemy.maxHp(), "invalid requested HP");
     if (hp < enemy.maxHp()) {
         enemy.takeDamage(enemy.armor() + enemy.maxHp() - hp);
@@ -34,6 +37,7 @@ void reduceTo(Enemy& enemy, int hp)
 
 void checkRoundTrips(const QString& type, bool enhanced, int expectedMaxHp)
 {
+    // 穷举 0 到满血，低血量的取整漂移和死亡复活不能只靠满血用例检出。
     for (int hp = 0; hp <= expectedMaxHp; ++hp) {
         Enemy enemy(type, longPath);
         if (enhanced) {
@@ -95,6 +99,7 @@ void checkAuraDamage()
 
 void checkMutation(bool enhanced, bool aura, int expectedMaxHp, int expectedArmor)
 {
+    // 使用真实 update 经过路径中段触发变异，验证基础属性替换仍保留已有强化标志。
     const QVector<QPointF> shortPath{QPointF(0, 0), QPointF(100, 0)};
     Enemy enemy("virus", shortPath);
     if (enhanced) {
@@ -104,6 +109,10 @@ void checkMutation(bool enhanced, bool aura, int expectedMaxHp, int expectedArmo
         enemy.applyBossAura();
     }
     enemy.update(); // A two-point path triggers Virus mutation before movement.
+    require(enemy.type() == "mutant" && enemy.hasMutated()
+                && enemy.lateGameEnhanced() == enhanced
+                && enemy.mutatedAfterLateEnhancement() == enhanced,
+            "mutation state does not preserve enhancement order");
     require(enemy.damageToLife() == 2 && enemy.reward() == 60,
             "Virus did not mutate");
     require(enemy.maxHp() == expectedMaxHp && enemy.armor() == expectedArmor,
@@ -136,8 +145,7 @@ void checkMutation(bool enhanced, bool aura, int expectedMaxHp, int expectedArmo
 
 int main(int argc, char* argv[])
 {
-    qputenv("QT_QPA_PLATFORM", "offscreen");
-    QGuiApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
     checkRoundTrips("bug", false, 40);
     checkRoundTrips("bug", true, 52);

@@ -1,7 +1,8 @@
+# 从真实产品源码读取矩形，避免复制一套常量而漏掉源码回归；只检查代表坐标，不验收整图贴合。
 from pathlib import Path
 import re
 
-source_path = Path(__file__).resolve().parents[1] / "26C-" / "startmenuwidget.cpp"
+source_path = Path(__file__).resolve().parents[1] / "26C-" / "ui" / "startmenuwidget.cpp"
 source = source_path.read_text(encoding="utf-8")
 
 
@@ -20,6 +21,7 @@ HELP_RECT = source_rect("m_helpButtonRect")
 EXIT_RECT = source_rect("m_exitButtonRect")
 
 def in_rect(x, y, r):
+    # 与整数 QRect 一致，右/下端点为起点加尺寸减一；不能按排他上界判断按钮边缘。
     rx, ry, rw, rh = r
     return rx <= x <= rx + rw - 1 and ry <= y <= ry + rh - 1
 
@@ -29,7 +31,7 @@ def check_hit(x, y):
     e = in_rect(x, y, EXIT_RECT)
     return s, h, e, (s or h or e)
 
-# Test cases including all points specified by Codex in Section 10.3
+# 固定坐标来自菜单主体、空白与按钮间隙；不随源码矩形自动生成，保留独立判断依据。
 test_cases = [
     # (x, y, expected_hit, expected_button, description)
     (300, 335, False, None,    "Codex check: Start button top blank (grass)"),

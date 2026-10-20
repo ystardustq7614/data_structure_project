@@ -1,0 +1,7 @@
+# Local CMake builds, review snapshots and linked worktrees.
+/builds/
+/.vscode/
+# Local test binaries and Python caches.
+/tests/*.exe
+__pycache__/
+*.pyc

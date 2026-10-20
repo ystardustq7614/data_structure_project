@@ -1,6 +1,8 @@
-#include "../26C-/gamewidget.h"
-#include "../26C-/mainwindow.h"
-#include "../26C-/startmenuwidget.h"
+/** @file
+ * @brief 真实页面/资源的离屏回归；覆盖输入、像素与计时器，不代表桌面字体或音频听感验收。 */
+#include "ui/gamewidget.h"
+#include "ui/mainwindow.h"
+#include "ui/startmenuwidget.h"
 
 #include <QApplication>
 #include <QCoreApplication>
@@ -11,6 +13,8 @@
 #include <QMetaObject>
 #include <QMouseEvent>
 #include <QPixmap>
+#include <QPainter>
+#include <QPainterPath>
 #include <QResource>
 #include <QStackedWidget>
 #include <QTimer>
@@ -18,22 +22,40 @@
 #include <cstdlib>
 #include <iostream>
 
+/** 只准备场景的友元夹具；高生命用于到达胜利分支，变异仍通过真实 Enemy::update 触发。 */
+class GameSessionProductTestAccess
+{
+public:
+    static void grantLives(GameSession& session) { session.m_life = 10000; }
+    static void startRunning(GameSession& session) { session.m_state = GameSession::State::Running; }
+    static void addArtworkEnemy(GameSession& session, const QString& type, const QPointF& pos)
+    {
+        const QVector<QPointF> path{pos, pos, pos, pos + QPointF(1000, 0)};
+        auto* enemy = new Enemy(type == "mutant" ? "virus" : type, path);
+        if (type == "mutant") { enemy->update(); enemy->update(); }
+        session.m_enemies.append(enemy);
+        startRunning(session);
+    }
+};
+
+/** 读取断言状态，并经战局夹具设置胜利场景生命；不复制产品建造判定或模拟算法。 */
 class GameWidgetProductTestAccess
 {
 public:
     static QPointF firstTowerPosition(const GameWidget* game)
     {
-        return game->m_towers.first()->position();
+        return game->m_session.towerAt(0).position();
     }
-    static void grantLives(GameWidget* game) { game->m_life = 10000; }
-    static bool won(const GameWidget* game) { return game->m_gameWon; }
+    static void grantLives(GameWidget* game)
+    { GameSessionProductTestAccess::grantLives(game->m_session); }
+    static bool won(const GameWidget* game) { return game->m_session.isWon(); }
     static TowerType selectedType(const GameWidget* game)
     {
-        return game->m_selectedTowerType;
+        return game->m_ui.selectedTowerType;
     }
     static bool hasSelectedTower(const GameWidget* game)
     {
-        return game->m_selectedTower != nullptr;
+        return game->m_session.selectedTower() != nullptr;
     }
 };
 
@@ -49,6 +71,7 @@ void require(bool condition, const char* message)
 
 void waitForEvents(int milliseconds)
 {
+    // 事件循环让真实 QTimer 获得执行机会；普通线程睡眠不能验证暂停/隐藏后是否仍推进。
     QEventLoop loop;
     QTimer::singleShot(milliseconds, &loop, &QEventLoop::quit);
     loop.exec();
@@ -87,13 +110,244 @@ void mouseClick(QWidget* widget, const QPoint& pos)
     mouseRelease(widget, pos);
 }
 
+void keyPress(QWidget* widget, int key)
+{
+    QKeyEvent event(QEvent::KeyPress, key, Qt::NoModifier);
+    QCoreApplication::sendEvent(widget, &event);
+}
+
 void advanceToResult(GameWidget* game, QTimer* timer)
 {
+    // 直接调用真实 slot 加速整局；用有限帧数上限把无法结算转为可定位的断言失败。
     for (int frame = 0; frame < 12000 && timer->isActive(); ++frame) {
         require(QMetaObject::invokeMethod(game, "updateGame", Qt::DirectConnection),
                 "could not invoke product game loop");
     }
     require(!timer->isActive(), "unprotected game did not reach a result");
+}
+
+QImage screenBackground(const QString& path, bool smooth)
+{
+    const QPixmap source(path);
+    require(!source.isNull(), "screen background could not be decoded");
+    require(std::abs(source.width() * 2 - source.height() * 3) <= 3,
+            "screen background does not preserve the original 3:2 composition");
+    // QWidget抓图使用RGB32；参考画布保持一致，避免ARGB32缩放舍入差异。
+    QImage image(1200, 800, QImage::Format_RGB32);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, smooth);
+    painter.drawPixmap(image.rect(), source);
+    return image;
+}
+
+QImage enemySourceContent(const QString& path)
+{
+    const QImage image(path);
+    require(!image.isNull() && image.hasAlphaChannel(),
+            "enemy artwork is missing, undecodable or has no transparency");
+    QRect content;
+    int transparentPixels = 0;
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            if (image.pixelColor(x, y).alpha() == 0) ++transparentPixels;
+            else content = content.united(QRect(x, y, 1, 1));
+        }
+    }
+    require(!content.isEmpty() && transparentPixels * 20 > image.width() * image.height(),
+            "enemy artwork is empty or still has an opaque background");
+    return image.copy(content);
+}
+
+void checkEmbeddedEnemyRendering()
+{
+    GameRenderer renderer;
+    const QVector<QPointF> path{{100, 100}, {100, 100}, {100, 100}, {1000, 100}};
+    for (const auto& entry : {
+             qMakePair(QString("bug"), QString(":/images/images/enemies/bug.png")),
+             qMakePair(QString("ddl"), QString(":/images/images/enemies/ddl.png")),
+             qMakePair(QString("virus"), QString(":/images/images/enemies/virus.png")),
+             qMakePair(QString("mutant"), QString(":/images/images/enemies/mutant.png")),
+             qMakePair(QString("boss"), QString(":/images/images/enemies/boss.png"))}) {
+        const int size = entry.first == "boss" ? 75 : 65;
+        const QPixmap icon = QPixmap::fromImage(enemySourceContent(entry.second)).scaled(
+            size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QImage actual(200, 200, QImage::Format_ARGB32_Premultiplied);
+        QImage expected = actual;
+        actual.fill(Qt::transparent);
+        expected.fill(Qt::transparent);
+        Enemy enemy(entry.first == "mutant" ? "virus" : entry.first, path);
+        if (entry.first == "mutant") {
+            enemy.update();
+            enemy.update();
+            require(enemy.hasMutated(), "actual virus did not enter its mutated artwork state");
+        }
+        { QPainter p(&actual); renderer.drawEnemy(p, enemy); }
+        const int start = 100 - size / 2;
+        {
+            QPainter p(&expected);
+            p.drawPixmap(100 - icon.width() / 2, 100 + size / 2 + 1 - icon.height(), icon);
+        }
+        require(actual.copy(start, start, size, size) == expected.copy(start, start, size, size),
+                "enemy artwork mapping, aspect ratio or bottom alignment is incorrect");
+        require(actual.pixelColor(100, start - 10) == QColor(60, 200, 80),
+                "enemy health bar moved or disappeared after artwork replacement");
+    }
+}
+
+QImage renderEnemyArtworkPreview()
+{
+    GameSession session;
+    const QString types[]{"bug", "ddl", "virus", "mutant", "boss"};
+    for (int i = 0; i < 5; ++i)
+        GameSessionProductTestAccess::addArtworkEnemy(session, types[i], QPointF(200 + i * 195, 400));
+    QImage image(1200, 800, QImage::Format_ARGB32_Premultiplied);
+    GameRenderer renderer;
+    GameUiState ui;
+    QPainter painter(&image);
+    renderer.paint(painter, session, ui);
+    return image;
+}
+
+void checkEmbeddedTowerPortraits()
+{
+    GameRenderer renderer;
+    const char* portraitPaths[] = {
+        ":/images/images/towers/normal.png",
+        ":/images/images/towers/fast.png",
+        ":/images/images/towers/heavy.png"
+    };
+
+    int typeIndex = 0;
+    for (TowerType type : {TowerType::Normal, TowerType::Fast, TowerType::Heavy}) {
+        Tower tower(QPointF(200, 200), type);
+        const int diameter = tower.bodyDiameter();
+        const int half = diameter / 2;
+        const QRectF body(200 - half, 200 - half, diameter, diameter);
+
+        QImage actual(400, 400, QImage::Format_ARGB32_Premultiplied);
+        actual.fill(Qt::transparent);
+        {
+            QPainter p(&actual);
+            renderer.drawTower(p, tower, false);
+        }
+
+        // 参考图独立读取预期塔型资源；只检查画面非空无法检出塔型映射错误。
+        const QPixmap expectedSrc(portraitPaths[typeIndex]);
+        require(!expectedSrc.isNull(), "standalone tower artwork could not be decoded");
+        QImage expectedPortrait(400, 400, QImage::Format_ARGB32_Premultiplied);
+        expectedPortrait.fill(Qt::transparent);
+        {
+            QPainter p(&expectedPortrait);
+            p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+            QPainterPath clip;
+            clip.addRoundedRect(body, 6, 6);
+            p.setClipPath(clip);
+            p.drawPixmap(body, expectedSrc, QRectF(expectedSrc.rect()));
+        }
+
+        // 选取塔身内部上半部分（避开左下角徽章和外边框）比对像素
+        const QRect sampleRegion = body.adjusted(6, 6, -6, -diameter / 2).toRect();
+        int solidPixels = 0;
+        int matchedPixels = 0;
+        for (int y = sampleRegion.top(); y <= sampleRegion.bottom(); ++y) {
+            for (int x = sampleRegion.left(); x <= sampleRegion.right(); ++x) {
+                const QColor exp = expectedPortrait.pixelColor(x, y);
+                if (exp.alpha() > 200) {
+                    ++solidPixels;
+                    const QColor act = actual.pixelColor(x, y);
+                    if (std::abs(act.red() - exp.red()) <= 3 &&
+                        std::abs(act.green() - exp.green()) <= 3 &&
+                        std::abs(act.blue() - exp.blue()) <= 3) {
+                        ++matchedPixels;
+                    }
+                }
+            }
+        }
+        require(solidPixels > 30, "insufficient solid pixels in tower sample region");
+        require(matchedPixels * 100 / solidPixels >= 85,
+                "tower portrait does not match expected cropped artwork or is missing fallback");
+
+        // 徽章外缘采样位于备用圆形塔之外，可区分真实贴图徽章与字母备用图形。
+        const QPoint badgeOuter(static_cast<int>(body.left() - 1), static_cast<int>(body.bottom() - 7));
+        require(actual.pixelColor(badgeOuter).alpha() > 180,
+                "tower level badge outer rim is missing (fallback tower detected)");
+        const QRectF badgeRect(body.left() - 1, body.bottom() - 15, 16, 16);
+        const QPoint badgeCenter = badgeRect.center().toPoint();
+        const QColor badgeColor = actual.pixelColor(badgeCenter);
+        const bool isBadgeBg = (badgeColor.red() > 230 && badgeColor.green() > 220 && badgeColor.blue() > 190);
+        const bool isBadgeText = (badgeColor.red() < 80 && badgeColor.green() < 80 && badgeColor.blue() < 120);
+        require(isBadgeBg || isBadgeText, "tower level badge center color does not match expected badge fill");
+
+        // 徽章位置随实际升级后的塔身重算，不能只检查一级固定坐标。
+        const int beforeDiameter = tower.bodyDiameter();
+        require(tower.upgrade(), "tower upgrade failed in visual test");
+        require(tower.bodyDiameter() == beforeDiameter + 2, "upgraded tower diameter did not increase by 2");
+        QImage upgradedActual(400, 400, QImage::Format_ARGB32_Premultiplied);
+        upgradedActual.fill(Qt::transparent);
+        {
+            QPainter p(&upgradedActual);
+            renderer.drawTower(p, tower, false);
+        }
+        const int upgradedHalf = tower.bodyDiameter() / 2;
+        const QRectF upgradedBody(200 - upgradedHalf, 200 - upgradedHalf, tower.bodyDiameter(), tower.bodyDiameter());
+        const QPoint upgradedBadgeOuter(static_cast<int>(upgradedBody.left() - 1), static_cast<int>(upgradedBody.bottom() - 7));
+        require(upgradedActual.pixelColor(upgradedBadgeOuter).alpha() > 180,
+                "upgraded tower level badge outer rim is missing");
+
+        // 与同场景底图按 0.72/0.28 混色比较，避免仅检查“出现像素”而漏掉不透明预览。
+        QImage baseActual(1200, 800, QImage::Format_ARGB32_Premultiplied);
+        {
+            GameSession baseSession;
+            GameUiState baseUi;
+            baseUi.hasMousePosition = false;
+            QPainter p(&baseActual);
+            renderer.paint(p, baseSession, baseUi);
+        }
+
+        QImage previewActual(1200, 800, QImage::Format_ARGB32_Premultiplied);
+        {
+            GameSession previewSession;
+            GameSessionProductTestAccess::startRunning(previewSession);
+            GameUiState previewUi;
+            previewUi.hasMousePosition = true;
+            previewUi.mousePosition = QPointF(90, 750);
+            previewUi.selectedTowerType = type;
+            QPainter p(&previewActual);
+            renderer.paint(p, previewSession, previewUi);
+        }
+
+        const QRectF previewBody(90 - half, 750 - half, diameter, diameter);
+        const QRect previewSample = previewBody.adjusted(6, 6, -6, -diameter / 2).toRect();
+        int previewSolid = 0;
+        int previewMatched = 0;
+        for (int y = previewSample.top(); y <= previewSample.bottom(); ++y) {
+            for (int x = previewSample.left(); x <= previewSample.right(); ++x) {
+                const int expX = x - 90 + 200;
+                const int expY = y - 750 + 200;
+                const QColor exp = expectedPortrait.pixelColor(expX, expY);
+                if (exp.alpha() > 200) {
+                    ++previewSolid;
+                    const QColor act = previewActual.pixelColor(x, y);
+                    const QColor base = baseActual.pixelColor(x, y);
+                    const int expR = static_cast<int>(exp.red() * 0.72 + base.red() * 0.28 + 0.5);
+                    const int expG = static_cast<int>(exp.green() * 0.72 + base.green() * 0.28 + 0.5);
+                    const int expB = static_cast<int>(exp.blue() * 0.72 + base.blue() * 0.28 + 0.5);
+                    if (std::abs(act.red() - expR) <= 4 &&
+                        std::abs(act.green() - expG) <= 4 &&
+                        std::abs(act.blue() - expB) <= 4) {
+                        ++previewMatched;
+                    }
+                }
+            }
+        }
+        require(previewSolid > 30, "insufficient solid pixels in preview sample region");
+        // 允许少量抗锯齿/缩放边缘差异；核心像素须满足通道容差和最低匹配占比。
+        require(previewMatched * 100 / previewSolid >= 80,
+                "build preview does not match expected tower artwork or 0.72 opacity for selected type");
+
+        ++typeIndex;
+    }
 }
 
 } // namespace
@@ -104,17 +358,33 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     for (const char* path : {
-             ":/images/images/menu_bg.jpg", ":/images/images/help_bg.png",
-             ":/images/images/game_map.jpg", ":/images/images/win.png",
-             ":/images/images/lose.png", ":/config/attack_waves.json",
+             ":/images/images/towers/normal.png", ":/images/images/towers/fast.png",
+             ":/images/images/towers/heavy.png", ":/images/images/screens/menu.png",
+             ":/images/images/screens/help.png", ":/images/images/game_map.jpg",
+             ":/images/images/screens/win.png", ":/images/images/screens/lose.png",
+             ":/config/attack_waves.json",
              ":/audio/music/menu.mp3",
-             ":/audio/music/battle.mp3", ":/audio/music/final_wave.wav"}) {
+             ":/audio/music/battle.mp3", ":/audio/music/final_wave.wav",
+             ":/images/images/enemies/bug.png", ":/images/images/enemies/ddl.png",
+             ":/images/images/enemies/virus.png", ":/images/images/enemies/mutant.png",
+             ":/images/images/enemies/boss.png"}) {
         require(QResource(path).isValid(), "embedded product resource is missing");
     }
-    require(!QPixmap(":/images/images/menu_bg.jpg").isNull(),
+    require(!QPixmap(":/images/images/screens/menu.png").isNull(),
             "menu image could not be decoded");
     require(!QPixmap(":/images/images/game_map.jpg").isNull(),
             "game map image could not be decoded");
+
+    checkEmbeddedEnemyRendering();
+    checkEmbeddedTowerPortraits();
+    StartMenuWidget independentMenu;
+    int quitRequests = 0;
+    QObject::connect(&independentMenu, &StartMenuWidget::quitRequested,
+                     [&quitRequests] { ++quitRequests; });
+    mousePress(&independentMenu, QPoint(369, 557));
+    require(quitRequests == 0, "menu quit activated before release");
+    mouseRelease(&independentMenu, QPoint(369, 557));
+    require(quitRequests == 1, "menu did not emit application quit request");
 
     MainWindow window;
     window.show();
@@ -135,6 +405,47 @@ int main(int argc, char* argv[])
             "blank area hover was treated as a button");
 
     const QImage menuImage = menu->grab().toImage();
+    const QRect rosterRect(695, 212, 315, 190);
+    const QImage rawBg = screenBackground(":/images/images/screens/menu.png", true);
+    require(menuImage.copy(rosterRect) != rawBg.copy(rosterRect),
+            "enemy roster was not drawn over menu background");
+
+    // 对照每类敌人的实际原图主体；空卡片或另一类图标不能只靠“画面有变化”通过。
+    const QString enemyQrcs[] = {
+        ":/images/images/enemies/bug.png",
+        ":/images/images/enemies/ddl.png",
+        ":/images/images/enemies/virus.png",
+        ":/images/images/enemies/boss.png"
+    };
+    for (int i = 0; i < 4; ++i) {
+        const QRect card(703 + i * 76, 255, 70, 111);
+        const QRect iconArea(card.left() + 4, card.top() + 4, 62, 68);
+        const QPixmap rawIcon = QPixmap::fromImage(enemySourceContent(enemyQrcs[i]));
+        const QPixmap thumb = rawIcon.scaled(iconArea.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        const QImage thumbImg = thumb.toImage();
+        const int drawX = iconArea.x() + (iconArea.width() - thumb.width()) / 2;
+        const int drawY = iconArea.y() + (iconArea.height() - thumb.height()) / 2;
+
+        int solidPixels = 0;
+        int matchedPixels = 0;
+        for (int y = 0; y < thumbImg.height(); y += 2) {
+            for (int x = 0; x < thumbImg.width(); x += 2) {
+                const QColor exp = thumbImg.pixelColor(x, y);
+                if (exp.alpha() > 220) {
+                    ++solidPixels;
+                    const QColor act = menuImage.pixelColor(drawX + x, drawY + y);
+                    if (std::abs(act.red() - exp.red()) <= 3 &&
+                        std::abs(act.green() - exp.green()) <= 3 &&
+                        std::abs(act.blue() - exp.blue()) <= 3) {
+                        ++matchedPixels;
+                    }
+                }
+            }
+        }
+        require(solidPixels > 40, "insufficient solid pixels in enemy thumbnail fixture");
+        require(matchedPixels * 100 / solidPixels >= 80,
+                "menu enemy icon does not match expected artwork or is missing (blank card detected)");
+    }
     mouseMove(menu, QPoint(369, 386));
     const QImage startHover = menu->grab().toImage();
     mousePress(menu, QPoint(369, 386));
@@ -150,8 +461,12 @@ int main(int argc, char* argv[])
             "cancelled start press left a visual state behind");
 
     mouseClick(menu, QPoint(369, 477));
-    require(menu->grab().toImage() != menuImage,
+    const QImage helpImage = menu->grab().toImage();
+    require(helpImage != menuImage,
             "help click did not change the displayed page");
+    require(helpImage.convertToFormat(QImage::Format_RGB32)
+                == screenBackground(":/images/images/screens/help.png", true),
+            "help page did not display the replacement background");
     mouseMove(menu, QPoint(369, 730));
     const QImage backHover = menu->grab().toImage();
     mousePress(menu, QPoint(369, 730));
@@ -173,6 +488,7 @@ int main(int argc, char* argv[])
     auto* timer = game->findChild<QTimer*>();
     require(timer && timer->isActive(), "first game timer is not active");
 
+    // 固定模拟帧进行画面与经济比较；只停测试中的真实计时器，不改变产品暂停规则。
     timer->stop();
     const auto bottom = game->evaluateBuild(QPointF(90, 799));
     require(bottom.valid() && bottom.center == QPointF(90, 750),
@@ -183,10 +499,44 @@ int main(int argc, char* argv[])
     require(game->evaluateBuild(QPointF(90, 230)).problem
                 == GameWidget::BuildProblem::Road,
             "road position was accepted for building");
+
+    const QRect panelRect(840, 70, 330, 145);
+    require(game->evaluateBuild(QPointF(900, 110)).valid(),
+            "cell under event panel must be legal when panel is closed");
+    const QImage panelClosed = game->grab().toImage();
+    mouseClick(game, QPoint(916, 36));
+    const QImage panelOpened = game->grab().toImage();
+    require(panelOpened.copy(panelRect) != panelClosed.copy(panelRect),
+            "event preview panel did not appear in designated area");
+    mouseClick(game, QPoint(900, 110));
+    require(game->towerCount() == 0 && game->gold() == 150,
+            "event panel did not block building on covered legal map cell when gold is abundant");
+    mouseClick(game, QPoint(916, 36));
+    require(game->grab().toImage().copy(panelRect) == panelClosed.copy(panelRect),
+            "event preview panel did not close cleanly");
+
     const QImage noPreview = game->grab().toImage();
     mouseMove(game, QPoint(90, 799));
     const QImage validPreview = game->grab().toImage();
     require(validPreview != noPreview, "valid build preview was not drawn");
+    // 吸附中心应出现叠加像素；塔型映射与透明度由上面的独立资源比对共同约束。
+    const QColor baseMapPixel = noPreview.pixelColor(90, 750);
+    const QColor previewPixel = validPreview.pixelColor(90, 750);
+    require(previewPixel != baseMapPixel, "build preview center did not render tower portrait");
+
+    // 三类热键必须产生不同预览，切回普通塔应还原同图，检出固定画单一塔型的回归。
+    keyPress(game, Qt::Key_2);
+    const QImage fastPreview = game->grab().toImage();
+    require(fastPreview != validPreview,
+            "fast tower preview was identical to normal tower preview (preview tower type ignored)");
+    keyPress(game, Qt::Key_3);
+    const QImage heavyPreview = game->grab().toImage();
+    require(heavyPreview != fastPreview && heavyPreview != validPreview,
+            "heavy tower preview did not differ from fast or normal tower preview");
+    keyPress(game, Qt::Key_1);
+    const QImage restoredNormalPreview = game->grab().toImage();
+    require(restoredNormalPreview == validPreview,
+            "restored normal tower preview did not match initial normal preview");
     mouseMove(game, QPoint(90, 230));
     const QImage roadPreview = game->grab().toImage();
     require(roadPreview != noPreview && roadPreview != validPreview,
@@ -217,9 +567,11 @@ int main(int argc, char* argv[])
     require(game->towerCount() == 3 && game->gold() == 0,
             "insufficient-gold build changed towers or gold");
 
+    const QImage beforePanel2 = game->grab().toImage();
     mouseClick(game, QPoint(916, 36));
     const QImage eventPanel = game->grab().toImage();
-    require(eventPanel != validPreview, "event preview panel did not appear");
+    require(eventPanel.copy(panelRect) != beforePanel2.copy(panelRect),
+            "event preview panel did not appear in designated area on toggle");
     mouseClick(game, QPoint(900, 110));
     require(game->towerCount() == 3, "event panel click built a tower");
     mouseClick(game, QPoint(916, 36));
@@ -251,6 +603,8 @@ int main(int argc, char* argv[])
 
     if (argc > 1) {
         const QDir output(argv[1]);
+        require(renderEnemyArtworkPreview().save(output.filePath("enemy_lineup.png")),
+                "enemy artwork lineup screenshot could not be saved");
         require(validPreview.save(output.filePath("placement_preview.png")),
                 "placement preview screenshot could not be saved");
         require(roadPreview.save(output.filePath("road_preview.png")),
@@ -263,6 +617,8 @@ int main(int argc, char* argv[])
                 "paused screenshot could not be saved");
         require(menuImage.save(output.filePath("menu.png")),
                 "menu screenshot could not be saved");
+        require(helpImage.save(output.filePath("help.png")),
+                "help screenshot could not be saved");
         require(startPressed.save(output.filePath("menu_pressed.png")),
                 "menu pressed screenshot could not be saved");
     }
@@ -295,6 +651,11 @@ int main(int argc, char* argv[])
     advanceToResult(game, timer);
     require(!GameWidgetProductTestAccess::won(game),
             "unprotected game did not reach a loss result");
+    mouseMove(game, QPoint(10, 10));
+    const QImage lossImage = game->grab().toImage();
+    require(lossImage.convertToFormat(QImage::Format_RGB32)
+                == screenBackground(":/images/images/screens/lose.png", false),
+            "loss page did not display the replacement background");
     mouseMove(game, QPoint(750, 600));
     const QImage lossHover = game->grab().toImage();
     mousePress(game, QPoint(750, 600));
@@ -302,6 +663,8 @@ int main(int argc, char* argv[])
     require(stack->currentWidget() == game && lossPressed != lossHover,
             "loss menu press did not show feedback before release");
     if (argc > 1) {
+        require(lossImage.save(QDir(argv[1]).filePath("lose.png")),
+                "loss screenshot could not be saved");
         require(lossPressed.save(QDir(argv[1]).filePath("loss_pressed.png")),
                 "loss pressed screenshot could not be saved");
     }
@@ -326,6 +689,11 @@ int main(int argc, char* argv[])
     advanceToResult(game, timer);
     require(GameWidgetProductTestAccess::won(game),
             "high-life game did not reach a win result");
+    mouseMove(game, QPoint(10, 10));
+    const QImage winImage = game->grab().toImage();
+    require(winImage.convertToFormat(QImage::Format_RGB32)
+                == screenBackground(":/images/images/screens/win.png", false),
+            "win page did not display the replacement background");
     mouseMove(game, QPoint(400, 510));
     const QImage winHover = game->grab().toImage();
     mousePress(game, QPoint(400, 510));
@@ -333,6 +701,8 @@ int main(int argc, char* argv[])
     require(winPressed != winHover,
             "win retry press has no visible feedback");
     if (argc > 1) {
+        require(winImage.save(QDir(argv[1]).filePath("win.png")),
+                "win screenshot could not be saved");
         require(winPressed.save(QDir(argv[1]).filePath("win_pressed.png")),
                 "win pressed screenshot could not be saved");
     }
